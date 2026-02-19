@@ -224,7 +224,7 @@ export default async function Home() {
             {projects.map((p: any, idx: number) => (
               <div
                 key={String(p.id)}
-                className="group hover-scale p-6 bg-gray-800/50 backdrop-blur border border-gray-700 rounded-xl hover:border-blue-500 transition duration-300"
+                className="group hover-scale p-6 bg-gray-800/50 backdrop-blur border border-gray-700 rounded-xl hover:border-blue-500 transition duration-300 flex flex-col w-full"
                 style={{ animationDelay: `${idx * 0.1}s` }}
               >
                 {p.image && (
@@ -233,14 +233,13 @@ export default async function Home() {
                   </div>
                 )}
                 
-                <div className="mb-4">
-                  <h3 className="text-xl font-semibold group-hover:text-blue-400 transition duration-300">
-                    {p.title}
-                  </h3>
-                </div>
-                
+              <div className="mb-4">
+                <h3 className="text-xl font-semibold group-hover:text-blue-400 transition duration-300 break-words">
+                  {p.title}
+                </h3>
+              </div>
                 {p.description && (
-                  <p className="text-gray-400 text-sm mb-4 line-clamp-3">{p.description}</p>
+                  <p className="text-gray-400 text-sm mb-4">{p.description}</p>
                 )}
                 
                 {p.tags && p.tags.length > 0 && (
@@ -369,7 +368,7 @@ export default async function Home() {
                   <p className="text-yellow-400 font-semibold text-sm mb-2">{cert.issuer}</p>
                 )}
                 {cert.description && (
-                  <p className="text-gray-400 text-sm mb-4 line-clamp-2">{cert.description}</p>
+                  <p className="text-gray-400 text-sm mb-4">{cert.description}</p>
                 )}
 
                 {cert.tags && cert.tags.length > 0 && (
@@ -431,14 +430,14 @@ export default async function Home() {
                   </div>
                 )}
                 
-                <div className="mb-4 flex-1">
+                <div className="mb-4">
                   <h3 className="text-xl font-semibold group-hover:text-pink-400 transition duration-300">
                     {article.title}
                   </h3>
                 </div>
                 
                 {article.description && (
-                  <p className="text-gray-400 text-sm mb-4 line-clamp-2">{article.description}</p>
+                  <p className="text-gray-400 text-sm mb-4">{article.description}</p>
                 )}
                 
                 {article.tags && article.tags.length > 0 && (
