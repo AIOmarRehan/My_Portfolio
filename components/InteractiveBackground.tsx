@@ -13,6 +13,7 @@ interface Particle {
 export default function InteractiveBackground() {
   const [mounted, setMounted] = useState(false)
   const [cursorType, setCursorType] = useState<'default' | 'pointer' | 'text'>('default')
+  const [hasFinePointer, setHasFinePointer] = useState(true)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const cursorRef = useRef<HTMLDivElement>(null)
   const mouseRef = useRef({ x: 0, y: 0, radius: 140 })
@@ -22,6 +23,22 @@ export default function InteractiveBackground() {
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  useEffect(() => {
+    if (!mounted) return
+    const media = window.matchMedia('(hover: hover) and (pointer: fine)')
+    const updatePointer = () => setHasFinePointer(media.matches)
+    updatePointer()
+    media.addEventListener('change', updatePointer)
+    return () => {
+      media.removeEventListener('change', updatePointer)
+    }
+  }, [mounted])
+
+  useEffect(() => {
+    if (!mounted) return
+    // Removed scrollbar toggle logic - replaced with progress bar
+  }, [mounted])
 
   useEffect(() => {
     if (!mounted) return
@@ -41,7 +58,9 @@ export default function InteractiveBackground() {
     // Initialize particles
     const initParticles = () => {
       particlesRef.current = []
-      for (let i = 0; i < 150; i++) {
+      const isSmallScreen = window.innerWidth < 768
+      const particleCount = hasFinePointer ? (isSmallScreen ? 90 : 150) : 70
+      for (let i = 0; i < particleCount; i++) {
         particlesRef.current.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
@@ -147,7 +166,9 @@ export default function InteractiveBackground() {
     initParticles()
     animate()
 
-    window.addEventListener('mousemove', handleMouseMove)
+    if (hasFinePointer) {
+      window.addEventListener('mousemove', handleMouseMove)
+    }
     window.addEventListener('resize', handleResize)
 
     return () => {
@@ -157,7 +178,7 @@ export default function InteractiveBackground() {
         cancelAnimationFrame(animationRef.current)
       }
     }
-  }, [mounted])
+  }, [mounted, hasFinePointer])
 
   if (!mounted) return null
 
@@ -209,11 +230,13 @@ export default function InteractiveBackground() {
         className="fixed top-0 left-0 w-full h-full -z-10"
         style={{ background: 'radial-gradient(circle at center, #0f0c29, #302b63, #24243e)' }}
       />
-      <div
-        ref={cursorRef}
-        className="cyber-cursor"
-        style={getCursorStyle()}
-      />
+      {hasFinePointer ? (
+        <div
+          ref={cursorRef}
+          className="cyber-cursor"
+          style={getCursorStyle()}
+        />
+      ) : null}
     </>
   )
 }

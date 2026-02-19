@@ -1,12 +1,33 @@
 @import "tailwindcss";
 
-html, body, #root {
-  height: 100%;
+html {
+  scrollbar-gutter: stable;
 }
 
-/* Hide all default cursors and use custom cursor */
-* {
-  cursor: none !important;
+body {
+  overflow-x: hidden;
+}
+
+section[id] {
+  scroll-margin-top: 96px;
+}
+
+/* Hide default cursor only on fine-pointer devices */
+@media (hover: hover) and (pointer: fine) {
+  * {
+    cursor: none !important;
+  }
+}
+
+/* Disable custom cursor on touch/coarse pointers */
+@media (hover: none), (pointer: coarse) {
+  * {
+    cursor: auto !important;
+  }
+
+  .cyber-cursor {
+    display: none !important;
+  }
 }
 
 /* Neon Cursor Animation */
@@ -16,26 +37,13 @@ html, body, #root {
 }
 
 /* Smooth scrolling */
-html {
+html, body {
   scroll-behavior: smooth;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - hidden */
 ::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #1a1a2e;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #00ffff, #ff00ff);
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  filter: brightness(1.3);
+  width: 0;
 }
 
 /* Fade in animation */
@@ -89,8 +97,16 @@ html {
   transition: transform 0.3s ease;
 }
 
-.hover-scale:hover {
-  transform: scale(1.05);
+@media (hover: hover) and (pointer: fine) {
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .hover-scale:hover {
+    transform: none;
+  }
 }
 
 /* Highlight pulse animation */

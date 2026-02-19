@@ -16,16 +16,13 @@ export default function Header() {
     <header className="fixed top-0 left-0 right-0 z-40 bg-gradient-to-r from-gray-900 via-gray-800 to-black shadow-lg">
       <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo */}
-        <Link 
-          href="/" 
-          onClick={(e) => {
-            e.preventDefault()
-            window.scrollTo({ top: 0, behavior: 'smooth' })
-          }}
+        <a
+          href="/#top"
+          onClick={() => setMenuOpen(false)}
           className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent hover:opacity-80 transition cursor-pointer"
         >
           Omar Rehan
-        </Link>
+        </a>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-8">
@@ -54,18 +51,18 @@ export default function Header() {
           ) : (
             <>
               {/* Public Navigation */}
-              <Link href="#projects" className="text-gray-300 hover:text-white transition duration-300">
+              <a href="/#projects" className="text-gray-300 hover:text-white transition duration-300">
                 Projects
-              </Link>
-              <Link href="#experience" className="text-gray-300 hover:text-white transition duration-300">
+              </a>
+              <a href="/#experience" className="text-gray-300 hover:text-white transition duration-300">
                 Experience
-              </Link>
-              <Link href="#certifications" className="text-gray-300 hover:text-white transition duration-300">
+              </a>
+              <a href="/#certifications" className="text-gray-300 hover:text-white transition duration-300">
                 Certifications
-              </Link>
-              <Link href="#articles" className="text-gray-300 hover:text-white transition duration-300">
+              </a>
+              <a href="/#articles" className="text-gray-300 hover:text-white transition duration-300">
                 Articles
-              </Link>
+              </a>
             </>
           )}
 
@@ -100,11 +97,24 @@ export default function Header() {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden flex flex-col gap-1.5 focus:outline-none"
+          className="md:hidden relative h-8 w-8 focus:outline-none"
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
         >
-          <div className={`h-1 w-6 bg-white transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`}></div>
-          <div className={`h-1 w-6 bg-white transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`}></div>
-          <div className={`h-1 w-6 bg-white transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`}></div>
+          <span
+            className={`absolute left-1/2 top-1/2 h-0.5 w-6 -translate-x-1/2 -translate-y-1/2 rounded bg-white transition-all duration-300 ${
+              menuOpen ? 'rotate-45' : '-translate-y-2'
+            }`}
+          />
+          <span
+            className={`absolute left-1/2 top-1/2 h-0.5 w-6 -translate-x-1/2 -translate-y-1/2 rounded bg-white transition-all duration-300 ${
+              menuOpen ? 'opacity-0' : 'opacity-100'
+            }`}
+          />
+          <span
+            className={`absolute left-1/2 top-1/2 h-0.5 w-6 -translate-x-1/2 -translate-y-1/2 rounded bg-white transition-all duration-300 ${
+              menuOpen ? '-rotate-45' : 'translate-y-2'
+            }`}
+          />
         </button>
       </div>
 
@@ -164,34 +174,34 @@ export default function Header() {
           ) : (
             <>
               {/* Public Navigation */}
-              <Link
-                href="#projects"
+              <a
+                href="/#projects"
                 onClick={() => setMenuOpen(false)}
                 className="text-gray-300 hover:text-white transition duration-300"
               >
                 Projects
-              </Link>
-              <Link
-                href="#experience"
+              </a>
+              <a
+                href="/#experience"
                 onClick={() => setMenuOpen(false)}
                 className="text-gray-300 hover:text-white transition duration-300"
               >
                 Experience
-              </Link>
-              <Link
-                href="#certifications"
+              </a>
+              <a
+                href="/#certifications"
                 onClick={() => setMenuOpen(false)}
                 className="text-gray-300 hover:text-white transition duration-300"
               >
                 Certifications
-              </Link>
-              <Link
-                href="#articles"
+              </a>
+              <a
+                href="/#articles"
                 onClick={() => setMenuOpen(false)}
                 className="text-gray-300 hover:text-white transition duration-300"
               >
                 Articles
-              </Link>
+              </a>
             </>
           )}
 

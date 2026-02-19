@@ -83,12 +83,12 @@ export default async function Home() {
   }
 
   return (
-    <div className="space-y-20">
+    <div id="top" className="space-y-20">
       {/* Hero Section */}
       <section className="py-20 fade-in">
-        <div className="grid gap-8 lg:grid-cols-2 items-stretch">
-          <div className="animated-border-card">
-            <div className="relative z-10 h-full rounded-2xl bg-gray-900/70 p-8 md:p-10 backdrop-blur flex flex-col">
+        <div className="grid gap-6 sm:gap-8 lg:grid-cols-2 items-stretch w-full">
+          <div className="animated-border-card w-full">
+            <div className="relative z-10 h-full rounded-2xl bg-gray-900/70 p-6 sm:p-8 md:p-10 backdrop-blur flex flex-col">
               <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                 Welcome to my Portfolio
               </h1>
@@ -124,86 +124,86 @@ export default async function Home() {
             </div>
           </div>
 
-          <div id="contact-card" className="animated-border-card">
-            <div className="relative z-10 h-full rounded-2xl bg-gray-900/70 p-8 md:p-10 backdrop-blur flex flex-col">
+          <div id="contact-card" className="animated-border-card w-full">
+            <div className="relative z-10 h-full rounded-2xl bg-gray-900/70 p-6 sm:p-8 md:p-10 backdrop-blur flex flex-col">
               <h2 className="text-2xl font-semibold text-white mb-6">Contact & Profiles</h2>
               <div className="space-y-4 text-sm">
-                <div className="flex items-start justify-between gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6">
                   <span className="text-gray-400 uppercase tracking-widest text-xs">Location</span>
-                  <span className="text-gray-200 inline-flex items-center gap-2">
+                  <span className="text-gray-200 inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
                     <FaMapMarkerAlt className="text-blue-300" />
                     Ajman, UAE
                   </span>
                 </div>
-                <div className="flex items-start justify-between gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6">
                   <span className="text-gray-400 uppercase tracking-widest text-xs">Phone Number</span>
-                  <a href="tel:+971509669311" className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2">
+                  <a href="tel:+971509669311" className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
                     <FaPhoneAlt />
                     +971 50 966 9311
                   </a>
                 </div>
-                <div className="flex items-start justify-between gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6">
                   <span className="text-gray-400 uppercase tracking-widest text-xs">Email</span>
-                  <a href="mailto:ai.omar.rehan@gmail.com" className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2">
+                  <a href="mailto:ai.omar.rehan@gmail.com" className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
                     <FaEnvelope />
                     ai.omar.rehan@gmail.com
                   </a>
                 </div>
-                <div className="flex items-start justify-between gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6">
                   <span className="text-gray-400 uppercase tracking-widest text-xs">GitHub</span>
                   <a
                     href="https://github.com/AIOmarRehan"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2"
+                    className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
                   >
                     <FaGithub />
                     github.com/AIOmarRehan
                   </a>
                 </div>
-                <div className="flex items-start justify-between gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6">
                   <span className="text-gray-400 uppercase tracking-widest text-xs">LinkedIn</span>
                   <a
                     href="https://linkedin.com/in/omar-rehan-47b98636a"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2"
+                    className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
                   >
                     <FaLinkedin />
                     linkedin.com/in/omar-rehan-47b98636a
                   </a>
                 </div>
-                <div className="flex items-start justify-between gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6">
                   <span className="text-gray-400 uppercase tracking-widest text-xs">Kaggle</span>
                   <a
                     href="https://kaggle.com/aiomarrehan"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2"
+                    className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
                   >
                     <SiKaggle />
                     kaggle.com/aiomarrehan
                   </a>
                 </div>
-                <div className="flex items-start justify-between gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6">
                   <span className="text-gray-400 uppercase tracking-widest text-xs">HuggingFace</span>
                   <a
                     href="https://huggingface.co/AIOmarRehan"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2"
+                    className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
                   >
                     <SiHuggingface />
                     huggingface.co/AIOmarRehan
                   </a>
                 </div>
-                <div className="flex items-start justify-between gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6">
                   <span className="text-gray-400 uppercase tracking-widest text-xs">Medium</span>
                   <a
                     href="https://medium.com/@ai.omar.rehan"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2"
+                    className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
                   >
                     <SiMedium />
                     medium.com/@ai.omar.rehan
@@ -223,15 +223,15 @@ export default async function Home() {
         </div>
         
         {projects.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
             {projects.map((p: any, idx: number) => (
               <div
                 key={String(p.id)}
-                className="group hover-scale p-6 bg-gray-800/50 backdrop-blur border border-gray-700 rounded-xl hover:border-blue-500 transition duration-300 flex flex-col w-full"
+                className="group hover-scale p-5 sm:p-6 bg-gray-800/50 backdrop-blur border border-gray-700 rounded-xl hover:border-blue-500 transition duration-300 flex flex-col w-full"
                 style={{ animationDelay: `${idx * 0.1}s` }}
               >
                 {p.image && (
-                  <div className="mb-4 rounded-lg overflow-hidden h-48">
+                  <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48">
                     <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
                   </div>
                 )}
