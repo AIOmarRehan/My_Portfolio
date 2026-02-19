@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🌐 AI Engineer Portfolio
 
 A secure, full-stack portfolio website built with **Next.js + TypeScript + Tailwind**, featuring:
@@ -174,3 +175,7 @@ MIT
 
 **Ready to deploy?** Check out [DEPLOYMENT.md](DEPLOYMENT.md) for a complete setup guide.
 
+=======
+# my-portfolio
+Full-stack AI portfolio website built with React and Next.js (App Router), TypeScript, Tailwind CSS, and Supabase. Features a secure admin dashboard with authentication and dynamic CRUD functionality for managing projects, experience, certifications, and articles.
+>>>>>>> 4dc289687c32d4987cec11f4c5645c4defa9bfc5
