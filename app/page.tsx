@@ -4,6 +4,9 @@ import ScrollToContactButton from '../components/ScrollToContactButton'
 import { FaEnvelope, FaGithub, FaLinkedin, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa'
 import { SiHuggingface, SiKaggle, SiMedium } from 'react-icons/si'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default async function Home() {
   let projects: any[] = []
   let experiences: any[] = []
