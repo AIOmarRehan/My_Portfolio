@@ -110,6 +110,9 @@ Environment variables configured securely in production.
 Omar Rehan
 AI & Full-Stack Engineer
 
-GitHub: [https://github.com/AIOmarRehan](https://github.com/AIOmarRehan)
-LinkedIn: [https://linkedin.com/in/omar-rehan-47b98636a](https://linkedin.com/in/omar-rehan-47b98636a)
-Portfolio: [https://omar-rehan.vercel.app](https://omar-rehan.vercel.app)
+Portfolio: [My Portfolio App](https://omar-rehan.vercel.app)
+LinkedIn: [My LinkedIn](https://linkedin.com/in/omar-rehan-47b98636a)
+GitHub: [My GitHub](https://github.com/AIOmarRehan)
+HuggingFace: [My HuggingFace](https://huggingface.co/AIOmarRehan)
+Kaggle: [My Kaggle](https://www.kaggle.com/aiomarrehan)
+Medium: [My Medium](https://medium.com/@ai.omar.rehan)
