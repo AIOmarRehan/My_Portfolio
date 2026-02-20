@@ -272,7 +272,7 @@ export default function AdminProjectsPage() {
                 <div className="w-24 h-24 bg-gray-100 rounded flex items-center justify-center text-sm text-gray-500">No Image</div>
               )}
               <div>
-                <h3 className="font-semibold">{proj.title}</h3>
+                <h3 className="font-semibold text-black">{proj.title}</h3>
                 {proj.description && <p className="text-gray-600 text-sm">{proj.description}</p>}
                 {proj.tags && proj.tags.length > 0 && (
                   <div className="mt-2 flex gap-1">
