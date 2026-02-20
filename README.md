@@ -1,181 +1,115 @@
-<<<<<<< HEAD
-# 🌐 AI Engineer Portfolio
+# Omar Rehan | Portfolio
 
-A secure, full-stack portfolio website built with **Next.js + TypeScript + Tailwind**, featuring:
-
-✅ **Public Portfolio** - Display projects, experience, certifications, and articles  
-✅ **Admin Panel** - Manage all content (create, edit, delete)  
-✅ **Secure Authentication** - Google OAuth (invite-only)  
-✅ **Free Stack** - Next.js (Vercel), MongoDB Atlas, 100% free  
-✅ **Production-Ready** - TypeScript, security best practices, environment variables  
+A modern, fully responsive AI & Full-Stack portfolio built with Next.js.
+The application includes a secure admin dashboard, real-time database integration, and production-ready authentication. Deployed on Vercel.
 
 ---
 
-## 🚀 Quick Start
+## Overview
 
-### 1. Install Dependencies
+This portfolio showcases:
 
-```bash
-npm install
-```
+* AI and Full-Stack projects (Machine Learning, Deep Learning, Web Apps)
+* Professional experience (date-sorted)
+* Certifications
+* Technical articles
+* A secure admin dashboard for real-time content management
 
-### 2. Set Up Environment Variables
-
-Copy the example file and fill in your values:
-
-```bash
-cp .env.local.example .env.local
-```
-
-Edit `.env.local`:
-- `MONGODB_URI`: Your MongoDB Atlas connection string
-- `NEXTAUTH_SECRET`: A random 32-character secret (`openssl rand -base64 32`)
-- `GOOGLE_CLIENT_ID` & `GOOGLE_CLIENT_SECRET`: From Google Cloud Console
-- `ADMIN_EMAIL`: Your email (only person who can access `/admin`)
-- `NEXTAUTH_URL`: `http://localhost:3000` (for local dev)
-
-### 3. Run Development Server
-
-```bash
-npm run dev
-```
-
-Visit http://localhost:3000
-
-### 4. Test Admin Panel
-
-Navigate to http://localhost:3000/admin and sign in with Google.
+The system is designed with scalability, security, and clean architecture in mind.
 
 ---
 
-## 📁 Project Structure
+## Tech Stack
 
-```
-app/
-├── page.tsx                 # Public homepage
-├── layout.tsx              # Root layout with Tailwind
-├── admin/                  # Admin pages (protected)
-│   ├── page.tsx           # Admin dashboard
-│   ├── projects/page.tsx  # Manage projects
-│   ├── experience/page.tsx
-│   ├── certificates/page.tsx
-│   └── articles/page.tsx
-├── api/
-│   ├── projects/route.ts   # Public API (GET only)
-│   ├── experience/route.ts
-│   ├── certificates/route.ts
-│   ├── articles/route.ts
-│   ├── admin/             # Admin APIs
-│   │   ├── projects/route.ts    # POST, PUT, DELETE
-│   │   ├── experience/route.ts
-│   │   ├── certificates/route.ts
-│   │   └── articles/route.ts
-│   └── auth/[...nextauth]/route.ts  # NextAuth handler
-lib/
-├── mongodb.ts             # Mongoose connection
-├── auth.ts               # NextAuth config (Google OAuth)
-models/
-├── Project.ts            # Mongoose schema
-├── Experience.ts
-├── Certificate.ts
-└── Article.ts
-```
+**Frontend**
+
+* Next.js (App Router)
+* React
+* TypeScript
+* Tailwind CSS
+
+**Backend**
+
+* Next.js API Routes
+* Node.js
+
+**Database**
+
+* Supabase (PostgreSQL, real-time)
+
+**Authentication**
+
+* NextAuth with Google OAuth
+* Environment-based admin access control
+* Middleware token validation
+
+**Deployment**
+
+* Vercel (CI/CD via GitHub)
+* Environment variable management
 
 ---
 
-## 🔐 Security Features
+## Key Features
 
-- **Authentication**: Google OAuth only (no password storage)
-- **Authorization**: JWT-based sessions; only `ADMIN_EMAIL` can access `/admin`
-- **Middleware**: Protects `/admin/*` routes and `/api/admin/*` endpoints
-- **Database**: All DB operations server-side only
-- **Environment Variables**: Secrets never committed to git
-
----
-
-## 📝 API Endpoints
-
-### Public (GET only)
-
-- `GET /api/projects` - List all projects
-- `GET /api/experience` - List all experience
-- `GET /api/certificates` - List all certificates
-- `GET /api/articles` - List all articles
-
-### Admin (Protected with JWT)
-
-- `POST /api/admin/projects` - Create project
-- `PUT /api/admin/projects` - Update project
-- `DELETE /api/admin/projects?id=...` - Delete project
-- *(Same pattern for experience, certificates, articles)*
+* Production-ready architecture
+* Secure admin-only CRUD operations
+* Real-time database updates
+* Google OAuth authentication
+* Protected API routes
+* Mobile-first responsive design
+* Clean neon-themed UI with smooth animations
+* Tag-based filtering system
+* Date-based sorting for experience and certifications
 
 ---
 
-## 🌍 Deploy to Vercel
+## Architecture Highlights
 
-See **[DEPLOYMENT.md](DEPLOYMENT.md)** for step-by-step instructions to:
-
-1. Set up MongoDB Atlas (free tier)
-2. Configure Google OAuth
-3. Deploy on Vercel (free hobby tier)
-4. Add environment variables
-
----
-
-## 📚 Tech Stack
-
-- **Frontend**: Next.js (App Router), React, TypeScript
-- **Styling**: Tailwind CSS
-- **Backend**: Next.js API Routes, Node.js
-- **Database**: MongoDB (Atlas), Mongoose ORM
-- **Auth**: NextAuth.js (Google OAuth)
-- **Deployment**: Vercel
-- **TypeScript**: Strict mode enabled
-
-**Total cost**: $0 (100% free tier)
+* Separation of public and protected API endpoints
+* Middleware-based route protection
+* ADMIN_EMAIL validation for role control
+* Dynamic rendering for live content updates
+* Modular component structure
+* Environment-based configuration
 
 ---
 
-## 🛠️ Development
+## Database Design
 
-### Scripts
+Tables:
 
-```bash
-npm run dev      # Start dev server
-npm run build    # Build for production
-npm run start    # Run production build
-npm run lint     # Run ESLint
-```
+* Projects
+* Experience
+* Certifications
+* Articles
 
-### Add New Content Model
-
-1. Create schema in `models/MyModel.ts`
-2. Add API route in `app/api/mymodel/route.ts` (public GET)
-3. Add admin API in `app/api/admin/mymodel/route.ts` (POST, PUT, DELETE)
-4. Add admin page in `app/admin/mymodel/page.tsx`
-5. Display on homepage in `app/page.tsx`
+Each table includes structured metadata, timestamps, and tag-based categorization for flexible filtering and sorting.
 
 ---
 
-## 🔗 Links
+## Security Considerations
 
-- [Next.js Docs](https://nextjs.org/docs)
-- [NextAuth.js Docs](https://next-auth.js.org)
-- [MongoDB Atlas Docs](https://docs.atlas.mongodb.com)
-- [Vercel Docs](https://vercel.com/docs)
-- [Tailwind CSS Docs](https://tailwindcss.com/docs)
-
----
-
-## 📄 License
-
-MIT
+* Environment variables for all secrets
+* Service role keys restricted to server-side use
+* Session validation on protected routes
+* Admin access restricted via OAuth email verification
+* Production environment route protection
 
 ---
 
-**Ready to deploy?** Check out [DEPLOYMENT.md](DEPLOYMENT.md) for a complete setup guide.
+## Deployment
 
-=======
-# my-portfolio
-Full-stack AI portfolio website built with React and Next.js (App Router), TypeScript, Tailwind CSS, and Supabase. Features a secure admin dashboard with authentication and dynamic CRUD functionality for managing projects, experience, certifications, and articles.
->>>>>>> 4dc289687c32d4987cec11f4c5645c4defa9bfc5
+Hosted on Vercel with automatic deployment from GitHub.
+Environment variables configured securely in production.
+
+---
+
+## Author
+
+Omar Rehan
+AI & Full-Stack Engineer
+
+GitHub: [https://github.com/AIOmarRehan](https://github.com/AIOmarRehan)
+LinkedIn: [https://linkedin.com/in/omar-rehan-47b98636a](https://linkedin.com/in/omar-rehan-47b98636a)
+Portfolio: [https://omar-rehan.vercel.app](https://omar-rehan.vercel.app)
