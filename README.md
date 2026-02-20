@@ -111,8 +111,13 @@ Omar Rehan
 AI & Full-Stack Engineer
 
 Portfolio: [My Portfolio App](https://omar-rehan.vercel.app)
+
 LinkedIn: [My LinkedIn](https://linkedin.com/in/omar-rehan-47b98636a)
+
 GitHub: [My GitHub](https://github.com/AIOmarRehan)
+
 HuggingFace: [My HuggingFace](https://huggingface.co/AIOmarRehan)
+
 Kaggle: [My Kaggle](https://www.kaggle.com/aiomarrehan)
+
 Medium: [My Medium](https://medium.com/@ai.omar.rehan)
