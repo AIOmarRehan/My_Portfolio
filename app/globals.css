@@ -2,10 +2,14 @@
 
 html {
   scrollbar-gutter: stable;
+  height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile */
 }
 
 body {
   overflow-x: hidden;
+  height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile */
 }
 
 section[id] {

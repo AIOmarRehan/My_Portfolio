@@ -4,8 +4,8 @@ import ScrollToContactButton from '../components/ScrollToContactButton'
 import { FaEnvelope, FaGithub, FaLinkedin, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa'
 import { SiHuggingface, SiKaggle, SiMedium } from 'react-icons/si'
 
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+export const dynamic = 'auto'
+export const revalidate = 60 // Cache for 60 seconds then revalidate
 
 export default async function Home() {
   let projects: any[] = []
@@ -228,7 +228,6 @@ export default async function Home() {
               <div
                 key={String(p.id)}
                 className="group hover-scale p-5 sm:p-6 bg-gray-800/50 backdrop-blur border border-gray-700 rounded-xl hover:border-blue-500 transition duration-300 flex flex-col w-full"
-                style={{ animationDelay: `${idx * 0.1}s` }}
               >
                 {p.image && (
                   <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48">
@@ -298,7 +297,6 @@ export default async function Home() {
               <div
                 key={String(exp.id)}
                 className="p-6 bg-gray-800/50 backdrop-blur border border-gray-700 rounded-xl hover:border-green-500 transition duration-300"
-                style={{ animationDelay: `${idx * 0.1}s` }}
               >
                 <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-3">
                   <div className="flex-1">
@@ -358,7 +356,6 @@ export default async function Home() {
               <div
                 key={String(cert.id)}
                 className="group hover-scale p-6 bg-gray-800/50 backdrop-blur border border-gray-700 rounded-xl hover:border-yellow-500 transition duration-300"
-                style={{ animationDelay: `${idx * 0.1}s` }}
               >
                 <div className="flex items-start gap-3 mb-3">
                   <div className="text-2xl">🏆</div>
@@ -425,7 +422,6 @@ export default async function Home() {
               <div
                 key={String(article.id)}
                 className="group hover-scale p-6 bg-gray-800/50 backdrop-blur border border-gray-700 rounded-xl hover:border-pink-500 transition duration-300 flex flex-col"
-                style={{ animationDelay: `${idx * 0.1}s` }}
               >
                 {article.image && (
                   <div className="mb-4 rounded-lg overflow-hidden h-48">

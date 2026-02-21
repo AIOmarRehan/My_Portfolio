@@ -157,10 +157,22 @@ export default function InteractiveBackground() {
       }
     }
 
-    // Window resize handler
+    // Window resize handler - ONLY resize canvas, don't reinitialize particles
+    let resizeTimeout: NodeJS.Timeout | null = null
     const handleResize = () => {
-      resizeCanvas()
-      initParticles()
+      // Only resize canvas dimensions, do NOT recreate particles
+      // This prevents the particle jumping issue on mobile
+      if (resizeTimeout) clearTimeout(resizeTimeout)
+      resizeTimeout = setTimeout(() => {
+        const newWidth = window.innerWidth
+        const newHeight = window.innerHeight
+        
+        if (canvas.width !== newWidth || canvas.height !== newHeight) {
+          canvas.width = newWidth
+          canvas.height = newHeight
+          // Particles stay the same - they just move within the new canvas
+        }
+      }, 200)
     }
 
     initParticles()
@@ -169,11 +181,12 @@ export default function InteractiveBackground() {
     if (hasFinePointer) {
       window.addEventListener('mousemove', handleMouseMove)
     }
-    window.addEventListener('resize', handleResize)
+    window.addEventListener('resize', handleResize, { passive: true })
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('resize', handleResize)
+      if (resizeTimeout) clearTimeout(resizeTimeout)
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
       }
@@ -227,8 +240,15 @@ export default function InteractiveBackground() {
     <>
       <canvas
         ref={canvasRef}
-        className="fixed top-0 left-0 w-full h-full -z-10"
-        style={{ background: 'radial-gradient(circle at center, #0f0c29, #302b63, #24243e)' }}
+        className="fixed top-0 left-0 w-screen h-screen -z-10"
+        style={{ 
+          background: 'radial-gradient(circle at center, #0f0c29, #302b63, #24243e)',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100dvh',
+        }}
       />
       {hasFinePointer ? (
         <div
