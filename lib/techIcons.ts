@@ -3,7 +3,7 @@
 
 export interface IconData {
   icon: string // Format: "package/IconName" e.g., "fa/FaPython"
-  color: string
+  color?: string
   label?: string
 }
 
@@ -101,7 +101,12 @@ export const techIcons: Record<string, IconData> = {
 
   // Brand platforms
   huggingface: { icon: 'si/SiHuggingface', color: '#ffd700', label: 'Hugging Face' },
-  medium: { icon: 'fa/FaMedium', color: '#000', label: 'Medium' }
+  medium: { icon: 'fa/FaMedium', color: '#000', label: 'Medium' },
+  
+  // Custom SVG Icons (from /public/svg-icons/)
+  // Just add .svg files and reference by filename!
+  gradio: { icon: 'svg/gradio', color: '#FF7C00', label: 'Gradio' },
+  antigravity: { icon: 'svg/antigravity-color', label: 'Antigravity' }
 }
 
 const normalizeTag = (tagName: string): string => {

@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import { getTagIcon } from '@/lib/techIcons'
+import SvgIcon from './icons/SvgIcon'
 import * as FaIcons from 'react-icons/fa'
 import * as Fa6Icons from 'react-icons/fa6'
 import * as SiIcons from 'react-icons/si'
@@ -40,6 +41,17 @@ export default function TechIcon({
 
   // Parse icon name to get package and icon name
   const [iconPackage, iconName] = iconData.icon.split('/')
+  
+  // Handle SVG icons
+  if (iconPackage === 'svg') {
+    return (
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+        <SvgIcon name={iconName} className="text-sm" style={{ color: iconData.color }} />
+        {showLabel && <span>{tagName}</span>}
+      </span>
+    )
+  }
+
   let IconComponent: any = null
 
   const iconLibraries: Record<string, Record<string, any>> = {

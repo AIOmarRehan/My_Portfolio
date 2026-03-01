@@ -1,6 +1,7 @@
 'use client'
 
 import { getTagIcon } from '@/lib/techIcons'
+import SvgIcon from './icons/SvgIcon'
 import * as FaIcons from 'react-icons/fa'
 import * as Fa6Icons from 'react-icons/fa6'
 import * as SiIcons from 'react-icons/si'
@@ -56,6 +57,8 @@ export default function TagBadge({ tag, variant = 'blue' }: TagBadgeProps) {
   const styles = variantStyles[variant]
 
   let IconComponent: any = null
+  let isSvgIcon = false
+  let svgIconName = ''
 
   const iconLibraries: Record<string, Record<string, any>> = {
     fa: FaIcons,
@@ -77,9 +80,16 @@ export default function TagBadge({ tag, variant = 'blue' }: TagBadgeProps) {
 
   if (iconData) {
     const [iconPackage, iconName] = iconData.icon.split('/')
-    const library = iconLibraries[iconPackage]
-    if (library) {
-      IconComponent = library[iconName]
+    
+    // Check if this is an SVG icon
+    if (iconPackage === 'svg') {
+      isSvgIcon = true
+      svgIconName = iconName
+    } else {
+      const library = iconLibraries[iconPackage]
+      if (library) {
+        IconComponent = library[iconName]
+      }
     }
   }
 
@@ -87,6 +97,13 @@ export default function TagBadge({ tag, variant = 'blue' }: TagBadgeProps) {
     <span
       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${styles.bg} ${styles.text} text-xs font-medium border ${styles.border} ${styles.hover} transition`}
     >
+      {isSvgIcon && svgIconName && (
+        <SvgIcon
+          name={svgIconName}
+          className="w-4 h-4 flex-shrink-0"
+          style={{ color: iconData?.color }}
+        />
+      )}
       {IconComponent && (
         <IconComponent
           className="w-4 h-4 flex-shrink-0"

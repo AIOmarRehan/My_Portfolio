@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { techIcons } from '@/lib/techIcons'
+import SvgIcon from './icons/SvgIcon'
 import * as FaIcons from 'react-icons/fa'
 import * as Fa6Icons from 'react-icons/fa6'
 import * as SiIcons from 'react-icons/si'
@@ -54,7 +55,7 @@ export default function TagSearchInput({
   const [isOpen, setIsOpen] = useState(false)
 
   const allTags = useMemo(() => {
-    const uniqueByLabel = new Map<string, { key: string; label: string; icon: string; color: string }>()
+    const uniqueByLabel = new Map<string, { key: string; label: string; icon: string; color?: string }>()
 
     Object.entries(techIcons).forEach(([key, data]) => {
       const label = data.label || key
@@ -91,14 +92,20 @@ export default function TagSearchInput({
     setIsOpen(false)
   }
 
-  const renderIcon = (iconRef: string, color: string) => {
+  const renderIcon = (iconRef: string, color?: string) => {
     const [iconPackage, iconName] = iconRef.split('/')
+    
+    // Handle SVG icons
+    if (iconPackage === 'svg') {
+      return <SvgIcon name={iconName} className="w-4 h-4" style={color ? { color } : undefined} />
+    }
+    
     const library = iconLibraries[iconPackage]
     const IconComponent = library ? library[iconName] : null
 
     if (!IconComponent) return null
 
-    return <IconComponent className="w-4 h-4" style={{ color }} />
+    return <IconComponent className="w-4 h-4" style={color ? { color } : undefined} />
   }
 
   return (
