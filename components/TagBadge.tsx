@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import { getTagIcon } from '@/lib/techIcons'
 import SvgIcon from './icons/SvgIcon'
 import * as FaIcons from 'react-icons/fa'
@@ -23,7 +24,7 @@ interface TagBadgeProps {
   variant?: 'blue' | 'pink' | 'yellow' | 'gray'
 }
 
-export default function TagBadge({ tag, variant = 'blue' }: TagBadgeProps) {
+function TagBadge({ tag, variant = 'blue' }: TagBadgeProps) {
   const iconData = getTagIcon(tag)
 
   // Define variant styles
@@ -114,3 +115,5 @@ export default function TagBadge({ tag, variant = 'blue' }: TagBadgeProps) {
     </span>
   )
 }
+
+export default memo(TagBadge)

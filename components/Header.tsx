@@ -1,10 +1,10 @@
 'use client'
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import Link from 'next/link'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
 
-export default function Header() {
+function HeaderComponent() {
   const [menuOpen, setMenuOpen] = useState(false)
   const { data: session } = useSession()
   const pathname = usePathname()
@@ -243,3 +243,5 @@ export default function Header() {
     </header>
   )
 }
+
+export default memo(HeaderComponent)

@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api
+
+Sitemap: https://domain.com/sitemap.xml
+
+# Crawl delay to reduce server load
+Crawl-delay: 1
