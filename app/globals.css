@@ -1,19 +1,32 @@
 @import "tailwindcss";
 
+/* Performance optimizations */
 html {
   scrollbar-gutter: stable;
   height: 100vh;
-  height: 100dvh; /* Dynamic viewport height for mobile */
+  height: 100dvh;
+  text-rendering: optimizeSpeed;
 }
 
 body {
   overflow-x: hidden;
   height: 100vh;
-  height: 100dvh; /* Dynamic viewport height for mobile */
+  height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 section[id] {
   scroll-margin-top: 96px;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
+}
+
+section[id].overflow-visible {
+  content-visibility: visible;
+  contain: none;
+  contain-intrinsic-size: auto;
+  overflow: visible;
 }
 
 /* Hide default cursor only on fine-pointer devices */
@@ -98,12 +111,16 @@ html, body {
 
 /* Hover scale */
 .hover-scale {
+  position: relative;
   transition: transform 0.3s ease;
+  overflow: visible !important;
+  will-change: transform;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .hover-scale:hover {
     transform: scale(1.05);
+    z-index: 10;
   }
 }
 
@@ -137,6 +154,8 @@ html, body {
 .animated-border-card {
   position: relative;
   border-radius: 1.25rem;
+  isolation: isolate;
+  overflow: visible;
 }
 
 .animated-border-card::before {
@@ -147,11 +166,12 @@ html, body {
   background: linear-gradient(45deg, #00ffff, #ff00ff, #00ffff);
   background-size: 200% 200%;
   animation: neonShift 3s linear infinite;
+  will-change: background-position;
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   mask-composite: exclude;
   padding: 3px;
   pointer-events: none;
-  z-index: -1;
+  z-index: 0;
 }

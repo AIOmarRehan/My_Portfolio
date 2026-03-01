@@ -10,6 +10,15 @@ import ScrollProgress from '@/components/ScrollProgress'
 export const metadata = {
   title: 'Omar Rehan | Portfolio',
   description: 'AI and Full-Stack Engineer specializing in Machine Learning and Deep Learning.',
+  keywords: ['AI Engineer', 'Machine Learning', 'Deep Learning', 'Full-Stack Developer', 'Omar Rehan'],
+  authors: [{ name: 'Omar Rehan' }],
+  creator: 'Omar Rehan',
+  publisher: 'Omar Rehan',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
@@ -21,6 +30,24 @@ export const metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
+    title: 'Omar Rehan',
+  },
+  verification: {
+    google: 'your-google-verification-code',
+  },
+  alternates: {
+    canonical: 'https://omar-rehan.vercel.app',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 }
 
@@ -37,13 +64,16 @@ export default function RootLayout({children}: {children: ReactNode}){
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         
-        {/* Preconnect to external services */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
+        {/* Preconnect to external services for faster loading */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://accounts.google.com" />
         
-        {/* Font optimizations */}
-        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+        {/* Optimized font loading with font-display swap */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        />
       </head>
       <body className="bg-gray-950 text-gray-100">
         <ScrollProgress />

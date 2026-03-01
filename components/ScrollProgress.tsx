@@ -41,9 +41,10 @@ export default function ScrollProgress() {
       style={{
         background: 'linear-gradient(90deg, #00ffff, #ff00ff)',
         boxShadow: '0 0 15px #00ffff, 0 0 30px #ff00ff',
-        transition: 'width 0.1s linear',
         height: '3px',
         willChange: 'width',
+        contain: 'layout style paint',
+        transform: 'translateZ(0)',
       }}
     />
   )
