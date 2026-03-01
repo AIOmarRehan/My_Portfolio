@@ -8,85 +8,34 @@ export const dynamic = 'force-static' // Force static generation for better perf
 export const revalidate = 3600 // Cache for 1 hour then revalidate in background
 
 export default async function Home() {
-  let projects: any[] = []
-  let experiences: any[] = []
-  let certificates: any[] = []
-  let articles: any[] = []
+  // Parallel database fetches for better performance
+  const [projectsData, experiencesData, articlesData, certificatesData] = await Promise.all([
+    supabase.from('projects').select('*').order('created_at', { ascending: false }),
+    supabase.from('experiences').select('*').order('start_date', { ascending: false }),
+    supabase.from('articles').select('*').order('created_at', { ascending: false }),
+    supabase.from('certificates').select('*').order('issue_date', { ascending: false })
+  ])
 
-  // Fetch projects directly from Supabase (server-side)
-  try {
-    const { data, error } = await supabase
-      .from('projects')
-      .select('*')
-      .order('created_at', { ascending: false })
-    
-    if (!error && data) {
-      projects = data
-    }
-  } catch (err) {
-    console.log('Failed to fetch projects:', err)
-  }
-
-  // Fetch experiences directly from Supabase (server-side)
-  try {
-    const { data, error } = await supabase
-      .from('experiences')
-      .select('*')
-      .order('start_date', { ascending: false })
-    
-    if (!error && data) {
-      // Sort: Present entries first, then by start_date descending
-      experiences = data.sort((a: any, b: any) => {
-        const aIsPresent = a.end_date === 'Present'
-        const bIsPresent = b.end_date === 'Present'
-        
-        if (aIsPresent && !bIsPresent) return -1
-        if (!aIsPresent && bIsPresent) return 1
-        
-        // If both are present or both have dates, sort by start_date descending
-        return new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
-      })
-    }
-  } catch (err) {
-    console.log('Failed to fetch experiences:', err)
-  }
-
-  // Fetch articles directly from Supabase (server-side)
-  try {
-    const { data, error } = await supabase
-      .from('articles')
-      .select('*')
-      .order('created_at', { ascending: false })
-    
-    if (!error && data) {
-      articles = data
-    }
-  } catch (err) {
-    console.log('Failed to fetch articles:', err)
-  }
-
-  // Fetch certificates directly from Supabase (server-side)
-  try {
-    const { data, error } = await supabase
-      .from('certificates')
-      .select('*')
-      .order('issue_date', { ascending: false })
-    
-    if (!error && data) {
-      // Sort by issue_date descending (newest first)
-      certificates = data.sort((a: any, b: any) => {
-        return new Date(b.issue_date).getTime() - new Date(a.issue_date).getTime()
-      })
-    }
-  } catch (err) {
-    console.log('Failed to fetch certificates:', err)
-  }
+  const projects = projectsData.data || []
+  const articles = articlesData.data || []
+  const certificates = certificatesData.data ? certificatesData.data.sort((a: any, b: any) => 
+    new Date(b.issue_date).getTime() - new Date(a.issue_date).getTime()
+  ) : []
+  
+  // Sort experiences: Present entries first, then by start_date descending
+  const experiences = experiencesData.data ? experiencesData.data.sort((a: any, b: any) => {
+    const aIsPresent = a.end_date === 'Present'
+    const bIsPresent = b.end_date === 'Present'
+    if (aIsPresent && !bIsPresent) return -1
+    if (!aIsPresent && bIsPresent) return 1
+    return new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
+  }) : []
 
   return (
     <div id="top" className="space-y-20">
       {/* Hero Section */}
-      <section className="py-20 fade-in">
-        <div className="grid gap-6 sm:gap-8 lg:grid-cols-2 items-stretch w-full">
+      <section className="py-20 fade-in overflow-visible">
+        <div className="grid gap-6 sm:gap-8 lg:grid-cols-2 items-stretch w-full overflow-visible">
           <div className="animated-border-card w-full">
             <div className="relative z-10 h-full rounded-2xl bg-gray-900/70 p-6 sm:p-8 md:p-10 backdrop-blur flex flex-col">
               <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
@@ -216,14 +165,14 @@ export default async function Home() {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="fade-in">
+      <section id="projects" className="fade-in overflow-visible">
         <div className="flex items-center gap-4 mb-12">
           <h2 className="text-4xl font-bold">Featured Projects</h2>
           <div className="flex-1 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded"></div>
         </div>
         
         {projects.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full overflow-visible">
             {projects.map((p: any, idx: number) => (
               <div
                 key={String(p.id)}
@@ -344,14 +293,14 @@ export default async function Home() {
       </section>
 
       {/* Certifications Section */}
-      <section id="certifications" className="fade-in">
+      <section id="certifications" className="fade-in overflow-visible">
         <div className="flex items-center gap-4 mb-12">
           <h2 className="text-4xl font-bold">Certifications</h2>
           <div className="flex-1 h-1 bg-gradient-to-r from-yellow-500 to-orange-600 rounded"></div>
         </div>
         
         {certificates.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-visible">
             {certificates.map((cert: any, idx: number) => (
               <div
                 key={String(cert.id)}
@@ -410,14 +359,14 @@ export default async function Home() {
       </section>
 
       {/* Articles Section */}
-      <section id="articles" className="fade-in">
+      <section id="articles" className="fade-in overflow-visible">
         <div className="flex items-center gap-4 mb-12">
           <h2 className="text-4xl font-bold">Published Articles</h2>
           <div className="flex-1 h-1 bg-gradient-to-r from-pink-500 to-rose-600 rounded"></div>
         </div>
         
         {articles.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-visible">
             {articles.map((article: any, idx: number) => (
               <div
                 key={String(article.id)}
