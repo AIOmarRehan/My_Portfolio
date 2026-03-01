@@ -45,7 +45,7 @@ export default function InteractiveBackground() {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d', { alpha: true })
     if (!ctx) return
 
     // Set canvas size
@@ -138,6 +138,7 @@ export default function InteractiveBackground() {
 
     // Mouse move handler
     const handleMouseMove = (e: MouseEvent) => {
+
       mouseRef.current.x = e.clientX
       mouseRef.current.y = e.clientY
 

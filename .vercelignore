@@ -1,0 +1,25 @@
+# Vercel Deployment Ignore File
+# Excludes unnecessary files from the build to reduce bundle size
+
+.git
+.gitignore
+.github
+.env
+.env.local
+.env.*.local
+node_modules
+npm-debug.log
+yarn-error.log
+.DS_Store
+*.md
+!README.md
+.next/cache
+.vercel
+coverage
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.env.development.local
+.env.test.local

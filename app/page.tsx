@@ -4,8 +4,8 @@ import ScrollToContactButton from '../components/ScrollToContactButton'
 import { FaEnvelope, FaGithub, FaLinkedin, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa'
 import { SiHuggingface, SiKaggle, SiMedium } from 'react-icons/si'
 
-export const dynamic = 'auto'
-export const revalidate = 60 // Cache for 60 seconds then revalidate
+export const dynamic = 'force-static' // Force static generation for better performance
+export const revalidate = 3600 // Cache for 1 hour then revalidate in background
 
 export default async function Home() {
   let projects: any[] = []
