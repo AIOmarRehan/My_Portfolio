@@ -1,0 +1,11 @@
+# Ignore video files to prevent committing large files to git
+# Videos are uploaded by admins through the admin panel
+*.mp4
+*.webm
+*.ogg
+*.mov
+*.avi
+*.mkv
+
+# Keep the .gitkeep file to track the folder
+!.gitkeep

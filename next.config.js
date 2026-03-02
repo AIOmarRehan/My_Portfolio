@@ -27,7 +27,7 @@ module.exports = {
   // Compression and headers for performance
   compress: true,
   poweredByHeader: false,
-  productionBrowserSourceMaps: true,
+  productionBrowserSourceMaps: false,
   generateEtags: true,
 
   // Turbopack configuration for Next.js 16

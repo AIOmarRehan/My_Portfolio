@@ -9,14 +9,16 @@ interface IProject {
   url?: string
   tags?: string[]
   image?: string
+  demo_video?: string
 }
 
 export default function AdminProjectsPage() {
   const [projects, setProjects] = useState<IProject[]>([])
   const [loading, setLoading] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [formData, setFormData] = useState({ title: '', description: '', url: '', tags: '', image: '' })
+  const [formData, setFormData] = useState({ title: '', description: '', url: '', tags: '', image: '', demo_video: '' })
   const [imageInputMethod, setImageInputMethod] = useState<'upload' | 'url'>('upload')
+  const [uploadingVideo, setUploadingVideo] = useState(false)
 
   useEffect(() => {
     fetchProjects()
@@ -51,7 +53,8 @@ export default function AdminProjectsPage() {
       description: formData.description,
       url: formData.url,
       tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
-      image: formData.image || ''
+      image: formData.image || '',
+      demo_video: formData.demo_video || ''
     }
 
     try {
@@ -60,11 +63,11 @@ export default function AdminProjectsPage() {
           method: 'PUT',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: editingId, updates: body, image: body.image })
+          body: JSON.stringify({ id: editingId, updates: body, image: body.image, demo_video: body.demo_video })
         })
         if (res.ok) {
           setEditingId(null)
-          setFormData({ title: '', description: '', url: '', tags: '', image: '' })
+          setFormData({ title: '', description: '', url: '', tags: '', image: '', demo_video: '' })
           setImageInputMethod('upload')
           fetchProjects()
         } else {
@@ -78,7 +81,7 @@ export default function AdminProjectsPage() {
           body: JSON.stringify(body)
         })
         if (res.ok) {
-          setFormData({ title: '', description: '', url: '', tags: '', image: '' })
+          setFormData({ title: '', description: '', url: '', tags: '', image: '', demo_video: '' })
           setImageInputMethod('upload')
           fetchProjects()
         } else {
@@ -108,7 +111,8 @@ export default function AdminProjectsPage() {
       description: proj.description || '',
       url: proj.url || '',
       tags: (proj.tags || []).join(', '),
-      image: imageValue
+      image: imageValue,
+      demo_video: proj.demo_video || ''
     })
   }
 
@@ -134,6 +138,49 @@ export default function AdminProjectsPage() {
       e.target.value = ''
     }
     reader.readAsDataURL(file)
+  }
+
+  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file size (max 50MB)
+    const maxSize = 50 * 1024 * 1024
+    if (file.size > maxSize) {
+      const sizeMB = (file.size / (1024 * 1024)).toFixed(2)
+      alert(`Video file is ${sizeMB}MB. Maximum allowed is 50MB. Please use a smaller file or compress the video.`)
+      e.target.value = ''
+      return
+    }
+
+    setUploadingVideo(true)
+    try {
+      const formData = new FormData()
+      formData.append('video', file)
+
+      const res = await fetch('/api/admin/upload-video', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData
+      })
+
+      if (!res.ok) {
+        const error = await res.json()
+        alert(`Failed to upload video: ${error.error || 'Unknown error'}`)
+        e.target.value = ''
+        return
+      }
+
+      const data = await res.json()
+      setFormData(prev => ({ ...prev, demo_video: data.path }))
+      alert('Video uploaded successfully!')
+    } catch (err) {
+      console.error('Video upload error:', err)
+      alert('Failed to upload video. Please try again.')
+      e.target.value = ''
+    } finally {
+      setUploadingVideo(false)
+    }
   }
 
   return (
@@ -240,6 +287,56 @@ export default function AdminProjectsPage() {
             }} />
           )}
         </div>
+
+        {/* Video upload section */}
+        <div>
+          <label className="block font-medium mb-2 text-black">Demo Video (Optional)</label>
+          <p className="text-xs text-gray-600 mb-3">Upload a video to showcase your project. Videos are stored as static assets for fast loading. Max 50MB. Supported: MP4, WebM, OGG, MOV.</p>
+          
+          <div className="flex items-center gap-4">
+            <label htmlFor="project-video" className="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded cursor-pointer hover:opacity-90 disabled:opacity-50">
+              {uploadingVideo ? 'Uploading...' : 'Choose Video'}
+            </label>
+            <input 
+              id="project-video" 
+              type="file" 
+              accept="video/mp4,video/webm,video/ogg,video/quicktime" 
+              onChange={handleVideoUpload} 
+              disabled={uploadingVideo}
+              className="hidden" 
+            />
+            <span className="text-sm text-gray-700">
+              {formData.demo_video ? `✓ ${formData.demo_video.split('/').pop()}` : 'No video chosen'}
+            </span>
+            {formData.demo_video && (
+              <button
+                type="button"
+                onClick={() => setFormData(prev => ({ ...prev, demo_video: '' }))}
+                className="text-xs text-red-600 hover:text-red-800"
+              >
+                Remove
+              </button>
+            )}
+          </div>
+
+          {/* Video preview */}
+          {formData.demo_video && (
+            <video 
+              src={formData.demo_video} 
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="mt-3 max-h-60 rounded border border-gray-300"
+              onError={(e) => {
+                console.error('Video preview error')
+              }}
+            >
+              Your browser does not support the video tag.
+            </video>
+          )}
+        </div>
+
         <button
           type="submit"
           disabled={loading}
@@ -252,7 +349,7 @@ export default function AdminProjectsPage() {
             type="button"
             onClick={() => {
               setEditingId(null)
-              setFormData({ title: '', description: '', url: '', tags: '', image: '' })
+              setFormData({ title: '', description: '', url: '', tags: '', image: '', demo_video: '' })
               setImageInputMethod('upload')
             }}
             className="ml-2 px-4 py-2 bg-gray-400 text-white rounded"
@@ -266,10 +363,12 @@ export default function AdminProjectsPage() {
         {projects.map((proj) => (
           <div key={String(proj.id)} className="p-4 bg-white rounded-lg shadow-sm border border-gray-200 flex justify-between items-start gap-4">
             <div className="flex gap-4 items-start">
-              {proj.image ? (
-                <img src={proj.image} alt={proj.title} className="w-24 h-24 object-cover rounded" />
+              {proj.demo_video ? (
+                <video src={proj.demo_video} className="w-32 h-24 object-cover rounded" autoPlay muted loop playsInline />
+              ) : proj.image ? (
+                <img src={proj.image} alt={proj.title} className="w-32 h-24 object-cover rounded" />
               ) : (
-                <div className="w-24 h-24 bg-gray-100 rounded flex items-center justify-center text-sm text-gray-500">No Image</div>
+                <div className="w-32 h-24 bg-gray-100 rounded flex items-center justify-center text-sm text-gray-500">No Media</div>
               )}
               <div>
                 <h3 className="font-semibold text-black">{proj.title}</h3>
