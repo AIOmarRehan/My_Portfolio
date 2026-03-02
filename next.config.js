@@ -36,9 +36,6 @@ module.exports = {
   productionBrowserSourceMaps: false,
   generateEtags: true,
 
-  // Output optimization
-  output: 'standalone',
-
   // Turbopack configuration
   turbopack: {
     resolveAlias: {
