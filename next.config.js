@@ -27,12 +27,21 @@ module.exports = {
   // Compression and headers for performance
   compress: true,
   poweredByHeader: false,
-  productionBrowserSourceMaps: false,
+  productionBrowserSourceMaps: true,
   generateEtags: true,
 
   // Turbopack configuration for Next.js 16
   turbopack: {
     resolveAlias: {},
+  },
+
+  // Disable Turbopack for production - use webpack instead
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '10mb'
+    },
+    optimizePackageImports: ['react-icons', '@supabase/supabase-js'],
+    optimizeCss: true,
   },
 
   // Headers for caching and security
