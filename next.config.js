@@ -46,19 +46,23 @@ module.exports = {
 
   // Webpack optimizations for production
   webpack: (config, { isServer, dev }) => {
+    // Disable source maps and minification of debug info
+    config.devtool = false
+    
     if (!dev && !isServer) {
-      // Optimize bundle size
+      // Optimize bundle size for production
       config.optimization = {
         ...config.optimization,
         moduleIds: 'deterministic',
-        runtimeChunk: false, // Prevent runtime chunk creation
+        runtimeChunk: false,
+        usedExports: true,
+        minimize: true,
+        concatenateModules: false,
         splitChunks: {
           chunks: 'all',
           cacheGroups: {
-            // Separate vendor chunks
             default: false,
             vendors: false,
-            // Framework chunk (React, Next.js)
             framework: {
               name: 'framework',
               chunks: 'all',
@@ -67,28 +71,24 @@ module.exports = {
               enforce: true,
               reuseExistingChunk: true,
             },
-            // Supabase chunk
             supabase: {
               name: 'supabase',
               test: /[\\/]node_modules[\\/]@supabase[\\/]/,
               priority: 35,
               reuseExistingChunk: true,
             },
-            // Auth chunk (next-auth)
             auth: {
               name: 'auth',
               test: /[\\/]node_modules[\\/]next-auth[\\/]/,
               priority: 33,
               reuseExistingChunk: true,
             },
-            // Icons chunk - separate to avoid loading all icons
             icons: {
               name: 'icons',
               test: /[\\/]node_modules[\\/]react-icons[\\/]/,
               priority: 30,
               reuseExistingChunk: true,
             },
-            // Commons chunk for shared code
             commons: {
               name: 'commons',
               minChunks: 2,
@@ -96,7 +96,6 @@ module.exports = {
               reuseExistingChunk: true,
               enforce: true,
             },
-            // Lib chunk for other libraries
             lib: {
               test: /[\\/]node_modules[\\/]/,
               name: 'lib',
@@ -104,16 +103,11 @@ module.exports = {
               reuseExistingChunk: true,
             },
           },
-          maxInitialRequests: 10,
-          maxAsyncRequests: 10,
+          maxInitialRequests: 25,
+          maxAsyncRequests: 25,
           minSize: 20000,
         },
       }
-    }
-    
-    // Disable source maps entirely in production to prevent .map files
-    if (!dev) {
-      config.devtool = false
     }
     
     return config
