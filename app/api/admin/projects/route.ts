@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
       url: body.url || '',
       tags: body.tags || [],
       image: body.image || null,
+      demo_video: body.demo_video || null,
     }
 
     const { data, error } = await supabase.from('projects').insert([payload]).select().single()
@@ -45,6 +46,7 @@ export async function PUT(req: NextRequest) {
 
     const updates: any = body.updates || {}
     if (body.image) updates.image = body.image
+    if (body.demo_video !== undefined) updates.demo_video = body.demo_video
 
     const { data, error } = await supabase.from('projects').update(updates).eq('id', body.id).select().single()
     if (error) {

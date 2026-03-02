@@ -178,11 +178,25 @@ export default async function Home() {
                 key={String(p.id)}
                 className="group hover-scale p-5 sm:p-6 bg-gray-800/50 backdrop-blur border border-gray-700 rounded-xl hover:border-blue-500 transition duration-300 flex flex-col w-full"
               >
-                {p.image && (
+                {p.demo_video ? (
+                  <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48">
+                    <video 
+                      src={p.demo_video} 
+                      className="w-full h-full object-cover"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                ) : p.image ? (
                   <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48">
                     <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
                   </div>
-                )}
+                ) : null}
                 
               <div className="mb-4">
                 <h3 className="text-xl font-semibold group-hover:text-blue-400 transition duration-300 break-words">
