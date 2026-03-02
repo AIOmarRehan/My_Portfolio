@@ -6,6 +6,7 @@ import AppSessionProvider from '@/components/SessionProvider'
 import DynamicInteractiveBackground from '@/components/DynamicInteractiveBackground'
 import ScrollToTop from '@/components/ScrollToTop'
 import ScrollProgress from '@/components/ScrollProgress'
+import LoadingScreen from '@/components/LoadingScreen'
 
 export const metadata = {
   title: 'Omar Rehan | Portfolio',
@@ -76,6 +77,7 @@ export default function RootLayout({children}: {children: ReactNode}){
         />
       </head>
       <body className="bg-gray-950 text-gray-100">
+        <LoadingScreen />
         <ScrollProgress />
         <AppSessionProvider>
           <DynamicInteractiveBackground />
