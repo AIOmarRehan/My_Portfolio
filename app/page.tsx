@@ -1,6 +1,7 @@
 import { supabase } from '../lib/supabaseServer'
 import TagBadge from '../components/TagBadge'
 import ScrollToContactButton from '../components/ScrollToContactButton'
+import LazyVideo from '../components/LazyVideo'
 import { FaEnvelope, FaGithub, FaLinkedin, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa'
 import { SiHuggingface, SiKaggle, SiMedium } from 'react-icons/si'
 
@@ -180,21 +181,15 @@ export default async function Home() {
               >
                 {p.demo_video ? (
                   <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48">
-                    <video 
-                      src={p.demo_video} 
-                      className="w-full h-full object-cover"
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      preload="metadata"
-                    >
-                      Your browser does not support the video tag.
-                    </video>
+                    <LazyVideo
+                      src={p.demo_video}
+                      alt={`${p.title} demo`}
+                      className="w-full h-full"
+                    />
                   </div>
                 ) : p.image ? (
                   <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48">
-                    <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
+                    <img src={p.image} alt={p.title} className="w-full h-full object-cover" loading="lazy" />
                   </div>
                 ) : null}
                 

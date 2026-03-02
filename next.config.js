@@ -15,38 +15,114 @@ module.exports = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
-  // Code splitting & optimization
+  // Experimental features - FIXED: No duplicate keys
   experimental: {
     serverActions: {
       bodySizeLimit: '10mb'
     },
-    optimizePackageImports: ['react-icons', '@supabase/supabase-js'],
+    // Optimize specific packages to reduce bundle size
+    optimizePackageImports: [
+      'react-icons',
+      '@supabase/supabase-js',
+      'react-icons/fa',
+      'react-icons/si'
+    ],
     optimizeCss: true,
   },
 
-  // Compression and headers for performance
+  // Compression and performance
   compress: true,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
   generateEtags: true,
 
-  // Turbopack configuration for Next.js 16
+  // Output optimization
+  output: 'standalone',
+
+  // Turbopack configuration
   turbopack: {
-    resolveAlias: {},
+    resolveAlias: {
+      // Optimize common imports
+      '@': './src',
+    },
   },
 
-  // Disable Turbopack for production - use webpack instead
-  experimental: {
-    serverActions: {
-      bodySizeLimit: '10mb'
-    },
-    optimizePackageImports: ['react-icons', '@supabase/supabase-js'],
-    optimizeCss: true,
+  // Webpack optimizations for production
+  webpack: (config, { isServer, dev }) => {
+    if (!dev && !isServer) {
+      // Optimize bundle size
+      config.optimization = {
+        ...config.optimization,
+        moduleIds: 'deterministic',
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            // Separate vendor chunks
+            default: false,
+            vendors: false,
+            // Framework chunk (React, Next.js)
+            framework: {
+              name: 'framework',
+              chunks: 'all',
+              test: /[\\/]node_modules[\\/](react|react-dom|next)[\\/]/,
+              priority: 40,
+              enforce: true,
+            },
+            // Supabase chunk
+            supabase: {
+              name: 'supabase',
+              test: /[\\/]node_modules[\\/]@supabase[\\/]/,
+              priority: 35,
+              reuseExistingChunk: true,
+            },
+            // Auth chunk (next-auth)
+            auth: {
+              name: 'auth',
+              test: /[\\/]node_modules[\\/]next-auth[\\/]/,
+              priority: 33,
+              reuseExistingChunk: true,
+            },
+            // Icons chunk - separate to avoid loading all icons
+            icons: {
+              name: 'icons',
+              test: /[\\/]node_modules[\\/]react-icons[\\/]/,
+              priority: 30,
+              reuseExistingChunk: true,
+            },
+            // Commons chunk for shared code
+            commons: {
+              name: 'commons',
+              minChunks: 2,
+              priority: 20,
+              reuseExistingChunk: true,
+            },
+            // Lib chunk for other libraries
+            lib: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'lib',
+              priority: 10,
+              reuseExistingChunk: true,
+            },
+          },
+          maxInitialRequests: 10,
+          maxAsyncRequests: 10,
+          minSize: 20000,
+        },
+      }
+    }
+    return config
   },
 
   // Headers for caching and security
   async headers() {
     return [
+      // Cache static assets aggressively
+      {
+        source: '/demos/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
       {
         source: '/svg-icons/:path*',
         headers: [
@@ -71,6 +147,7 @@ module.exports = {
           { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
         ],
       },
+      // Security headers
       {
         source: '/:path*',
         headers: [

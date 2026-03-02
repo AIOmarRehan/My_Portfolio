@@ -1,9 +1,11 @@
+# *
 User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /api
 
-Sitemap: https://domain.com/sitemap.xml
+# Host
+Host: https://omar-rehan.vercel.app
 
-# Crawl delay to reduce server load
-Crawl-delay: 1
+# Sitemaps
+Sitemap: https://omar-rehan.vercel.app/sitemap.xml

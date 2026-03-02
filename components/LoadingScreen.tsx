@@ -7,118 +7,104 @@ export default function LoadingScreen() {
   const [fadeOut, setFadeOut] = useState(false)
 
   useEffect(() => {
-    // Check if page is already loaded
+    // Minimize loading screen impact on FCP
+    // Check if page is already loaded (for fast connections)
     if (document.readyState === 'complete') {
       handleLoadComplete()
-    } else {
-      // Wait for all resources to load
-      window.addEventListener('load', handleLoadComplete)
+      return
     }
 
-    // Fallback: hide after 3 seconds max
+    // Set aggressive timeout to not block FCP
+    // Reduced from 3000ms to 800ms for better performance
     const fallbackTimeout = setTimeout(() => {
       handleLoadComplete()
-    }, 3000)
+    }, 800)
+
+    // Listen for actual load event
+    const handleLoad = () => {
+      clearTimeout(fallbackTimeout)
+      handleLoadComplete()
+    }
+
+    window.addEventListener('load', handleLoad)
 
     return () => {
-      window.removeEventListener('load', handleLoadComplete)
+      window.removeEventListener('load', handleLoad)
       clearTimeout(fallbackTimeout)
     }
   }, [])
 
   const handleLoadComplete = () => {
     setFadeOut(true)
-    // Remove from DOM after fade animation completes
+    // Quick fade animation (reduced from 600ms to 300ms)
     setTimeout(() => {
       setIsLoading(false)
-    }, 600)
+    }, 300)
   }
 
+  // Don't render if loading is complete
   if (!isLoading) return null
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-black transition-opacity duration-500 ${
+      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-black transition-opacity duration-300 ${
         fadeOut ? 'opacity-0' : 'opacity-100'
       }`}
+      aria-hidden="true"
     >
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(0, 255, 255, 0.15) 1px, transparent 0)',
-          backgroundSize: '40px 40px'
-        }} />
+      {/* Simplified background pattern - less CPU intensive */}
+      <div className="absolute inset-0 opacity-5">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              'radial-gradient(circle at 2px 2px, rgba(0, 255, 255, 0.1) 1px, transparent 0)',
+            backgroundSize: '50px 50px',
+          }}
+        />
       </div>
 
-      {/* Loading content */}
-      <div className="relative flex flex-col items-center gap-8">
-        {/* Icon with glow effect */}
+      {/* Simplified loading content */}
+      <div className="relative flex flex-col items-center gap-6">
+        {/* Lightweight icon with minimal animation */}
         <div className="relative">
-          {/* Outer rotating ring */}
-          <div className="absolute inset-0 -m-6">
-            <div className="loading-spinner w-32 h-32" />
+          {/* Simplified rotating ring - single element */}
+          <div className="absolute inset-0 -m-4">
+            <div className="loading-spinner w-24 h-24" />
           </div>
 
-          {/* Icon container with glow */}
-          <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 p-3 shadow-2xl">
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-pink-500/20 blur-xl" />
-            <div className="relative w-full h-full">
-              <Image
-                src="/favicon-128x128.png"
-                alt="Loading"
-                width={80}
-                height={80}
-                className="w-full h-full object-contain"
-                priority
-              />
-            </div>
+          {/* Icon container */}
+          <div className="relative w-16 h-16 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 p-2 shadow-xl">
+            <Image
+              src="/favicon-128x128.png"
+              alt=""
+              width={64}
+              height={64}
+              className="w-full h-full object-contain"
+              priority
+            />
           </div>
         </div>
 
-        {/* Loading text with animation */}
-        <div className="flex flex-col items-center gap-2">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-semibold bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent">
-              Loading
-            </span>
-            <div className="flex gap-1">
-              <span className="loading-dot">.</span>
-              <span className="loading-dot" style={{ animationDelay: '0.2s' }}>.</span>
-              <span className="loading-dot" style={{ animationDelay: '0.4s' }}>.</span>
-            </div>
-          </div>
-          <p className="text-sm text-gray-400">Preparing your experience</p>
-        </div>
+        {/* Minimal loading text */}
+        <div className="text-sm text-gray-400 opacity-80">Loading...</div>
       </div>
 
       <style jsx>{`
         .loading-spinner {
-          border: 3px solid transparent;
-          border-top: 3px solid #00ffff;
-          border-right: 3px solid #ff00ff;
+          border: 2px solid transparent;
+          border-top: 2px solid #00ffff;
           border-radius: 50%;
-          animation: spin 1.5s linear infinite;
-          box-shadow: 
-            0 0 20px rgba(0, 255, 255, 0.5),
-            0 0 40px rgba(255, 0, 255, 0.3);
+          animation: spin 1s linear infinite;
         }
 
         @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-
-        .loading-dot {
-          color: #00ffff;
-          font-size: 1.5rem;
-          animation: blink 1.4s infinite;
-          text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
-        }
-
-        @keyframes blink {
-          0%, 20% { opacity: 0; }
-          50% { opacity: 1; }
-          100% { opacity: 0; }
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
         }
       `}</style>
     </div>
