@@ -51,6 +51,7 @@ module.exports = {
       config.optimization = {
         ...config.optimization,
         moduleIds: 'deterministic',
+        runtimeChunk: false, // Prevent runtime chunk creation
         splitChunks: {
           chunks: 'all',
           cacheGroups: {
@@ -64,6 +65,7 @@ module.exports = {
               test: /[\\/]node_modules[\\/](react|react-dom|next)[\\/]/,
               priority: 40,
               enforce: true,
+              reuseExistingChunk: true,
             },
             // Supabase chunk
             supabase: {
@@ -92,6 +94,7 @@ module.exports = {
               minChunks: 2,
               priority: 20,
               reuseExistingChunk: true,
+              enforce: true,
             },
             // Lib chunk for other libraries
             lib: {
@@ -107,6 +110,12 @@ module.exports = {
         },
       }
     }
+    
+    // Disable source maps entirely in production to prevent .map files
+    if (!dev) {
+      config.devtool = false
+    }
+    
     return config
   },
 
