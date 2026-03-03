@@ -17,11 +17,11 @@ export default async function Home() {
       .order('created_at', { ascending: false }),
     supabase
       .from('experiences')
-      .select('id,company,position,start_date,end_date,description,highlights,tags')
+      .select('id,title,organization,location,start_date,end_date,description,highlights,tags')
       .order('start_date', { ascending: false }),
     supabase
       .from('articles')
-      .select('id,title,description,url,author,created_at,tags')
+      .select('id,title,description,image,url,author,created_at,tags')
       .order('created_at', { ascending: false }),
     supabase
       .from('certificates')
