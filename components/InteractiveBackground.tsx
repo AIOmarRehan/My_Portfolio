@@ -7,7 +7,31 @@ interface Particle {
   size: number
   speedX: number
   speedY: number
-  color: string
+  kind: 'primary' | 'secondary'
+}
+
+interface RGB {
+  r: number
+  g: number
+  b: number
+}
+
+const hexToRgb = (hex: string): RGB => {
+  const normalized = hex.replace('#', '')
+  const bigint = parseInt(normalized, 16)
+  return {
+    r: (bigint >> 16) & 255,
+    g: (bigint >> 8) & 255,
+    b: bigint & 255,
+  }
+}
+
+const mixColor = (from: RGB, to: RGB, t: number, alpha = 1) => {
+  const clamped = Math.max(0, Math.min(1, t))
+  const r = Math.round(from.r + (to.r - from.r) * clamped)
+  const g = Math.round(from.g + (to.g - from.g) * clamped)
+  const b = Math.round(from.b + (to.b - from.b) * clamped)
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
 
 export default function InteractiveBackground() {
@@ -19,10 +43,31 @@ export default function InteractiveBackground() {
   const mouseRef = useRef({ x: 0, y: 0, radius: 140 })
   const particlesRef = useRef<Particle[]>([])
   const animationRef = useRef<number | null>(null)
+  const darkModeTargetRef = useRef(false)
+  const darkModeProgressRef = useRef(0)
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  useEffect(() => {
+    if (!mounted) return
+    const updateDarkMode = () => {
+      darkModeTargetRef.current = document.documentElement.classList.contains('dark-mode')
+    }
+
+    updateDarkMode()
+
+    const observer = new MutationObserver(updateDarkMode)
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    })
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [mounted])
 
   useEffect(() => {
     if (!mounted) return
@@ -47,6 +92,27 @@ export default function InteractiveBackground() {
     const ctx = canvas.getContext('2d', { alpha: true })
     if (!ctx) return
 
+    const palettes = {
+      normal: {
+        gradient1: hexToRgb('#0f0c29'),
+        gradient2: hexToRgb('#302b63'),
+        gradient3: hexToRgb('#24243e'),
+        primary: hexToRgb('#00ffff'),
+        secondary: hexToRgb('#ff00ff'),
+        line: hexToRgb('#ff00ff'),
+        lineAlpha: 0.1,
+      },
+      dark: {
+        gradient1: hexToRgb('#020617'),
+        gradient2: hexToRgb('#030712'),
+        gradient3: hexToRgb('#000000'),
+        primary: hexToRgb('#93c5fd'),
+        secondary: hexToRgb('#e9d5ff'),
+        line: hexToRgb('#bae6fd'),
+        lineAlpha: 0.22,
+      },
+    }
+
     const resizeCanvas = () => {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
@@ -65,9 +131,36 @@ export default function InteractiveBackground() {
           size: Math.random() * 2 + 1,
           speedX: Math.random() * 1 - 0.5,
           speedY: Math.random() * 1 - 0.5,
-          color: Math.random() > 0.5 ? '#00ffff' : '#ff00ff',
+          kind: Math.random() > 0.5 ? 'primary' : 'secondary',
         })
       }
+    }
+
+    const drawBackground = (progress: number) => {
+      const gradient = ctx.createRadialGradient(
+        canvas.width * 0.5,
+        canvas.height * 0.5,
+        Math.max(canvas.width, canvas.height) * 0.08,
+        canvas.width * 0.5,
+        canvas.height * 0.5,
+        Math.max(canvas.width, canvas.height) * 0.75
+      )
+
+      gradient.addColorStop(
+        0,
+        mixColor(palettes.normal.gradient1, palettes.dark.gradient1, progress)
+      )
+      gradient.addColorStop(
+        0.55,
+        mixColor(palettes.normal.gradient2, palettes.dark.gradient2, progress)
+      )
+      gradient.addColorStop(
+        1,
+        mixColor(palettes.normal.gradient3, palettes.dark.gradient3, progress)
+      )
+
+      ctx.fillStyle = gradient
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
     }
 
     const updateParticle = (particle: Particle) => {
@@ -89,17 +182,24 @@ export default function InteractiveBackground() {
       }
     }
 
-    const drawParticle = (particle: Particle) => {
+    const drawParticle = (particle: Particle, progress: number) => {
+      const normalColor = particle.kind === 'primary' ? palettes.normal.primary : palettes.normal.secondary
+      const darkColor = particle.kind === 'primary' ? palettes.dark.primary : palettes.dark.secondary
+      const particleColor = mixColor(normalColor, darkColor, progress)
+
       ctx.beginPath()
       ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
-      ctx.fillStyle = particle.color
+      ctx.fillStyle = particleColor
       ctx.shadowBlur = 15
-      ctx.shadowColor = particle.color
+      ctx.shadowColor = particleColor
       ctx.fill()
       ctx.shadowBlur = 0
     }
 
-    const connect = () => {
+    const connect = (progress: number) => {
+      const lineAlpha = palettes.normal.lineAlpha + (palettes.dark.lineAlpha - palettes.normal.lineAlpha) * progress
+      const lineColor = mixColor(palettes.normal.line, palettes.dark.line, progress, lineAlpha)
+
       for (let a = 0; a < particlesRef.current.length; a++) {
         for (let b = a; b < particlesRef.current.length; b++) {
           const dx = particlesRef.current[a].x - particlesRef.current[b].x
@@ -107,7 +207,7 @@ export default function InteractiveBackground() {
           const distance = dx * dx + dy * dy
 
           if (distance < 9000) {
-            ctx.strokeStyle = 'rgba(255, 0, 255, 0.1)'
+            ctx.strokeStyle = lineColor
             ctx.lineWidth = 1
             ctx.beginPath()
             ctx.moveTo(particlesRef.current[a].x, particlesRef.current[a].y)
@@ -119,14 +219,20 @@ export default function InteractiveBackground() {
     }
 
     const animate = () => {
+      const target = darkModeTargetRef.current ? 1 : 0
+      const current = darkModeProgressRef.current
+      const next = current + (target - current) * 0.06
+      darkModeProgressRef.current = Math.abs(target - next) < 0.001 ? target : next
+
       ctx.clearRect(0, 0, canvas.width, canvas.height)
+      drawBackground(darkModeProgressRef.current)
 
       particlesRef.current.forEach((p) => {
         updateParticle(p)
-        drawParticle(p)
+        drawParticle(p, darkModeProgressRef.current)
       })
 
-      connect()
+      connect(darkModeProgressRef.current)
       animationRef.current = requestAnimationFrame(animate)
     }
 
@@ -233,7 +339,7 @@ export default function InteractiveBackground() {
         ref={canvasRef}
         className="fixed top-0 left-0 w-screen h-screen -z-10"
         style={{ 
-          background: 'radial-gradient(circle at center, #0f0c29, #302b63, #24243e)',
+          background: 'transparent',
           position: 'fixed',
           top: 0,
           left: 0,
