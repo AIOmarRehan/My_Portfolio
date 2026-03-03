@@ -348,7 +348,7 @@ export default async function Home() {
                   </div>
                 ) : p.image ? (
                   <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48">
-                    <img src={p.image} alt={p.title} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+                    <img src={p.image} alt={`Screenshot of ${p.title} project`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                   </div>
                 ) : null}
                 
@@ -375,6 +375,7 @@ export default async function Home() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition duration-300 text-sm font-semibold"
+                    aria-label={`View ${p.title} project`}
                   >
                     {p.url.includes('github.com') ? (
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -513,6 +514,7 @@ export default async function Home() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center text-yellow-400 hover:text-yellow-300 transition duration-300 text-sm font-semibold"
+                    aria-label={`View ${cert.title} certification credential`}
                   >
                     View Certificate →
                   </a>
@@ -544,7 +546,7 @@ export default async function Home() {
               >
                 {article.image && (
                   <div className="mb-4 rounded-lg overflow-hidden h-48">
-                    <img src={article.image} alt={article.title} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+                    <img src={article.image} alt={`Featured image for ${article.title} article`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                   </div>
                 )}
                 
@@ -572,6 +574,7 @@ export default async function Home() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-pink-400 hover:text-pink-300 transition duration-300 text-sm font-semibold mt-auto"
+                    aria-label={`Read ${article.title} article`}
                   >
                     {article.url.includes('medium') ? (
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
