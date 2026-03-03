@@ -21,8 +21,8 @@ export default async function Home() {
       .order('start_date', { ascending: false }),
     supabase
       .from('articles')
-      .select('id,title,description,image,url,author,created_at,tags')
-      .order('created_at', { ascending: false }),
+      .select('id,title,description,image,url,tags')
+      .order('id', { ascending: false }),
     supabase
       .from('certificates')
       .select('id,title,issuer,issue_date,description,credential_url,tags')
