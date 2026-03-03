@@ -14,7 +14,7 @@ const mockProjects = [
     title: "AI-Powered Sentiment Analysis",
     description: "Deep learning model for real-time sentiment analysis using BERT transformers",
     image: "https://via.placeholder.com/400x300?text=Sentiment+Analysis",
-    demo_video: "/demos/sentiment-demo.webm",
+    demo_video: null,
     url: "https://github.com/AIOmarRehan/sentiment-analysis",
     tags: ["PyTorch", "BERT", "NLP", "Deep Learning"],
     created_at: "2025-12-01"
@@ -24,7 +24,7 @@ const mockProjects = [
     title: "Computer Vision Object Detection",
     description: "Custom YOLOv8 model for multi-class object detection with real-time inference",
     image: "https://via.placeholder.com/400x300?text=Object+Detection",
-    demo_video: "/demos/object-detection-demo.webm",
+    demo_video: null,
     url: "https://github.com/AIOmarRehan/object-detection",
     tags: ["YOLOv8", "OpenCV", "Python", "Computer Vision"],
     created_at: "2025-11-15"
@@ -54,7 +54,7 @@ const mockProjects = [
     title: "Generative AI Image Editor",
     description: "AI-powered image manipulation tool using Stable Diffusion with inpainting",
     image: "https://via.placeholder.com/400x300?text=Image+Editor",
-    demo_video: "/demos/image-editor-demo.webm",
+    demo_video: null,
     url: "https://github.com/AIOmarRehan/image-editor",
     tags: ["Stable Diffusion", "Python", "FastAPI", "AI/ML"],
     created_at: "2025-08-05"
