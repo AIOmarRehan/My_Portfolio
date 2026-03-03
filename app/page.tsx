@@ -193,7 +193,7 @@ export default async function Home() {
         <div className="grid gap-6 sm:gap-8 lg:grid-cols-2 items-stretch w-full overflow-visible">
           <div className="animated-border-card hero-theme-card w-full">
             <div className="hero-theme-card-content relative z-10 h-full rounded-2xl bg-gray-900/70 light:bg-white/90 p-6 sm:p-8 md:p-10 backdrop-blur flex flex-col">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white light:text-gray-900">
                 Welcome to my Portfolio
               </h1>
               <p className="text-lg text-gray-300 light:text-gray-700 mb-8">
@@ -202,28 +202,28 @@ export default async function Home() {
               <div className="flex flex-wrap gap-4">
                 <a
                   href="#projects"
-                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
                   aria-label="Navigate to projects section"
                 >
                   View My Projects
                 </a>
                 <a
                   href="#experience"
-                  className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
+                  className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
                   aria-label="Navigate to experience section"
                 >
                   See Experience
                 </a>
                 <a
                   href="#articles"
-                  className="px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2"
+                  className="px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:ring-2 focus:ring-pink-400 focus:ring-offset-2"
                   aria-label="Navigate to articles section"
                 >
                   Articles
                 </a>
                 <a
                   href="#certifications"
-                  className="px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2"
+                  className="px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2"
                   aria-label="Navigate to certifications section"
                 >
                   Certifications
