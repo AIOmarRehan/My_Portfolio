@@ -5,16 +5,33 @@ import LazyVideo from '../components/LazyVideo'
 import { FaEnvelope, FaGithub, FaLinkedin, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa'
 import { SiHuggingface, SiKaggle, SiMedium } from 'react-icons/si'
 
-export const dynamic = 'force-static' // Force static generation for better performance
-export const revalidate = 3600 // Cache for 1 hour then revalidate in background
+// Use ISR instead of force-static to avoid baking massive data into HTML
+export const revalidate = 3600 // Revalidate every hour
 
 export default async function Home() {
-  // Parallel database fetches for better performance
+  // Parallel database fetches with LIMITS to reduce payload
+  // Only fetch items that are displayed on homepage
   const [projectsData, experiencesData, articlesData, certificatesData] = await Promise.all([
-    supabase.from('projects').select('*').order('created_at', { ascending: false }),
-    supabase.from('experiences').select('*').order('start_date', { ascending: false }),
-    supabase.from('articles').select('*').order('created_at', { ascending: false }),
-    supabase.from('certificates').select('*').order('issue_date', { ascending: false })
+    supabase
+      .from('projects')
+      .select('id,title,description,image,demo_video,url,tags,created_at')
+      .order('created_at', { ascending: false })
+      .limit(6), // Only fetch 6 projects for homepage
+    supabase
+      .from('experiences')
+      .select('id,company,position,start_date,end_date,description,highlights,tags')
+      .order('start_date', { ascending: false })
+      .limit(5), // Only fetch 5 experiences
+    supabase
+      .from('articles')
+      .select('id,title,description,url,author,created_at,tags')
+      .order('created_at', { ascending: false })
+      .limit(3), // Only fetch 3 articles for homepage
+    supabase
+      .from('certificates')
+      .select('id,title,issuer,issue_date,description,credential_url,tags')
+      .order('issue_date', { ascending: false })
+      .limit(6) // Only fetch 6 certificates
   ])
 
   const projects = projectsData.data || []
