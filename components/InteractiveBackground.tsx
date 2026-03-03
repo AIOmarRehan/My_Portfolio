@@ -37,7 +37,6 @@ export default function InteractiveBackground() {
 
   useEffect(() => {
     if (!mounted) return
-    // Removed scrollbar toggle logic - replaced with progress bar
   }, [mounted])
 
   useEffect(() => {
@@ -48,14 +47,13 @@ export default function InteractiveBackground() {
     const ctx = canvas.getContext('2d', { alpha: true })
     if (!ctx) return
 
-    // Set canvas size
     const resizeCanvas = () => {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
     }
     resizeCanvas()
 
-    // Initialize particles
+    // Create particles
     const initParticles = () => {
       particlesRef.current = []
       const isSmallScreen = window.innerWidth < 768
@@ -72,7 +70,6 @@ export default function InteractiveBackground() {
       }
     }
 
-    // Update particle position
     const updateParticle = (particle: Particle) => {
       particle.x += particle.speedX
       particle.y += particle.speedY
@@ -92,7 +89,6 @@ export default function InteractiveBackground() {
       }
     }
 
-    // Draw particle
     const drawParticle = (particle: Particle) => {
       ctx.beginPath()
       ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
@@ -103,7 +99,6 @@ export default function InteractiveBackground() {
       ctx.shadowBlur = 0
     }
 
-    // Connect nearby particles with lines
     const connect = () => {
       for (let a = 0; a < particlesRef.current.length; a++) {
         for (let b = a; b < particlesRef.current.length; b++) {
@@ -123,7 +118,6 @@ export default function InteractiveBackground() {
       }
     }
 
-    // Animation loop
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -136,13 +130,12 @@ export default function InteractiveBackground() {
       animationRef.current = requestAnimationFrame(animate)
     }
 
-    // Mouse move handler
     const handleMouseMove = (e: MouseEvent) => {
 
       mouseRef.current.x = e.clientX
       mouseRef.current.y = e.clientY
 
-      // Detect cursor type based on target element
+      // Update cursor style based on element
       const target = e.target as HTMLElement
       if (target.closest('a, button, [role="button"], .cursor-pointer')) {
         setCursorType('pointer')
@@ -158,11 +151,9 @@ export default function InteractiveBackground() {
       }
     }
 
-    // Window resize handler - ONLY resize canvas, don't reinitialize particles
+    // Handle window resize
     let resizeTimeout: NodeJS.Timeout | null = null
     const handleResize = () => {
-      // Only resize canvas dimensions, do NOT recreate particles
-      // This prevents the particle jumping issue on mobile
       if (resizeTimeout) clearTimeout(resizeTimeout)
       resizeTimeout = setTimeout(() => {
         const newWidth = window.innerWidth
@@ -171,7 +162,6 @@ export default function InteractiveBackground() {
         if (canvas.width !== newWidth || canvas.height !== newHeight) {
           canvas.width = newWidth
           canvas.height = newHeight
-          // Particles stay the same - they just move within the new canvas
         }
       }, 200)
     }
@@ -196,7 +186,7 @@ export default function InteractiveBackground() {
 
   if (!mounted) return null
 
-  // Dynamic cursor styles based on type
+  // Cursor styling
   const getCursorStyle = () => {
     const baseStyle = {
       position: 'fixed' as const,

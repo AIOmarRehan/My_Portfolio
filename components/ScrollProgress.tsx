@@ -9,7 +9,6 @@ export default function ScrollProgress() {
     let rafId: number
 
     const handleScroll = () => {
-      // Cancel previous frame if pending
       if (rafId) cancelAnimationFrame(rafId)
 
       rafId = requestAnimationFrame(() => {
@@ -17,7 +16,7 @@ export default function ScrollProgress() {
         const height = document.documentElement.scrollHeight - window.innerHeight
         const scrollProgress = height > 0 ? (scrolled / height) * 100 : 0
 
-        // Only update if change is significant (more than 0.1%) to reduce repaints
+        // Update only if changed significantly
         if (Math.abs(scrollProgress - lastProgress) > 0.1) {
           lastProgress = scrollProgress
           if (barRef.current) {

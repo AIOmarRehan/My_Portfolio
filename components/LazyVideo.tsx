@@ -18,13 +18,12 @@ export default function LazyVideo({ src, alt, className = '', posterSrc }: LazyV
     const video = videoRef.current
     if (!video) return
 
-    // Intersection Observer to detect when video enters viewport
+    // Watch for when video enters viewport
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setIsInView(true)
-            // Load video when it's about to enter viewport (with 200px margin)
             if (!isLoaded) {
               setIsLoaded(true)
             }
@@ -32,7 +31,7 @@ export default function LazyVideo({ src, alt, className = '', posterSrc }: LazyV
         })
       },
       {
-        rootMargin: '200px', // Start loading 200px before video enters viewport
+        rootMargin: '200px',
         threshold: 0.01,
       }
     )
@@ -44,7 +43,7 @@ export default function LazyVideo({ src, alt, className = '', posterSrc }: LazyV
     }
   }, [isLoaded])
 
-  // Auto-play when video is in view and loaded
+  // Autoplay when ready
   useEffect(() => {
     const video = videoRef.current
     if (!video || !isLoaded || !isInView) return
@@ -52,7 +51,7 @@ export default function LazyVideo({ src, alt, className = '', posterSrc }: LazyV
     const playPromise = video.play()
     if (playPromise !== undefined) {
       playPromise.catch((error) => {
-        // Auto-play was prevented, user interaction needed
+        // Autoplay blocked by browser
         console.log('Video autoplay prevented:', error)
       })
     }

@@ -6,16 +6,14 @@ export default function ScrollToContactButton() {
     
     const contactCard = document.getElementById('contact-card')
     if (contactCard) {
-      // Scroll to the card
       contactCard.scrollIntoView({ 
         behavior: 'smooth', 
         block: 'center' 
       })
       
-      // Add highlight animation
+      // Highlight animation
       contactCard.classList.add('highlight-pulse')
       
-      // Remove animation after it completes
       setTimeout(() => {
         contactCard.classList.remove('highlight-pulse')
       }, 2000)

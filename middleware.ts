@@ -16,12 +16,12 @@ export async function middleware(req: NextRequest) {
     return new Response('Not Found', { status: 404 })
   }
 
-  // Allow public access to the admin landing page so owner can sign in.
+  // Allow access to login page
   if (pathname === ADMIN_PATH) {
     return NextResponse.next()
   }
 
-  // Protect admin subpaths (e.g. /admin/*) and admin API routes under /api/admin
+  // Protect admin routes
   if (pathname.startsWith(ADMIN_PATH + '/') || pathname.startsWith('/api/admin')) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
     if (!token || token?.email !== process.env.ADMIN_EMAIL) {

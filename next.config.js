@@ -2,7 +2,7 @@
 module.exports = {
   reactStrictMode: true,
   
-  // Image optimization
+  // Image config
   images: {
     unoptimized: false,
     formats: ['image/avif', 'image/webp'],
@@ -15,12 +15,12 @@ module.exports = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
-  // Experimental features - FIXED: No duplicate keys
+  // Experimental features
   experimental: {
     serverActions: {
       bodySizeLimit: '10mb'
     },
-    // Optimize specific packages to reduce bundle size
+    // Optimize package imports
     optimizePackageImports: [
       'react-icons',
       '@supabase/supabase-js',
@@ -30,22 +30,21 @@ module.exports = {
     optimizeCss: true,
   },
 
-  // Compression and performance
+  // Performance settings
   compress: true,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
   generateEtags: true,
 
-  // Empty turbopack config to use webpack in production
+  // Use webpack for production builds
   turbopack: {},
 
-  // Webpack optimizations for production
+  // Webpack config
   webpack: (config, { isServer, dev }) => {
-    // Disable source maps completely
     config.devtool = false
     
     if (!dev && !isServer) {
-      // Optimize bundle size for production
+      // Production optimizations
       config.optimization = {
         ...config.optimization,
         moduleIds: 'deterministic',
@@ -108,10 +107,10 @@ module.exports = {
     return config
   },
 
-  // Headers for caching and security
+  // Caching and security headers
   async headers() {
     return [
-      // Cache static assets aggressively
+      // Static asset caching
       {
         source: '/demos/:path*',
         headers: [

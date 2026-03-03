@@ -7,20 +7,18 @@ export default function LoadingScreen() {
   const [fadeOut, setFadeOut] = useState(false)
 
   useEffect(() => {
-    // Minimize loading screen impact on FCP
-    // Check if page is already loaded (for fast connections)
+    // Check if already loaded
     if (document.readyState === 'complete') {
       handleLoadComplete()
       return
     }
 
-    // Set aggressive timeout to not block FCP
-    // Reduced from 3000ms to 800ms for better performance
+    // Fallback timeout
     const fallbackTimeout = setTimeout(() => {
       handleLoadComplete()
     }, 800)
 
-    // Listen for actual load event
+    // Wait for page load
     const handleLoad = () => {
       clearTimeout(fallbackTimeout)
       handleLoadComplete()
@@ -36,13 +34,11 @@ export default function LoadingScreen() {
 
   const handleLoadComplete = () => {
     setFadeOut(true)
-    // Quick fade animation (reduced from 600ms to 300ms)
     setTimeout(() => {
       setIsLoading(false)
     }, 300)
   }
 
-  // Don't render if loading is complete
   if (!isLoading) return null
 
   return (

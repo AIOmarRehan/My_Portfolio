@@ -1,8 +1,8 @@
-// Mapping of technology names to their display properties using react-icons
-// Icons are referenced by package and icon name from https://react-icons.github.io/react-icons/
+// Tech icon mappings for react-icons
+// Reference: https://react-icons.github.io/react-icons/
 
 export interface IconData {
-  icon: string // Format: "package/IconName" e.g., "fa/FaPython"
+  icon: string // e.g., "fa/FaPython"
   color?: string
   label?: string
 }
@@ -103,8 +103,7 @@ export const techIcons: Record<string, IconData> = {
   huggingface: { icon: 'si/SiHuggingface', color: '#ffd700', label: 'Hugging Face' },
   medium: { icon: 'fa/FaMedium', color: '#000', label: 'Medium' },
   
-  // Custom SVG Icons (from /public/svg-icons/)
-  // Just add .svg files and reference by filename!
+  // Custom SVGs from /public/svg-icons/
   gradio: { icon: 'svg/gradio', color: '#FF7C00', label: 'Gradio' },
   antigravity: { icon: 'svg/antigravity-color', label: 'Antigravity' }
 }
