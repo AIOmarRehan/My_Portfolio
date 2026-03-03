@@ -36,17 +36,12 @@ module.exports = {
   productionBrowserSourceMaps: false,
   generateEtags: true,
 
-  // Turbopack configuration
-  turbopack: {
-    resolveAlias: {
-      // Optimize common imports
-      '@': './src',
-    },
-  },
+  // Empty turbopack config to use webpack in production
+  turbopack: {},
 
   // Webpack optimizations for production
   webpack: (config, { isServer, dev }) => {
-    // Disable source maps and minification of debug info
+    // Disable source maps completely
     config.devtool = false
     
     if (!dev && !isServer) {
@@ -57,7 +52,7 @@ module.exports = {
         runtimeChunk: false,
         usedExports: true,
         minimize: true,
-        concatenateModules: false,
+        concatenateModules: true,
         splitChunks: {
           chunks: 'all',
           cacheGroups: {
