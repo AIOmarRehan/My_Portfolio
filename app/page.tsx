@@ -196,7 +196,7 @@ export default async function Home() {
               <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white light:text-gray-900">
                 Welcome to my Portfolio
               </h1>
-              <p className="text-lg text-gray-300 light:text-gray-700 mb-8">
+              <p className="text-lg text-gray-300 light:text-gray-800 mb-8">
                 I’m an AI and Full-Stack Engineer focused on building intelligent systems using machine learning and deep learning. I specialize in developing end-to-end AI solutions, from data preprocessing to model optimization and deployment, and I’m passionate about solving real-world problems with data-driven approaches.
               </p>
               <div className="flex flex-wrap gap-4">
@@ -237,81 +237,81 @@ export default async function Home() {
               <h2 className="text-2xl font-semibold text-white light:text-gray-900 mb-6">Contact & Profiles</h2>
               <div className="space-y-4 text-sm" role="list">
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
-                  <span className="text-gray-300 light:text-gray-600 uppercase tracking-widest text-xs">Location</span>
-                  <span className="text-gray-200 light:text-gray-700 inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
-                    <FaMapMarkerAlt className="text-blue-300 light:text-blue-500" />
+                  <span className="text-gray-300 light:text-gray-800 uppercase tracking-widest text-xs">Location</span>
+                  <span className="text-gray-200 light:text-gray-900 inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
+                    <FaMapMarkerAlt className="text-blue-300 light:text-blue-600" />
                     Ajman, UAE
                   </span>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
-                  <span className="text-gray-300 uppercase tracking-widest text-xs">Phone Number</span>
-                  <a href="tel:+971509669311" className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
+                  <span className="text-gray-300 light:text-gray-800 uppercase tracking-widest text-xs">Phone Number</span>
+                  <a href="tel:+971509669311" className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
                     <FaPhoneAlt />
                     +971 50 966 9311
                   </a>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
-                  <span className="text-gray-300 uppercase tracking-widest text-xs">Email</span>
-                  <a href="mailto:ai.omar.rehan@gmail.com" className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
+                  <span className="text-gray-300 light:text-gray-800 uppercase tracking-widest text-xs">Email</span>
+                  <a href="mailto:ai.omar.rehan@gmail.com" className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
                     <FaEnvelope />
                     ai.omar.rehan@gmail.com
                   </a>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
-                  <span className="text-gray-300 uppercase tracking-widest text-xs">GitHub</span>
+                  <span className="text-gray-300 light:text-gray-800 uppercase tracking-widest text-xs">GitHub</span>
                   <a
                     href="https://github.com/AIOmarRehan"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
+                    className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
                   >
                     <FaGithub />
                     github.com/AIOmarRehan
                   </a>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
-                  <span className="text-gray-300 uppercase tracking-widest text-xs">LinkedIn</span>
+                  <span className="text-gray-300 light:text-gray-800 uppercase tracking-widest text-xs">LinkedIn</span>
                   <a
                     href="https://linkedin.com/in/omar-rehan-47b98636a"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
+                    className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
                   >
                     <FaLinkedin />
                     linkedin.com/in/omar-rehan-47b98636a
                   </a>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
-                  <span className="text-gray-300 uppercase tracking-widest text-xs">Kaggle</span>
+                  <span className="text-gray-300 light:text-gray-800 uppercase tracking-widest text-xs">Kaggle</span>
                   <a
                     href="https://kaggle.com/aiomarrehan"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
+                    className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
                   >
                     <SiKaggle />
                     kaggle.com/aiomarrehan
                   </a>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
-                  <span className="text-gray-300 uppercase tracking-widest text-xs">HuggingFace</span>
+                  <span className="text-gray-300 light:text-gray-800 uppercase tracking-widest text-xs">HuggingFace</span>
                   <a
                     href="https://huggingface.co/AIOmarRehan"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
+                    className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
                   >
                     <SiHuggingface />
                     huggingface.co/AIOmarRehan
                   </a>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
-                  <span className="text-gray-300 uppercase tracking-widest text-xs">Medium</span>
+                  <span className="text-gray-300 light:text-gray-800 uppercase tracking-widest text-xs">Medium</span>
                   <a
                     href="https://medium.com/@ai.omar.rehan"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
+                    className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
                   >
                     <SiMedium />
                     medium.com/@ai.omar.rehan
