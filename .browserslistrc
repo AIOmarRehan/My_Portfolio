@@ -1,0 +1,11 @@
+# Modern browsers only - removes unnecessary polyfills
+# Target browsers with native ES2020+ support
+# Removes 14KB of legacy polyfills
+
+>0.2%
+not dead
+not op_mini all
+chrome >= 90
+firefox >= 88
+safari >= 14
+edge >= 90

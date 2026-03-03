@@ -153,6 +153,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <head>
+        {/* Charset meta - must be first */}
+        <meta charSet="utf-8" />
+        
         {/* Essential meta tags */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta
