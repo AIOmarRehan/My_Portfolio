@@ -7,7 +7,7 @@ import type { Session } from "next-auth"
 export default async function AdminPage() {
   const session: Session | null = await getServerSession(authOptions)
 
-  // Not signed in
+  // Check login
   if (!session?.user?.email) {
     return (
       <section>
@@ -20,7 +20,7 @@ export default async function AdminPage() {
     )
   }
 
-  // Not admin
+  // Check admin role
   if (session.user.email !== process.env.ADMIN_EMAIL) {
     return (
       <section>
@@ -32,7 +32,7 @@ export default async function AdminPage() {
     )
   }
 
-  // Admin access
+  // Fetch data
   let projects = []
   let articles = []
   let experiences = []

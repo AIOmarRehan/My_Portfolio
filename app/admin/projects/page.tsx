@@ -104,7 +104,7 @@ export default function AdminProjectsPage() {
   const handleEdit = (proj: IProject) => {
     setEditingId(String(proj.id))
     const imageValue = proj.image || ''
-    // Detect if image is a URL or base64
+    // Check if URL or base64
     setImageInputMethod(imageValue.startsWith('http') ? 'url' : 'upload')
     setFormData({
       title: proj.title,
@@ -120,8 +120,8 @@ export default function AdminProjectsPage() {
     const file = e.target.files?.[0]
     if (!file) return
     
-    // Enforce 3MB limit for base64 storage (becomes ~4MB after encoding)
-    const maxSize = 3 * 1024 * 1024 // 3MB
+    // 3MB limit for base64
+    const maxSize = 3 * 1024 * 1024
     if (file.size > maxSize) {
       const sizeMB = (file.size / (1024 * 1024)).toFixed(2)
       alert(`File size is ${sizeMB}MB. Maximum allowed is 3MB due to database limits. Please use a smaller file or compress the GIF.`)
@@ -144,7 +144,7 @@ export default function AdminProjectsPage() {
     const file = e.target.files?.[0]
     if (!file) return
 
-    // Validate file size (max 50MB)
+    // Max 50MB for videos
     const maxSize = 50 * 1024 * 1024
     if (file.size > maxSize) {
       const sizeMB = (file.size / (1024 * 1024)).toFixed(2)
@@ -306,7 +306,7 @@ export default function AdminProjectsPage() {
               className="hidden" 
             />
             <span className="text-sm text-gray-700">
-              {formData.demo_video ? `✓ ${formData.demo_video.split('/').pop()}` : 'No video chosen'}
+              {formData.demo_video ? formData.demo_video.split('/').pop() : 'No video chosen'}
             </span>
             {formData.demo_video && (
               <button

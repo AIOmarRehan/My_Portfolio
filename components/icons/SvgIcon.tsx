@@ -8,26 +8,17 @@ interface SvgIconProps {
   style?: React.CSSProperties
 }
 
-// Simple cache for SVG content
+// Cache loaded SVGs
 const svgCache: Record<string, string> = {}
 
-/**
- * Generic SVG Icon loader that dynam1cally inlines SVGs
- * Loads any SVG from /public/svg-icons/ folder
- * Allows color styling via the style prop
- * 
- * Usage:
- * <SvgIcon name="gradio" className="w-4 h-4" style={{ color: '#FF7C00' }} />
- * 
- * Just add .svg files to /public/svg-icons/ and reference by filename!
- */
+// Loads SVGs from /public/svg-icons/ folder
 export default function SvgIcon({ name, className = '', style = {} }: SvgIconProps) {
   const [svgContent, setSvgContent] = useState<string>('')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const loadSvg = async () => {
-      // Check cache first
+      // Check cache
       if (svgCache[name]) {
         setSvgContent(svgCache[name])
         setLoading(false)
@@ -37,7 +28,7 @@ export default function SvgIcon({ name, className = '', style = {} }: SvgIconPro
       try {
         const response = await fetch(`/svg-icons/${name}.svg`)
         const content = await response.text()
-        svgCache[name] = content // Cache for future use
+        svgCache[name] = content
         setSvgContent(content)
       } catch (error) {
         console.error(`Failed to load SVG: ${name}`, error)

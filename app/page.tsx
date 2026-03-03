@@ -5,11 +5,11 @@ import LazyVideo from '../components/LazyVideo'
 import { FaEnvelope, FaGithub, FaLinkedin, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa'
 import { SiHuggingface, SiKaggle, SiMedium } from 'react-icons/si'
 
-// Use ISR instead of force-static to avoid baking massive data into HTML
-export const revalidate = 3600 // Revalidate every hour
+// Revalidate page every hour
+export const revalidate = 3600
 
 export default async function Home() {
-  // Fetch ALL data but optimize by selecting only needed columns
+  // Fetch data with only needed columns
   const [projectsData, experiencesData, articlesData, certificatesData] = await Promise.all([
     supabase
       .from('projects')
@@ -35,7 +35,7 @@ export default async function Home() {
     new Date(b.issue_date).getTime() - new Date(a.issue_date).getTime()
   ) : []
   
-  // Sort experiences: Present entries first, then by start_date descending
+  // Show current jobs first, then sort by date
   const experiences = experiencesData.data ? experiencesData.data.sort((a: any, b: any) => {
     const aIsPresent = a.end_date === 'Present'
     const bIsPresent = b.end_date === 'Present'
@@ -289,7 +289,7 @@ export default async function Home() {
                   <ul className="space-y-2 mb-4">
                     {exp.highlights.map((highlight: string, hIdx: number) => (
                       <li key={hIdx} className="text-gray-400 text-sm flex items-start gap-3">
-                        <span className="text-green-400 font-bold mt-0.5">✓</span>
+                        <span className="text-green-400 font-bold mt-0.5">•</span>
                         <span>{highlight}</span>
                       </li>
                     ))}
@@ -328,7 +328,6 @@ export default async function Home() {
                 className="group hover-scale p-6 bg-gray-800/50 backdrop-blur border border-gray-700 rounded-xl hover:border-yellow-500 transition duration-300"
               >
                 <div className="flex items-start gap-3 mb-3">
-                  <div className="text-2xl">🏆</div>
                   <h3 className="text-lg font-semibold group-hover:text-yellow-400 transition duration-300 flex-1">
                     {cert.title}
                   </h3>

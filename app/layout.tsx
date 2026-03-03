@@ -10,7 +10,7 @@ import ScrollProgress from '@/components/ScrollProgress'
 import LoadingScreen from '@/components/LoadingScreen'
 import type { Metadata } from 'next'
 
-// Optimize font loading with next/font
+// Font config
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
@@ -20,7 +20,7 @@ const inter = Inter({
   fallback: ['system-ui', 'arial'],
 })
 
-// Comprehensive SEO metadata with OpenGraph and Twitter Cards
+// SEO metadata
 export const metadata: Metadata = {
   metadataBase: new URL('https://omar-rehan.vercel.app'),
   title: {
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
   creator: 'Omar Rehan',
   publisher: 'Omar Rehan',
   
-  // OpenGraph metadata for social sharing
+  // Social sharing
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
     ],
   },
 
-  // Twitter Card metadata
+  // Twitter card
   twitter: {
     card: 'summary_large_image',
     title: 'Omar Rehan | AI & Full-Stack Engineer',
@@ -79,17 +79,17 @@ export const metadata: Metadata = {
     creator: '@omar_rehan',
   },
 
-  // Verification and Search Console
+  // Search Console verification
   verification: {
     google: 'your-google-verification-code',
   },
 
-  // Canonical URL
+  // Canonical
   alternates: {
     canonical: 'https://omar-rehan.vercel.app',
   },
 
-  // Robots configuration
+  // SEO robots
   robots: {
     index: true,
     follow: true,
@@ -119,25 +119,25 @@ export const metadata: Metadata = {
   // Manifest for PWA
   manifest: '/manifest.json',
 
-  // Apple Web App configuration
+  // iOS settings
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
     title: 'Omar Rehan',
   },
 
-  // Format detection
+  // Auto-detection settings
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
 
-  // Additional metadata
+  // Category
   category: 'technology',
 }
 
-// Viewport configuration
+// Viewport config
 export const viewport = {
   themeColor: [
     { media: '(prefers-color-scheme: dark)', color: '#000000' },

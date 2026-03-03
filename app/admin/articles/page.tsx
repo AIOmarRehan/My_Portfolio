@@ -107,7 +107,7 @@ export default function AdminArticlesPage() {
       tags: article.tags?.join(', ') || '',
       image: article.image || ''
     })
-    // Auto-detect image input method
+    // Auto-detect URL or base64
     if (article.image?.startsWith('http')) {
       setImageInputMethod('url')
     } else {
@@ -119,7 +119,7 @@ export default function AdminArticlesPage() {
     const file = e.target.files?.[0]
     if (!file) return
 
-    // Validate file size (3MB max)
+    // 3MB max
     if (file.size > 3 * 1024 * 1024) {
       alert('File size must be less than 3MB')
       return

@@ -8,7 +8,7 @@ const SECRET = process.env.NEXTAUTH_SECRET || ''
 
 export async function POST(req: NextRequest) {
   try {
-    // Check authentication
+    // Auth check
     const token = await getToken({ req, secret: SECRET })
     if (!token || token?.email !== process.env.ADMIN_EMAIL) {
       return new Response('Unauthorized', { status: 401 })
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No video file provided' }, { status: 400 })
     }
 
-    // Validate file type (videos only)
+    // Video types only
     const allowedTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime']
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json({ 
@@ -29,8 +29,8 @@ export async function POST(req: NextRequest) {
       }, { status: 400 })
     }
 
-    // Validate file size (max 50MB for videos)
-    const maxSize = 50 * 1024 * 1024 // 50MB
+    // Max 50MB
+    const maxSize = 50 * 1024 * 1024
     if (file.size > maxSize) {
       const sizeMB = (file.size / (1024 * 1024)).toFixed(2)
       return NextResponse.json({ 
@@ -38,20 +38,19 @@ export async function POST(req: NextRequest) {
       }, { status: 400 })
     }
 
-    // Generate unique filename with timestamp
+    // Unique filename
     const timestamp = Date.now()
     const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_')
     const filename = `${timestamp}-${originalName}`
     
-    // Get the file buffer
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
 
-    // Write to public/demos folder
+    // Save to public/demos
     const publicPath = path.join(process.cwd(), 'public', 'demos', filename)
     await writeFile(publicPath, buffer)
 
-    // Return the relative path (accessible via /demos/filename.mp4)
+    // Return path
     const relativePath = `/demos/${filename}`
 
     return NextResponse.json({ 

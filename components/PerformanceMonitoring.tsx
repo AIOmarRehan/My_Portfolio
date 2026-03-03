@@ -3,21 +3,20 @@
 import { useEffect } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 
-// Global type declaration for gtag
+// gtag types
 declare global {
   interface Window {
     gtag?: (...args: any[]) => void
   }
 }
 
-// Web Vitals tracking for performance monitoring
-// NOTE: Requires 'web-vitals' package: npm install web-vitals
+// Track Web Vitals metrics
 export function WebVitals() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
   useEffect(() => {
-    // Track page views
+    // Page view tracking
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('config', 'GA_MEASUREMENT_ID', {
         page_path: pathname + searchParams.toString(),
@@ -36,13 +35,13 @@ export function WebVitals() {
         })
       }
 
-      // Log to console in development
+      // Dev logging
       if (process.env.NODE_ENV === 'development') {
         console.log('Web Vital:', metric.name, metric.value)
       }
     }
 
-    // Optional web-vitals tracking
+    // Web vitals import
     if (typeof window !== 'undefined') {
       import('web-vitals')
         .then(({ onCLS, onFID, onFCP, onLCP, onTTFB }) => {
@@ -53,7 +52,7 @@ export function WebVitals() {
           onTTFB(reportWebVitals)
         })
         .catch(() => {
-          // Package not installed, skip tracking
+          // Skip if not installed
           if (process.env.NODE_ENV === 'development') {
             console.log('web-vitals not installed. Run: npm install web-vitals')
           }
@@ -64,7 +63,7 @@ export function WebVitals() {
   return null
 }
 
-// Resource hints for critical resources
+// Preconnect hints
 export function ResourceHints() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 
