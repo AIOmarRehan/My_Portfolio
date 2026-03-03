@@ -228,3 +228,21 @@ html, body {
   pointer-events: none;
   z-index: 0;
 }
+
+.hero-theme-card::before {
+  transition: background 500ms ease;
+}
+
+.hero-theme-card .hero-theme-card-content {
+  transition: background-color 500ms ease, box-shadow 500ms ease;
+}
+
+html.dark-mode .hero-theme-card::before {
+  background: linear-gradient(45deg, #93c5fd, #e9d5ff, #93c5fd);
+  background-size: 200% 200%;
+}
+
+html.dark-mode .hero-theme-card .hero-theme-card-content {
+  background-color: rgba(3, 7, 18, 0.82);
+  box-shadow: inset 0 0 24px rgba(147, 197, 253, 0.08);
+}

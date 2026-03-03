@@ -21,7 +21,11 @@ function HeaderComponent() {
         <a
           href="/#top"
           onClick={() => setMenuOpen(false)}
-          className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent hover:opacity-80 transition cursor-pointer"
+          className={`text-2xl font-bold bg-gradient-to-r bg-clip-text text-transparent hover:opacity-80 transition-all duration-500 cursor-pointer ${
+            theme === 'dark'
+              ? 'from-blue-300 via-cyan-300 to-purple-200 drop-shadow-[0_0_10px_rgba(147,197,253,0.45)]'
+              : 'from-blue-400 to-purple-500'
+          }`}
         >
           Omar Rehan
         </a>
