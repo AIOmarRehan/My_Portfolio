@@ -1,5 +1,57 @@
 @import "tailwindcss";
 
+/* App-level darker mode */
+html.dark-mode {
+  color-scheme: dark;
+}
+
+html.dark-mode body {
+  background-color: #030712;
+  color: #f9fafb;
+}
+
+/* Light mode support */
+html.light {
+  color-scheme: light;
+}
+
+html:not(.light) {
+  color-scheme: dark;
+}
+
+/* Light mode global overrides */
+html.light {
+  /* Text colors */
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --text-tertiary: #6b7280;
+  
+  /* Background colors */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-tertiary: #f3f4f6;
+  
+  /* Border colors */
+  --border-primary: #e5e7eb;
+  --border-secondary: #d1d5db;
+}
+
+html:not(.light) {
+  /* Text colors */
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-tertiary: #9ca3af;
+  
+  /* Background colors */
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --bg-tertiary: #374151;
+  
+  /* Border colors */
+  --border-primary: #374151;
+  --border-secondary: #4b5563;
+}
+
 /* Performance optimizations */
 html {
   scrollbar-gutter: stable;
@@ -14,6 +66,7 @@ body {
   height: 100dvh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 500ms ease, color 500ms ease;
 }
 
 section[id] {

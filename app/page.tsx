@@ -50,11 +50,11 @@ export default async function Home() {
       <section className="py-20 fade-in overflow-visible">
         <div className="grid gap-6 sm:gap-8 lg:grid-cols-2 items-stretch w-full overflow-visible">
           <div className="animated-border-card w-full">
-            <div className="relative z-10 h-full rounded-2xl bg-gray-900/70 p-6 sm:p-8 md:p-10 backdrop-blur flex flex-col">
+            <div className="relative z-10 h-full rounded-2xl bg-gray-900/70 light:bg-white/90 p-6 sm:p-8 md:p-10 backdrop-blur flex flex-col">
               <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                 Welcome to my Portfolio
               </h1>
-              <p className="text-lg text-gray-300 mb-8">
+              <p className="text-lg text-gray-300 light:text-gray-700 mb-8">
                 I’m an AI and Full-Stack Engineer focused on building intelligent systems using machine learning and deep learning. I specialize in developing end-to-end AI solutions, from data preprocessing to model optimization and deployment, and I’m passionate about solving real-world problems with data-driven approaches.
               </p>
               <div className="flex flex-wrap gap-4">
@@ -87,13 +87,13 @@ export default async function Home() {
           </div>
 
           <div id="contact-card" className="animated-border-card w-full">
-            <div className="relative z-10 h-full rounded-2xl bg-gray-900/70 p-6 sm:p-8 md:p-10 backdrop-blur flex flex-col">
-              <h2 className="text-2xl font-semibold text-white mb-6">Contact & Profiles</h2>
+            <div className="relative z-10 h-full rounded-2xl bg-gray-900/70 light:bg-white/90 p-6 sm:p-8 md:p-10 backdrop-blur flex flex-col">
+              <h2 className="text-2xl font-semibold text-white light:text-gray-900 mb-6">Contact & Profiles</h2>
               <div className="space-y-4 text-sm">
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6">
-                  <span className="text-gray-400 uppercase tracking-widest text-xs">Location</span>
-                  <span className="text-gray-200 inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
-                    <FaMapMarkerAlt className="text-blue-300" />
+                  <span className="text-gray-400 light:text-gray-600 uppercase tracking-widest text-xs">Location</span>
+                  <span className="text-gray-200 light:text-gray-700 inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
+                    <FaMapMarkerAlt className="text-blue-300 light:text-blue-500" />
                     Ajman, UAE
                   </span>
                 </div>
@@ -180,7 +180,7 @@ export default async function Home() {
       {/* Projects Section */}
       <section id="projects" className="fade-in overflow-visible">
         <div className="flex items-center gap-4 mb-12">
-          <h2 className="text-4xl font-bold">Featured Projects</h2>
+          <h2 className="text-4xl font-bold text-white light:text-gray-900">Featured Projects</h2>
           <div className="flex-1 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded"></div>
         </div>
         
@@ -189,7 +189,7 @@ export default async function Home() {
             {projects.map((p: any, idx: number) => (
               <div
                 key={String(p.id)}
-                className="group hover-scale p-5 sm:p-6 bg-gray-800/50 backdrop-blur border border-gray-700 rounded-xl hover:border-blue-500 transition duration-300 flex flex-col w-full"
+                className="group hover-scale p-5 sm:p-6 bg-gray-800/50 light:bg-white/90 backdrop-blur border border-gray-700 light:border-gray-300 rounded-xl hover:border-blue-500 transition duration-300 flex flex-col w-full"
               >
                 {p.demo_video ? (
                   <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48">

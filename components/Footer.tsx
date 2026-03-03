@@ -3,12 +3,13 @@ import { SiKaggle, SiMedium, SiHuggingface } from 'react-icons/si'
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-r from-gray-900 via-gray-800 to-black text-gray-300 border-t border-gray-700 relative z-20">
+    <footer className="bg-gradient-to-r from-gray-900 via-gray-800 to-black light:from-white light:via-gray-50 light:to-gray-100 text-gray-300 light:text-gray-700 border-t border-gray-700 light:border-gray-300 relative z-20 transition-colors duration-300">
       <div className="w-full max-w-none md:max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-5">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-4">
           {/* About */}
           <div className="text-center md:text-left w-full">
-            <h3 className="text-white font-semibold mb-2 text-sm">About</h3>
+            <h3 className="text-white light:text-gray-900 font-semibold mb-2 text-sm">
+About</h3>
             <p className="text-xs sm:text-sm leading-relaxed">
               AI Engineer focused on building intelligent machine learning and deep learning solutions for real-world problems.
             </p>
@@ -16,7 +17,7 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div className="text-center md:text-left w-full">
-            <h3 className="text-white font-semibold mb-2 text-sm">Quick Links</h3>
+            <h3 className="text-white light:text-gray-900 font-semibold mb-2 text-sm">Quick Links</h3>
             <ul className="space-y-2 text-xs sm:text-sm">
               <li>
                 <a href="#projects" className="hover:text-blue-400 transition duration-300">
@@ -43,7 +44,7 @@ export default function Footer() {
 
           {/* Social & Contact */}
           <div className="text-center md:text-left w-full">
-            <h3 className="text-white font-semibold mb-2 text-sm">Connect</h3>
+            <h3 className="text-white light:text-gray-900 font-semibold mb-2 text-sm">Connect</h3>
             <div className="flex gap-3 sm:gap-4 flex-wrap justify-center md:justify-start">
               <a
                 href="https://github.com/AIOmarRehan"

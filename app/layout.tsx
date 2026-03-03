@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import AppSessionProvider from '@/components/SessionProvider'
+import { ThemeProvider } from '@/components/ThemeProvider'
 import DynamicInteractiveBackground from '@/components/DynamicInteractiveBackground'
 import ScrollToTop from '@/components/ScrollToTop'
 import ScrollProgress from '@/components/ScrollProgress'
@@ -156,6 +157,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         {/* Charset meta - must be first */}
         <meta charSet="utf-8" />
         
+        {/* Theme initialization - prevent flash */}
+        <script src="/theme-init.js" />
+        
         {/* Essential meta tags */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta
@@ -196,9 +200,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           }}
         />
       </head>
-      <body className={`${inter.className} bg-gray-950 text-gray-100`}>
+      <body className={`${inter.className} bg-gray-950 light:bg-gray-50 text-gray-100 light:text-gray-900 transition-colors duration-300`}>
         <LoadingScreen />
         <ScrollProgress />
+        <ThemeProvider>
         <AppSessionProvider>
           <DynamicInteractiveBackground />
           <Header />
@@ -210,6 +215,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           </main>
           <Footer />
         </AppSessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
