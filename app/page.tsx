@@ -202,28 +202,28 @@ export default async function Home() {
               <div className="flex flex-wrap gap-4">
                 <a
                   href="#projects"
-                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+                  className="px-6 py-3 min-h-[44px] bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 flex items-center justify-center"
                   aria-label="Navigate to projects section"
                 >
                   View My Projects
                 </a>
                 <a
                   href="#experience"
-                  className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
+                  className="px-6 py-3 min-h-[44px] bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:ring-2 focus:ring-green-400 focus:ring-offset-2 flex items-center justify-center"
                   aria-label="Navigate to experience section"
                 >
                   See Experience
                 </a>
                 <a
                   href="#articles"
-                  className="px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:ring-2 focus:ring-pink-400 focus:ring-offset-2"
+                  className="px-6 py-3 min-h-[44px] bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 flex items-center justify-center"
                   aria-label="Navigate to articles section"
                 >
                   Articles
                 </a>
                 <a
                   href="#certifications"
-                  className="px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2"
+                  className="px-6 py-3 min-h-[44px] bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 flex items-center justify-center"
                   aria-label="Navigate to certifications section"
                 >
                   Certifications
@@ -239,21 +239,21 @@ export default async function Home() {
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
                   <span className="text-gray-300 light:text-gray-800 uppercase tracking-widest text-xs">Location</span>
                   <span className="text-gray-200 light:text-gray-900 inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
-                    <FaMapMarkerAlt className="text-blue-300 light:text-blue-600" />
+                    <FaMapMarkerAlt className="text-blue-300 light:text-blue-600" aria-hidden="true" />
                     Ajman, UAE
                   </span>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
                   <span className="text-gray-300 light:text-gray-800 uppercase tracking-widest text-xs">Phone Number</span>
                   <a href="tel:+971509669311" className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
-                    <FaPhoneAlt />
+                    <FaPhoneAlt aria-hidden="true" />
                     +971 50 966 9311
                   </a>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
                   <span className="text-gray-300 light:text-gray-800 uppercase tracking-widest text-xs">Email</span>
                   <a href="mailto:ai.omar.rehan@gmail.com" className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
-                    <FaEnvelope />
+                    <FaEnvelope aria-hidden="true" />
                     ai.omar.rehan@gmail.com
                   </a>
                 </div>
@@ -265,7 +265,7 @@ export default async function Home() {
                     rel="noopener noreferrer"
                     className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
                   >
-                    <FaGithub />
+                    <FaGithub aria-hidden="true" />
                     github.com/AIOmarRehan
                   </a>
                 </div>
@@ -277,7 +277,7 @@ export default async function Home() {
                     rel="noopener noreferrer"
                     className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
                   >
-                    <FaLinkedin />
+                    <FaLinkedin aria-hidden="true" />
                     linkedin.com/in/omar-rehan-47b98636a
                   </a>
                 </div>
@@ -289,7 +289,7 @@ export default async function Home() {
                     rel="noopener noreferrer"
                     className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
                   >
-                    <SiKaggle />
+                    <SiKaggle aria-hidden="true" />
                     kaggle.com/aiomarrehan
                   </a>
                 </div>
@@ -301,7 +301,7 @@ export default async function Home() {
                     rel="noopener noreferrer"
                     className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
                   >
-                    <SiHuggingface />
+                    <SiHuggingface aria-hidden="true" />
                     huggingface.co/AIOmarRehan
                   </a>
                 </div>
@@ -313,7 +313,7 @@ export default async function Home() {
                     rel="noopener noreferrer"
                     className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
                   >
-                    <SiMedium />
+                    <SiMedium aria-hidden="true" />
                     medium.com/@ai.omar.rehan
                   </a>
                 </div>
