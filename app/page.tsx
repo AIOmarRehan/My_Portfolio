@@ -3,11 +3,65 @@ import ScrollToContactButton from '../components/ScrollToContactButton'
 import LazyVideo from '../components/LazyVideo'
 import { FaEnvelope, FaGithub, FaLinkedin, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa'
 import { SiHuggingface, SiKaggle, SiMedium } from 'react-icons/si'
+import { supabase } from '@/lib/supabaseServer'
 
 // Revalidate page every hour
 export const revalidate = 3600
 
-// Mock data - NO DATABASE QUERIES FOR PERFORMANCE TESTING
+// Fetch data from Supabase
+async function getProjects() {
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .order('created_at', { ascending: false })
+  
+  if (error) {
+    console.error('Error fetching projects:', error)
+    return []
+  }
+  return data || []
+}
+
+async function getExperiences() {
+  const { data, error } = await supabase
+    .from('experiences')
+    .select('*')
+    .order('start_date', { ascending: false })
+  
+  if (error) {
+    console.error('Error fetching experiences:', error)
+    return []
+  }
+  return data || []
+}
+
+async function getArticles() {
+  const { data, error } = await supabase
+    .from('articles')
+    .select('*')
+    .order('created_at', { ascending: false })
+  
+  if (error) {
+    console.error('Error fetching articles:', error)
+    return []
+  }
+  return data || []
+}
+
+async function getCertificates() {
+  const { data, error } = await supabase
+    .from('certificates')
+    .select('*')
+    .order('issue_date', { ascending: false })
+  
+  if (error) {
+    console.error('Error fetching certificates:', error)
+    return []
+  }
+  return data || []
+}
+
+// Mock data removed - now using real DB queries
 const mockProjects = [
   {
     id: 1,
@@ -180,11 +234,11 @@ const mockCertificates = [
 ]
 
 export default async function Home() {
-  // Use mock data directly (no database queries)
-  const projects = mockProjects
-  const experiences = mockExperiences
-  const articles = mockArticles
-  const certificates = mockCertificates
+  // Fetch all data from database
+  const projects = await getProjects()
+  const experiences = await getExperiences()
+  const articles = await getArticles()
+  const certificates = await getCertificates()
 
   return (
     <div id="top" className="space-y-20">
@@ -193,7 +247,7 @@ export default async function Home() {
         <div className="grid gap-6 sm:gap-8 lg:grid-cols-2 items-stretch w-full overflow-visible">
           <div className="animated-border-card hero-theme-card w-full">
             <div className="hero-theme-card-content relative z-10 h-full rounded-2xl bg-gray-900/70 light:bg-white/90 p-6 sm:p-8 md:p-10 backdrop-blur flex flex-col">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white light:text-gray-900">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                 Welcome to my Portfolio
               </h1>
               <p className="text-lg text-gray-300 light:text-gray-800 mb-8">
