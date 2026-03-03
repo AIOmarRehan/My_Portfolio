@@ -1,4 +1,3 @@
-import { supabase } from '../lib/supabaseServer'
 import TagBadge from '../components/TagBadge'
 import ScrollToContactButton from '../components/ScrollToContactButton'
 import LazyVideo from '../components/LazyVideo'
@@ -8,41 +7,184 @@ import { SiHuggingface, SiKaggle, SiMedium } from 'react-icons/si'
 // Revalidate page every hour
 export const revalidate = 3600
 
-export default async function Home() {
-  // Fetch data with only needed columns
-  const [projectsData, experiencesData, articlesData, certificatesData] = await Promise.all([
-    supabase
-      .from('projects')
-      .select('id,title,description,image,demo_video,url,tags,created_at')
-      .order('created_at', { ascending: false }),
-    supabase
-      .from('experiences')
-      .select('id,title,organization,location,start_date,end_date,description,highlights,tags')
-      .order('start_date', { ascending: false }),
-    supabase
-      .from('articles')
-      .select('id,title,description,image,url,tags')
-      .order('id', { ascending: false }),
-    supabase
-      .from('certificates')
-      .select('id,title,issuer,issue_date,description,credential_url,tags')
-      .order('issue_date', { ascending: false })
-  ])
+// Mock data - NO DATABASE QUERIES FOR PERFORMANCE TESTING
+const mockProjects = [
+  {
+    id: 1,
+    title: "AI-Powered Sentiment Analysis",
+    description: "Deep learning model for real-time sentiment analysis using BERT transformers",
+    image: "https://via.placeholder.com/400x300?text=Sentiment+Analysis",
+    demo_video: "/demos/sentiment-demo.webm",
+    url: "https://github.com/AIOmarRehan/sentiment-analysis",
+    tags: ["PyTorch", "BERT", "NLP", "Deep Learning"],
+    created_at: "2025-12-01"
+  },
+  {
+    id: 2,
+    title: "Computer Vision Object Detection",
+    description: "Custom YOLOv8 model for multi-class object detection with real-time inference",
+    image: "https://via.placeholder.com/400x300?text=Object+Detection",
+    demo_video: "/demos/object-detection-demo.webm",
+    url: "https://github.com/AIOmarRehan/object-detection",
+    tags: ["YOLOv8", "OpenCV", "Python", "Computer Vision"],
+    created_at: "2025-11-15"
+  },
+  {
+    id: 3,
+    title: "Full-Stack Chat Application",
+    description: "Real-time chat app with WebSocket integration, MongoDB backend, and React frontend",
+    image: "https://via.placeholder.com/400x300?text=Chat+App",
+    demo_video: null,
+    url: "https://github.com/AIOmarRehan/chat-app",
+    tags: ["React", "Node.js", "MongoDB", "WebSocket"],
+    created_at: "2025-10-20"
+  },
+  {
+    id: 4,
+    title: "Time Series Forecasting Model",
+    description: "LSTM neural network for stock price prediction with 94% accuracy",
+    image: "https://via.placeholder.com/400x300?text=Time+Series",
+    demo_video: null,
+    url: "https://huggingface.co/AIOmarRehan/time-series",
+    tags: ["LSTM", "TensorFlow", "Time Series", "Forecasting"],
+    created_at: "2025-09-10"
+  },
+  {
+    id: 5,
+    title: "Generative AI Image Editor",
+    description: "AI-powered image manipulation tool using Stable Diffusion with inpainting",
+    image: "https://via.placeholder.com/400x300?text=Image+Editor",
+    demo_video: "/demos/image-editor-demo.webm",
+    url: "https://github.com/AIOmarRehan/image-editor",
+    tags: ["Stable Diffusion", "Python", "FastAPI", "AI/ML"],
+    created_at: "2025-08-05"
+  },
+  {
+    id: 6,
+    title: "Recommendation Engine",
+    description: "Collaborative filtering recommendation system serving 100K+ users",
+    image: "https://via.placeholder.com/400x300?text=Recommendation",
+    demo_video: null,
+    url: "https://github.com/AIOmarRehan/rec-engine",
+    tags: ["Recommendation Systems", "Scikit-learn", "Python", "ML"],
+    created_at: "2025-07-15"
+  }
+]
 
-  const projects = projectsData.data || []
-  const articles = articlesData.data || []
-  const certificates = certificatesData.data ? certificatesData.data.sort((a: any, b: any) => 
-    new Date(b.issue_date).getTime() - new Date(a.issue_date).getTime()
-  ) : []
-  
-  // Show current jobs first, then sort by date
-  const experiences = experiencesData.data ? experiencesData.data.sort((a: any, b: any) => {
-    const aIsPresent = a.end_date === 'Present'
-    const bIsPresent = b.end_date === 'Present'
-    if (aIsPresent && !bIsPresent) return -1
-    if (!aIsPresent && bIsPresent) return 1
-    return new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
-  }) : []
+const mockExperiences = [
+  {
+    id: 1,
+    title: "AI/ML Engineer",
+    organization: "Tech Innovations Ltd",
+    location: "Ajman, UAE",
+    start_date: "2024-06-01",
+    end_date: "Present",
+    description: "Leading AI/ML initiatives for enterprise automation and data pipeline optimization",
+    highlights: [
+      "Developed and deployed 5+ machine learning models in production",
+      "Optimized data pipelines reducing processing time by 60%",
+      "Led a team of 3 junior engineers on computer vision projects",
+      "Implemented real-time inference system handling 10K+ requests/sec"
+    ],
+    tags: ["Python", "TensorFlow", "PyTorch", "AWS", "Kubernetes"]
+  },
+  {
+    id: 2,
+    title: "Full-Stack Developer",
+    organization: "Digital Solutions Corp",
+    location: "Dubai, UAE",
+    start_date: "2023-03-15",
+    end_date: "2024-05-30",
+    description: "Built scalable web applications and microservices for 50+ enterprise clients",
+    highlights: [
+      "Developed 15+ full-stack applications using Next.js and Node.js",
+      "Improved application performance by 45% through optimization",
+      "Implemented CI/CD pipelines reducing deployment time by 80%",
+      "Designed and maintained MongoDB database schemas"
+    ],
+    tags: ["Next.js", "Node.js", "React", "MongoDB", "Docker"]
+  },
+  {
+    id: 3,
+    title: "Junior Data Scientist",
+    organization: "Analytics Hub",
+    location: "Abu Dhabi, UAE",
+    start_date: "2022-01-10",
+    end_date: "2023-03-10",
+    description: "Conducted statistical analysis and built predictive models for business insights",
+    highlights: [
+      "Created 20+ analytical reports for C-level decision making",
+      "Built predictive models achieving 92% accuracy on test set",
+      "Automated data collection reducing manual work by 70%",
+      "Trained stakeholders on data literacy and analytics best practices"
+    ],
+    tags: ["Python", "SQL", "Pandas", "Scikit-learn", "Tableau"]
+  }
+]
+
+const mockArticles = [
+  {
+    id: 1,
+    title: "Getting Started with Transformer Models",
+    description: "A comprehensive guide to understanding BERT and GPT architectures",
+    image: "https://via.placeholder.com/400x300?text=Transformers",
+    url: "https://medium.com/@ai.omar.rehan/transformers",
+    tags: ["NLP", "Transformers", "Deep Learning", "Tutorial"]
+  },
+  {
+    id: 2,
+    title: "Deep Learning for Computer Vision",
+    description: "Practical approaches to CNN architectures and their real-world applications",
+    image: "https://via.placeholder.com/400x300?text=Computer+Vision",
+    url: "https://medium.com/@ai.omar.rehan/computer-vision",
+    tags: ["Computer Vision", "CNN", "Deep Learning", "PyTorch"]
+  },
+  {
+    id: 3,
+    title: "Production ML: From Training to Deployment",
+    description: "Best practices for deploying machine learning models at scale",
+    image: "https://via.placeholder.com/400x300?text=Production+ML",
+    url: "https://medium.com/@ai.omar.rehan/production-ml",
+    tags: ["MLOps", "Deployment", "Cloud", "Best Practices"]
+  }
+]
+
+const mockCertificates = [
+  {
+    id: 1,
+    title: "Deep Learning Specialization",
+    issuer: "Coursera (Andrew Ng)",
+    issue_date: "2025-06-15",
+    description: "5-course specialization in neural networks and deep learning",
+    credential_url: "https://coursera.org/verify/specialization/deep-learning",
+    tags: ["Deep Learning", "Neural Networks", "TensorFlow"]
+  },
+  {
+    id: 2,
+    title: "AWS Certified Solutions Architect",
+    issuer: "Amazon Web Services",
+    issue_date: "2025-05-20",
+    description: "Professional certification for AWS cloud architecture design",
+    credential_url: "https://aws.amazon.com/certification/certified-solutions-architect",
+    tags: ["AWS", "Cloud", "Architecture"]
+  },
+  {
+    id: 3,
+    title: "Google Cloud Professional Data Engineer",
+    issuer: "Google Cloud",
+    issue_date: "2025-03-10",
+    description: "Professional certification in Google Cloud data engineering",
+    credential_url: "https://cloud.google.com/certification/data-engineer",
+    tags: ["GCP", "Data Engineering", "BigQuery"]
+  }
+]
+
+export default async function Home() {
+  // Use mock data directly (no database queries)
+  const projects = mockProjects
+  const experiences = mockExperiences
+  const articles = mockArticles
+  const certificates = mockCertificates
 
   return (
     <div id="top" className="space-y-20">
