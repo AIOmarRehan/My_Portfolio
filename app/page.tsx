@@ -49,8 +49,8 @@ export default async function Home() {
       {/* Hero Section */}
       <section className="py-20 fade-in overflow-visible">
         <div className="grid gap-6 sm:gap-8 lg:grid-cols-2 items-stretch w-full overflow-visible">
-          <div className="animated-border-card w-full">
-            <div className="relative z-10 h-full rounded-2xl bg-gray-900/70 light:bg-white/90 p-6 sm:p-8 md:p-10 backdrop-blur flex flex-col">
+          <div className="animated-border-card hero-theme-card w-full">
+            <div className="hero-theme-card-content relative z-10 h-full rounded-2xl bg-gray-900/70 light:bg-white/90 p-6 sm:p-8 md:p-10 backdrop-blur flex flex-col">
               <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                 Welcome to my Portfolio
               </h1>
@@ -86,8 +86,8 @@ export default async function Home() {
             </div>
           </div>
 
-          <div id="contact-card" className="animated-border-card w-full">
-            <div className="relative z-10 h-full rounded-2xl bg-gray-900/70 light:bg-white/90 p-6 sm:p-8 md:p-10 backdrop-blur flex flex-col">
+          <div id="contact-card" className="animated-border-card hero-theme-card w-full">
+            <div className="hero-theme-card-content relative z-10 h-full rounded-2xl bg-gray-900/70 light:bg-white/90 p-6 sm:p-8 md:p-10 backdrop-blur flex flex-col">
               <h2 className="text-2xl font-semibold text-white light:text-gray-900 mb-6">Contact & Profiles</h2>
               <div className="space-y-4 text-sm">
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6">
