@@ -189,7 +189,7 @@ export default async function Home() {
   return (
     <div id="top" className="space-y-20">
       {/* Hero Section */}
-      <section className="py-20 fade-in overflow-visible">
+      <section id="hero" className="py-20 fade-in overflow-visible" aria-label="Welcome section">
         <div className="grid gap-6 sm:gap-8 lg:grid-cols-2 items-stretch w-full overflow-visible">
           <div className="animated-border-card hero-theme-card w-full">
             <div className="hero-theme-card-content relative z-10 h-full rounded-2xl bg-gray-900/70 light:bg-white/90 p-6 sm:p-8 md:p-10 backdrop-blur flex flex-col">
@@ -202,25 +202,29 @@ export default async function Home() {
               <div className="flex flex-wrap gap-4">
                 <a
                   href="#projects"
-                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300"
+                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+                  aria-label="Navigate to projects section"
                 >
                   View My Projects
                 </a>
                 <a
                   href="#experience"
-                  className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300"
+                  className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
+                  aria-label="Navigate to experience section"
                 >
                   See Experience
                 </a>
                 <a
                   href="#articles"
-                  className="px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300"
+                  className="px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2"
+                  aria-label="Navigate to articles section"
                 >
                   Articles
                 </a>
                 <a
                   href="#certifications"
-                  className="px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300"
+                  className="px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2"
+                  aria-label="Navigate to certifications section"
                 >
                   Certifications
                 </a>
@@ -231,29 +235,29 @@ export default async function Home() {
           <div id="contact-card" className="animated-border-card hero-theme-card w-full">
             <div className="hero-theme-card-content relative z-10 h-full rounded-2xl bg-gray-900/70 light:bg-white/90 p-6 sm:p-8 md:p-10 backdrop-blur flex flex-col">
               <h2 className="text-2xl font-semibold text-white light:text-gray-900 mb-6">Contact & Profiles</h2>
-              <div className="space-y-4 text-sm">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6">
+              <div className="space-y-4 text-sm" role="list">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
                   <span className="text-gray-400 light:text-gray-600 uppercase tracking-widest text-xs">Location</span>
                   <span className="text-gray-200 light:text-gray-700 inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
                     <FaMapMarkerAlt className="text-blue-300 light:text-blue-500" />
                     Ajman, UAE
                   </span>
                 </div>
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
                   <span className="text-gray-400 uppercase tracking-widest text-xs">Phone Number</span>
                   <a href="tel:+971509669311" className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
                     <FaPhoneAlt />
                     +971 50 966 9311
                   </a>
                 </div>
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
                   <span className="text-gray-400 uppercase tracking-widest text-xs">Email</span>
                   <a href="mailto:ai.omar.rehan@gmail.com" className="text-blue-300 hover:text-blue-200 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
                     <FaEnvelope />
                     ai.omar.rehan@gmail.com
                   </a>
                 </div>
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
                   <span className="text-gray-400 uppercase tracking-widest text-xs">GitHub</span>
                   <a
                     href="https://github.com/AIOmarRehan"
@@ -265,7 +269,7 @@ export default async function Home() {
                     github.com/AIOmarRehan
                   </a>
                 </div>
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
                   <span className="text-gray-400 uppercase tracking-widest text-xs">LinkedIn</span>
                   <a
                     href="https://linkedin.com/in/omar-rehan-47b98636a"
@@ -277,7 +281,7 @@ export default async function Home() {
                     linkedin.com/in/omar-rehan-47b98636a
                   </a>
                 </div>
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
                   <span className="text-gray-400 uppercase tracking-widest text-xs">Kaggle</span>
                   <a
                     href="https://kaggle.com/aiomarrehan"
@@ -289,7 +293,7 @@ export default async function Home() {
                     kaggle.com/aiomarrehan
                   </a>
                 </div>
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
                   <span className="text-gray-400 uppercase tracking-widest text-xs">HuggingFace</span>
                   <a
                     href="https://huggingface.co/AIOmarRehan"
@@ -301,7 +305,7 @@ export default async function Home() {
                     huggingface.co/AIOmarRehan
                   </a>
                 </div>
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
                   <span className="text-gray-400 uppercase tracking-widest text-xs">Medium</span>
                   <a
                     href="https://medium.com/@ai.omar.rehan"
@@ -320,18 +324,19 @@ export default async function Home() {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="fade-in overflow-visible">
+      <section id="projects" className="fade-in overflow-visible" aria-label="Featured projects">
         <div className="flex items-center gap-4 mb-12">
           <h2 className="text-4xl font-bold text-white light:text-gray-900">Featured Projects</h2>
           <div className="flex-1 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded"></div>
         </div>
         
         {projects.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full overflow-visible">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full overflow-visible" role="list">
             {projects.map((p: any, idx: number) => (
               <div
                 key={String(p.id)}
                 className="group hover-scale p-5 sm:p-6 bg-gray-800/50 light:bg-white/90 backdrop-blur border border-gray-700 light:border-gray-300 rounded-xl hover:border-blue-500 transition duration-300 flex flex-col w-full"
+                role="listitem"
               >
                 {p.demo_video ? (
                   <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48">
@@ -343,12 +348,12 @@ export default async function Home() {
                   </div>
                 ) : p.image ? (
                   <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48">
-                    <img src={p.image} alt={p.title} className="w-full h-full object-cover" loading="lazy" />
+                    <img src={p.image} alt={p.title} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                   </div>
                 ) : null}
                 
               <div className="mb-4">
-                <h3 className="text-xl font-semibold group-hover:text-blue-400 transition duration-300 break-words">
+                <h3 className="text-xl font-semibold group-hover:text-blue-400 transition duration-300 break-words" id={`project-${p.id}`}>
                   {p.title}
                 </h3>
               </div>
@@ -397,18 +402,19 @@ export default async function Home() {
       </section>
 
       {/* Experience Section */}
-      <section id="experience" className="fade-in">
+      <section id="experience" className="fade-in" aria-label="Work experience">
         <div className="flex items-center gap-4 mb-12">
           <h2 className="text-4xl font-bold">Experience</h2>
           <div className="flex-1 h-1 bg-gradient-to-r from-green-500 to-emerald-600 rounded"></div>
         </div>
         
         {experiences.length > 0 ? (
-          <div className="space-y-6">
+          <div className="space-y-6" role="list">
             {experiences.map((exp: any, idx: number) => (
               <div
                 key={String(exp.id)}
                 className="p-6 bg-gray-800/50 backdrop-blur border border-gray-700 rounded-xl hover:border-green-500 transition duration-300"
+                role="listitem"
               >
                 <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-3">
                   <div className="flex-1">
@@ -456,18 +462,19 @@ export default async function Home() {
       </section>
 
       {/* Certifications Section */}
-      <section id="certifications" className="fade-in overflow-visible">
+      <section id="certifications" className="fade-in overflow-visible" aria-label="Certifications and credentials">
         <div className="flex items-center gap-4 mb-12">
           <h2 className="text-4xl font-bold">Certifications</h2>
           <div className="flex-1 h-1 bg-gradient-to-r from-yellow-500 to-orange-600 rounded"></div>
         </div>
         
         {certificates.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-visible">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-visible" role="list">
             {certificates.map((cert: any, idx: number) => (
               <div
                 key={String(cert.id)}
                 className="group hover-scale p-6 bg-gray-800/50 backdrop-blur border border-gray-700 rounded-xl hover:border-yellow-500 transition duration-300"
+                role="listitem"
               >
                 <div className="flex items-start gap-3 mb-3">
                   <h3 className="text-lg font-semibold group-hover:text-yellow-400 transition duration-300 flex-1">
@@ -521,22 +528,23 @@ export default async function Home() {
       </section>
 
       {/* Articles Section */}
-      <section id="articles" className="fade-in overflow-visible">
+      <section id="articles" className="fade-in overflow-visible" aria-label="Published articles and blog posts">
         <div className="flex items-center gap-4 mb-12">
           <h2 className="text-4xl font-bold">Published Articles</h2>
           <div className="flex-1 h-1 bg-gradient-to-r from-pink-500 to-rose-600 rounded"></div>
         </div>
         
         {articles.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-visible">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-visible" role="list">
             {articles.map((article: any, idx: number) => (
               <div
                 key={String(article.id)}
                 className="group hover-scale p-6 bg-gray-800/50 backdrop-blur border border-gray-700 rounded-xl hover:border-pink-500 transition duration-300 flex flex-col"
+                role="listitem"
               >
                 {article.image && (
                   <div className="mb-4 rounded-lg overflow-hidden h-48">
-                    <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
+                    <img src={article.image} alt={article.title} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                   </div>
                 )}
                 
@@ -584,7 +592,7 @@ export default async function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 rounded-xl text-center fade-in">
+      <section className="py-16 bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 rounded-xl text-center fade-in" aria-label="Call to action for collaboration">
         <h2 className="text-3xl font-bold mb-4">Interested in collaborating?</h2>
         <p className="text-gray-400 mb-6 max-w-xl mx-auto">
           I'm always open to new opportunities and interesting projects. Feel free to reach out!

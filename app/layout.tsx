@@ -154,6 +154,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <head>
+        {/* Skip to content link for accessibility */}
+        <link rel="skip" href="#main-content" />
         {/* Charset meta - must be first */}
         <meta charSet="utf-8" />
         
@@ -171,7 +173,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link rel="dns-prefetch" href="https://accounts.google.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
 
-        {/* Structured Data for SEO */}
+        {/* Person Schema - SEO Structured Data */}
         <script
           type="application/ld+json"
           suppressHydrationWarning
@@ -182,12 +184,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               name: 'Omar Rehan',
               url: 'https://omar-rehan.vercel.app',
               jobTitle: 'AI & Full-Stack Engineer',
-              description:
-                'AI and Full-Stack Engineer specializing in Machine Learning and Deep Learning',
+              description: 'AI and Full-Stack Engineer specializing in Machine Learning and Deep Learning',
               sameAs: [
-                'https://github.com/omar-rehan',
-                'https://linkedin.com/in/omar-rehan',
+                'https://github.com/AIOmarRehan',
+                'https://linkedin.com/in/omar-rehan-47b98636a',
                 'https://medium.com/@ai.omar.rehan',
+                'https://kaggle.com/aiomarrehan',
+                'https://huggingface.co/AIOmarRehan',
               ],
               address: {
                 '@type': 'PostalAddress',
@@ -196,11 +199,64 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               },
               email: 'ai.omar.rehan@gmail.com',
               telephone: '+971509669311',
+              image: 'https://omar-rehan.vercel.app/favicon-512x512.png',
+              workLocation: {
+                '@type': 'Place',
+                name: 'Remote',
+              },
+            }),
+          }}
+        />
+
+        {/* Organization Schema - SEO Structured Data */}
+        <script
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'Omar Rehan Portfolio',
+              url: 'https://omar-rehan.vercel.app',
+              logo: 'https://omar-rehan.vercel.app/favicon-512x512.png',
+              sameAs: [
+                'https://github.com/AIOmarRehan',
+                'https://linkedin.com/in/omar-rehan-47b98636a',
+                'https://medium.com/@ai.omar.rehan',
+              ],
+              contactPoint: {
+                '@type': 'ContactPoint',
+                contactType: 'General',
+                email: 'ai.omar.rehan@gmail.com',
+                telephone: '+971509669311',
+              },
+            }),
+          }}
+        />
+
+        {/* WebSite Schema with SearchAction - SEO */}
+        <script
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              url: 'https://omar-rehan.vercel.app',
+              name: 'Omar Rehan Portfolio',
+              description: 'AI and Full-Stack Engineer Portfolio',
+              inLanguage: 'en-US',
+              creator: {
+                '@type': 'Person',
+                name: 'Omar Rehan',
+              },
             }),
           }}
         />
       </head>
       <body className={`${inter.className} bg-gray-950 light:bg-gray-50 text-gray-100 light:text-gray-900 transition-colors duration-300`}>
+        {/* Skip to content link - visible on focus */}
+        <a href="#main-content" className="skip-to-content">Skip to main content</a>
         <LoadingScreen />
         <ScrollProgress />
         <ThemeProvider>
@@ -208,7 +264,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <DynamicInteractiveBackground />
           <Header />
           <ScrollToTop />
-          <main className="relative z-10 pt-20 pb-0 min-h-screen">
+          <main id="main-content" className="relative z-10 pt-20 pb-0 min-h-screen" role="main" aria-label="Main content">
             <div className="w-full max-w-none md:max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
               {children}
             </div>
