@@ -9,29 +9,24 @@ import { SiHuggingface, SiKaggle, SiMedium } from 'react-icons/si'
 export const revalidate = 3600 // Revalidate every hour
 
 export default async function Home() {
-  // Parallel database fetches with LIMITS to reduce payload
-  // Only fetch items that are displayed on homepage
+  // Fetch ALL data but optimize by selecting only needed columns
   const [projectsData, experiencesData, articlesData, certificatesData] = await Promise.all([
     supabase
       .from('projects')
       .select('id,title,description,image,demo_video,url,tags,created_at')
-      .order('created_at', { ascending: false })
-      .limit(6), // Only fetch 6 projects for homepage
+      .order('created_at', { ascending: false }),
     supabase
       .from('experiences')
       .select('id,company,position,start_date,end_date,description,highlights,tags')
-      .order('start_date', { ascending: false })
-      .limit(5), // Only fetch 5 experiences
+      .order('start_date', { ascending: false }),
     supabase
       .from('articles')
       .select('id,title,description,url,author,created_at,tags')
-      .order('created_at', { ascending: false })
-      .limit(3), // Only fetch 3 articles for homepage
+      .order('created_at', { ascending: false }),
     supabase
       .from('certificates')
       .select('id,title,issuer,issue_date,description,credential_url,tags')
       .order('issue_date', { ascending: false })
-      .limit(6) // Only fetch 6 certificates
   ])
 
   const projects = projectsData.data || []
