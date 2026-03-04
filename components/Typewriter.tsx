@@ -59,7 +59,7 @@ export default function Typewriter({
 
   return (
     <div className="mb-16 text-center">
-      <h1 className={`text-3xl sm:text-4xl md:text-5xl font-bold min-h-[5rem] py-4 flex items-center justify-center ${
+      <h1 className={`text-3xl sm:text-4xl md:text-5xl font-bold min-h-[5rem] py-4 ${
         isDarkMode 
           ? 'bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400' 
           : 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600'
@@ -67,7 +67,7 @@ export default function Typewriter({
         {currentText}
         <span className={`inline-block w-1 h-10 ml-1 ${
           isDarkMode ? 'bg-blue-400' : 'bg-blue-600'
-        } animate-pulse`}></span>
+        } animate-pulse align-middle`}></span>
       </h1>
     </div>
   )
