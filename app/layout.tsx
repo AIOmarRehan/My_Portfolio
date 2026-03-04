@@ -25,7 +25,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL('https://omar-rehan.vercel.app'),
   title: {
-    default: 'Omar Rehan | AI & Full-Stack Engineer',
+    default: 'Omar Rehan | Portfolio',
     template: '%s | Omar Rehan',
   },
   description:
