@@ -21,7 +21,7 @@ import * as LuIcons from 'react-icons/lu'
 
 interface TagBadgeProps {
   tag: string
-  variant?: 'blue' | 'pink' | 'yellow' | 'gray'
+  variant?: 'blue' | 'pink' | 'yellow' | 'gray' | 'green'
 }
 
 function TagBadge({ tag, variant = 'blue' }: TagBadgeProps) {
@@ -46,6 +46,12 @@ function TagBadge({ tag, variant = 'blue' }: TagBadgeProps) {
       text: 'text-yellow-300',
       border: 'border-yellow-500/30',
       hover: 'hover:bg-yellow-500/30'
+    },
+    green: {
+      bg: 'bg-green-500/20',
+      text: 'text-green-300',
+      border: 'border-green-500/30',
+      hover: 'hover:bg-green-500/30'
     },
     gray: {
       bg: 'bg-gray-700',

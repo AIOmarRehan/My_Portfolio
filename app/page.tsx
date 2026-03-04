@@ -504,7 +504,7 @@ export default async function Home() {
                 {exp.tags && exp.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-700">
                     {exp.tags.map((tag: string, tIdx: number) => (
-                      <TagBadge key={tIdx} tag={tag} variant="gray" />
+                      <TagBadge key={tIdx} tag={tag} variant="green" />
                     ))}
                   </div>
                 )}
@@ -682,7 +682,7 @@ export default async function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mx-auto">
             <div className="qr-theme-card rounded-2xl p-5 border border-cyan-300/25 light:border-cyan-500/30">
               <div className="qr-theme-card-content rounded-xl p-5">
-                <h4 className="text-lg font-semibold mb-4 text-cyan-300 light:text-cyan-700">CV QR Code</h4>
+                <h4 className="text-sm font-semibold mb-4 text-cyan-300 light:text-cyan-700">CV QR Code</h4>
                 <div className="qr-dynamic-glow rounded-xl p-4 bg-gray-900/50 light:bg-white/60 flex justify-center">
                   <img
                     src="/qr_code/My_CV-1024.svg"
