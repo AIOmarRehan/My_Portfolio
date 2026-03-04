@@ -1,6 +1,11 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 
+// Easing functions for smooth animations
+const easeInOutSine = (t: number): number => -Math.cos(t * Math.PI) / 2 + 0.5
+
+const easeOutQuint = (t: number): number => 1 - Math.pow(1 - t, 5)
+
 interface Particle {
   x: number
   y: number
@@ -36,8 +41,13 @@ const mixColor = (from: RGB, to: RGB, t: number, alpha = 1) => {
 
 export default function InteractiveBackground() {
   const [mounted, setMounted] = useState(false)
-  const [cursorType, setCursorType] = useState<'default' | 'pointer' | 'text'>('default')
+  const [cursorType, setCursorType] = useState<'arrow' | 'hand' | 'text'>('arrow')
   const [hasFinePointer, setHasFinePointer] = useState(true)
+  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [backgroundPos, setBackgroundPos] = useState(0)
+  const [glowIntensity, setGlowIntensity] = useState(1)
+  const [cursorColor, setCursorColor] = useState('#93c5fd')
+  const [svgCache, setSvgCache] = useState<{arrow?: string, hand?: string, text?: string}>({})
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const cursorRef = useRef<HTMLDivElement>(null)
   const mouseRef = useRef({ x: 0, y: 0, radius: 140 })
@@ -48,7 +58,95 @@ export default function InteractiveBackground() {
 
   useEffect(() => {
     setMounted(true)
+    
+    // Load SVG cursor files
+    const loadSVGs = async () => {
+      try {
+        const [arrowRes, handRes, textRes] = await Promise.all([
+          fetch('/cursors/arrowhead-pointer.svg'),
+          fetch('/cursors/hand-pointer.svg'),
+          fetch('/cursors/text-pointer.svg'),
+        ])
+        
+        const [arrowSvg, handSvg, textSvg] = await Promise.all([
+          arrowRes.text(),
+          handRes.text(),
+          textRes.text(),
+        ])
+        
+        setSvgCache({
+          arrow: arrowSvg,
+          hand: handSvg,
+          text: textSvg,
+        })
+      } catch (error) {
+        console.error('Failed to load cursor SVGs:', error)
+      }
+    }
+    
+    loadSVGs()
   }, [])
+
+  // Monitor theme changes for cursor styling
+  useEffect(() => {
+    const updateTheme = () => {
+      setIsDarkMode(document.documentElement.classList.contains('dark-mode'))
+    }
+
+    updateTheme()
+
+    const observer = new MutationObserver(updateTheme)
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    })
+
+    return () => observer.disconnect()
+  }, [])
+
+  // Advanced cursor animation with multiple effects
+  useEffect(() => {
+    if (!mounted) return
+    let animationId: number
+    let startTime = Date.now()
+
+    const animate = () => {
+      const elapsed = (Date.now() - startTime) / 1000
+      
+      // Main gradient position (smooth loop)
+      const position = (elapsed * 35) % 200
+      setBackgroundPos(position)
+      
+      // Pulsing glow effect (breathing effect)
+      const pulse = easeInOutSine((elapsed * 2) % 1)
+      setGlowIntensity(0.7 + pulse * 0.3)
+      
+      // Gradual color transition (very slow, smooth)
+      const colorProgress = easeInOutSine((elapsed * 0.1) % 1) // Much slower (0.1 instead of 0.5)
+      
+      // Smoothly interpolate between two main colors
+      if (isDarkMode) {
+        const from = hexToRgb('#93c5fd') // Light blue
+        const to = hexToRgb('#e9d5ff')   // Light purple
+        const r = Math.round(from.r + (to.r - from.r) * colorProgress)
+        const g = Math.round(from.g + (to.g - from.g) * colorProgress)
+        const b = Math.round(from.b + (to.b - from.b) * colorProgress)
+        setCursorColor(`rgb(${r}, ${g}, ${b})`)
+      } else {
+        const from = hexToRgb('#00ffff') // Cyan
+        const to = hexToRgb('#ff00ff')   // Magenta
+        const r = Math.round(from.r + (to.r - from.r) * colorProgress)
+        const g = Math.round(from.g + (to.g - from.g) * colorProgress)
+        const b = Math.round(from.b + (to.b - from.b) * colorProgress)
+        setCursorColor(`rgb(${r}, ${g}, ${b})`)
+      }
+      
+      animationId = requestAnimationFrame(animate)
+    }
+
+    animationId = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(animationId)
+  }, [mounted, isDarkMode])
 
   useEffect(() => {
     if (!mounted) return
@@ -241,14 +339,14 @@ export default function InteractiveBackground() {
       mouseRef.current.x = e.clientX
       mouseRef.current.y = e.clientY
 
-      // Update cursor style based on element
+      // Update cursor style based on element - prioritize clickables
       const target = e.target as HTMLElement
-      if (target.closest('a, button, [role="button"], .cursor-pointer')) {
-        setCursorType('pointer')
+      if (target.closest('button, a, [role="button"], link, [role="link"], .cursor-pointer, .interactive')) {
+        setCursorType('hand')
       } else if (target.closest('input, textarea, [contenteditable="true"]')) {
         setCursorType('text')
       } else {
-        setCursorType('default')
+        setCursorType('arrow')
       }
 
       if (cursorRef.current) {
@@ -292,45 +390,94 @@ export default function InteractiveBackground() {
 
   if (!mounted) return null
 
-  // Cursor styling
-  const getCursorStyle = () => {
-    const baseStyle = {
-      position: 'fixed' as const,
+  // SVG cursor with dynamic theme colors and glow
+  const getCursorStyle = (): React.CSSProperties => {
+    const baseStyle: React.CSSProperties = {
+      position: 'fixed',
       top: 0,
       left: 0,
-      pointerEvents: 'none' as const,
+      pointerEvents: 'none',
       zIndex: 10000,
-      background: 'linear-gradient(45deg, #00ffff, #ff00ff, #00ffff)',
-      backgroundSize: '200% 200%',
-      animation: 'neonShift 3s linear infinite',
-      boxShadow: '0 0 4px #00ffff, 0 0 8px #ff00ff, 0 0 12px #00ffff',
-      transition: 'width 0.2s ease, height 0.2s ease, border-radius 0.2s ease, transform 0.2s ease, clip-path 0.2s ease',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      transition: 'opacity 0.15s ease',
     }
 
-    if (cursorType === 'pointer') {
+    if (cursorType === 'arrow') {
+      return {
+        ...baseStyle,
+        width: '24px',
+        height: '24px',
+      }
+    } else if (cursorType === 'hand') {
       return {
         ...baseStyle,
         width: '20px',
         height: '20px',
-        borderRadius: '50%',
-        transform: 'translate(-50%, -50%) scale(1.2)',
       }
     } else if (cursorType === 'text') {
       return {
         ...baseStyle,
-        width: '2px',
+        width: '3px',
         height: '24px',
-        borderRadius: '1px',
-        transform: 'translate(-50%, -50%)',
-      }
-    } else {
-      return {
-        ...baseStyle,
-        width: '16px',
-        height: '24px',
-        clipPath: 'polygon(0% 0%, 0% 100%, 30% 70%, 55% 100%, 70% 90%, 45% 60%, 100% 60%)',
       }
     }
+
+    return baseStyle
+  }
+
+  const rendererSVG = () => {
+    const glowSize = 1 + glowIntensity * 1.5 // Reduced glow for smaller cursors
+    let svg = ''
+    let baseSvg = ''
+
+    if (cursorType === 'arrow' && svgCache.arrow) {
+      baseSvg = svgCache.arrow
+    } else if (cursorType === 'hand' && svgCache.hand) {
+      baseSvg = svgCache.hand
+    } else if (cursorType === 'text' && svgCache.text) {
+      baseSvg = svgCache.text
+    }
+
+    if (!baseSvg) return ''
+
+    // Add glow filter and replace colors dynamically
+    const glowFilter = `
+      <defs>
+        <filter id="glow-cursor" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="${glowSize}" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+    `
+
+    // Replace colors in SVG with dynamic theme colors
+    svg = baseSvg
+      .replace(/fill='#FFF'/g, `fill='${cursorColor}'`)
+      .replace(/fill="#FFF"/g, `fill="${cursorColor}"`)
+      .replace(/stroke='#000'/g, `stroke='${isDarkMode ? '#1e293b' : '#0f172a'}'`)
+      .replace(/stroke="#000"/g, `stroke="${isDarkMode ? '#1e293b' : '#0f172a'}"`)
+      .replace(/fill='#010101'/g, `fill='${cursorColor}'`)
+      .replace(/fill="#010101"/g, `fill="${cursorColor}"`)
+      .replace(/fill='#12171A'/g, `fill='${isDarkMode ? '#334155' : '#475569'}'`)
+      .replace(/fill="#12171A"/g, `fill="${isDarkMode ? '#334155' : '#475569'}"`)
+    
+    // Remove existing defs to avoid conflicts, then inject new one
+    svg = svg.replace(/<defs>[\s\S]*?<\/defs>/g, '')
+    
+    // Add glow filter at the beginning of SVG
+    svg = svg.replace(/<svg/, `<svg style="overflow: visible"`)
+    const firstClosingBracket = svg.indexOf('>')
+    svg = svg.substring(0, firstClosingBracket + 1) + glowFilter + svg.substring(firstClosingBracket + 1)
+    
+    // Add filter to all path elements
+    svg = svg.replace(/<path/g, `<path filter="url(#glow-cursor)"`)
+
+    return svg
   }
 
   return (
@@ -352,6 +499,7 @@ export default function InteractiveBackground() {
           ref={cursorRef}
           className="cyber-cursor"
           style={getCursorStyle()}
+          dangerouslySetInnerHTML={{ __html: rendererSVG() }}
         />
       ) : null}
     </>
