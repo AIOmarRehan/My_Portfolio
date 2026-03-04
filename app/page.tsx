@@ -5,6 +5,7 @@ import LazyVideo from '../components/LazyVideo'
 import HeroTitle from '../components/HeroSection'
 import CVDownloadButton from '../components/CVDownloadButton'
 import WhatsAppButton from '../components/WhatsAppButton'
+import Typewriter from '../components/Typewriter'
 import { FaEnvelope, FaGithub, FaLinkedin, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa'
 import { SiHuggingface, SiKaggle, SiMedium } from 'react-icons/si'
 import { supabase } from '@/lib/supabaseServer'
@@ -248,6 +249,19 @@ export default async function Home() {
     <div id="top" className="space-y-20">
       {/* Hero Section */}
       <section id="hero" className="py-20 fade-in overflow-visible" aria-label="Welcome section">
+        <Typewriter 
+          sentences={[
+            "Hello, I'm Omar Rehan.",
+            "AI & Full Stack Engineer.",
+            "Machine Learning & Deep Learning Specialist.",
+            "I build intelligent systems.",
+            "From models to production.",
+            "Engineering real-world AI solutions."
+          ]}
+          typingSpeed={80}
+          deletingSpeed={40}
+          pauseDuration={2500}
+        />
         <div className="grid gap-6 sm:gap-8 lg:grid-cols-2 items-stretch w-full overflow-visible">
           <div className="animated-border-card hero-theme-card w-full">
             <div className="hero-theme-card-content relative z-10 h-full rounded-2xl bg-gray-900/70 light:bg-white/90 p-6 sm:p-8 md:p-10 backdrop-blur flex flex-col">
