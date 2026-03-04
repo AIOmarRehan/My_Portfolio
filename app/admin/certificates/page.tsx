@@ -24,9 +24,18 @@ export default function AdminCertificatesPage() {
     description: '',
     tags: ''
   })
+  const [isDarkMode, setIsDarkMode] = useState(false)
 
   useEffect(() => {
     fetchCertificates()
+    
+    const updateTheme = () => {
+      setIsDarkMode(document.documentElement.classList.contains('dark-mode'))
+    }
+    updateTheme()
+    const observer = new MutationObserver(updateTheme)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    return () => observer.disconnect()
   }, [])
 
   const fetchCertificates = async () => {
@@ -126,82 +135,82 @@ export default function AdminCertificatesPage() {
       <h1 className="text-3xl font-bold mb-8">Manage Certificates</h1>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md border border-gray-200 space-y-6">
+      <form onSubmit={handleSubmit} className={`p-8 rounded-lg shadow-md border space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-gray-700 font-semibold mb-2">Certificate Title *</label>
+            <label className={`block font-semibold mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>Certificate Title *</label>
             <input
               type="text"
               required
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="e.g., AWS Certified Solutions Architect"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-semibold mb-2">Issuer *</label>
+            <label className={`block font-semibold mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>Issuer *</label>
             <input
               type="text"
               required
               value={formData.issuer}
               onChange={(e) => setFormData({ ...formData, issuer: e.target.value })}
               placeholder="e.g., Amazon Web Services"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
             />
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-gray-700 font-semibold mb-2">Issue Date *</label>
+            <label className={`block font-semibold mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>Issue Date *</label>
             <input
               type="date"
               required
               value={formData.issue_date}
               onChange={(e) => setFormData({ ...formData, issue_date: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'border-gray-300 text-black'}`}
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-semibold mb-2">Credential URL (optional)</label>
+            <label className={`block font-semibold mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>Credential URL (optional)</label>
             <input
               type="url"
               value={formData.credential_url}
               onChange={(e) => setFormData({ ...formData, credential_url: e.target.value })}
               placeholder="https://credentials.example.com/..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-gray-700 font-semibold mb-2">Description (optional)</label>
+          <label className={`block font-semibold mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>Description (optional)</label>
           <textarea
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             placeholder="Brief description of the certificate or skills verified"
             rows={3}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
           />
         </div>
 
         <div>
-          <label className="block text-gray-700 font-semibold mb-2">Technologies/Skills (optional)</label>
+          <label className={`block font-semibold mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>Technologies/Skills (optional)</label>
           <TagSearchInput
             value={formData.tags}
             onChange={(value) => setFormData({ ...formData, tags: value })}
             placeholder="e.g., AWS, Python, Machine Learning, Cloud Architecture"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
           />
-          <p className="text-gray-500 text-xs mt-1">Comma-separated list of technologies</p>
+          <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Comma-separated list of technologies</p>
         </div>
 
         <div className="flex gap-3">
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold disabled:opacity-50 transition"
+            className={`px-6 py-2 text-white rounded-lg font-semibold disabled:opacity-50 transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-blue-700 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'}`}
           >
             {editingId ? 'Update Certificate' : 'Add Certificate'}
           </button>
@@ -212,7 +221,7 @@ export default function AdminCertificatesPage() {
                 setEditingId(null)
                 setFormData({ title: '', issuer: '', issue_date: '', credential_url: '', description: '', tags: '' })
               }}
-              className="px-6 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg font-semibold transition"
+              className={`px-6 py-2 text-white rounded-lg font-semibold transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-gray-600 hover:bg-gray-500' : 'bg-gray-400 hover:bg-gray-500'}`}
             >
               Cancel
             </button>
@@ -223,28 +232,28 @@ export default function AdminCertificatesPage() {
       {/* Certificates List */}
       <div className="grid gap-4">
         {certificates.length === 0 ? (
-          <p className="text-gray-600 text-center py-8">No certificates yet.</p>
+          <p className={`text-center py-8 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>No certificates yet.</p>
         ) : (
           certificates.map((cert) => (
-            <div key={String(cert.id)} className="bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition p-6">
+            <div key={String(cert.id)} className={`rounded-lg shadow-md border hover:shadow-lg transition p-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
-                  <h3 className="font-bold text-lg text-gray-900">{cert.title}</h3>
-                  <p className="text-blue-600 font-semibold">{cert.issuer}</p>
-                  <p className="text-gray-400 text-sm mt-1">
+                  <h3 className={`font-bold text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{cert.title}</h3>
+                  <p className={`font-semibold ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>{cert.issuer}</p>
+                  <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
                     {new Date(cert.issue_date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                   </p>
                 </div>
                 <div className="flex flex-col gap-2">
                   <button
                     onClick={() => handleEdit(cert)}
-                    className="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded font-semibold text-sm transition"
+                    className="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded font-semibold text-sm transition-transform duration-300 ease-out hover:scale-105"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(String(cert.id))}
-                    className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded font-semibold text-sm transition"
+                    className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded font-semibold text-sm transition-transform duration-300 ease-out hover:scale-105"
                   >
                     Delete
                   </button>
@@ -252,13 +261,13 @@ export default function AdminCertificatesPage() {
               </div>
 
               {cert.description && (
-                <p className="text-gray-700 text-sm mb-3">{cert.description}</p>
+                <p className={`text-sm mb-3 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>{cert.description}</p>
               )}
 
               {cert.tags && cert.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-3">
                   {cert.tags.map((tag) => (
-                    <span key={tag} className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded font-medium">
+                    <span key={tag} className={`px-2 py-1 text-xs rounded font-medium ${isDarkMode ? 'bg-blue-900 text-blue-200' : 'bg-blue-100 text-blue-700'}`}>
                       {tag}
                     </span>
                   ))}
@@ -270,7 +279,7 @@ export default function AdminCertificatesPage() {
                   href={cert.credential_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-blue-500 hover:text-blue-700 text-sm font-semibold transition"
+                  className={`inline-flex items-center gap-2 text-sm font-semibold transition hover:underline ${isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-500 hover:text-blue-700'}`}
                 >
                   View Credential →
                 </a>

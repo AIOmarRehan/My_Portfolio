@@ -1,6 +1,10 @@
 import TagBadge from '../components/TagBadge'
+import ContactForm from '../components/ContactForm'
 import ScrollToContactButton from '../components/ScrollToContactButton'
 import LazyVideo from '../components/LazyVideo'
+import HeroTitle from '../components/HeroSection'
+import CVDownloadButton from '../components/CVDownloadButton'
+import WhatsAppButton from '../components/WhatsAppButton'
 import { FaEnvelope, FaGithub, FaLinkedin, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa'
 import { SiHuggingface, SiKaggle, SiMedium } from 'react-icons/si'
 import { supabase } from '@/lib/supabaseServer'
@@ -247,12 +251,7 @@ export default async function Home() {
         <div className="grid gap-6 sm:gap-8 lg:grid-cols-2 items-stretch w-full overflow-visible">
           <div className="animated-border-card hero-theme-card w-full">
             <div className="hero-theme-card-content relative z-10 h-full rounded-2xl bg-gray-900/70 light:bg-white/90 p-6 sm:p-8 md:p-10 backdrop-blur flex flex-col">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                Welcome to my Portfolio
-              </h1>
-              <p className="text-lg text-gray-300 light:text-gray-800 mb-8">
-                I’m an AI and Full-Stack Engineer focused on building intelligent systems using machine learning and deep learning. I specialize in developing end-to-end AI solutions, from data preprocessing to model optimization and deployment, and I’m passionate about solving real-world problems with data-driven approaches.
-              </p>
+              <HeroTitle description="I'm an AI and Full-Stack Engineer focused on building intelligent systems using machine learning and deep learning. I specialize in developing end-to-end AI solutions, from data preprocessing to model optimization and deployment, and I'm passionate about solving real-world problems with data-driven approaches." />
               <div className="flex flex-wrap gap-4">
                 <a
                   href="#projects"
@@ -371,6 +370,9 @@ export default async function Home() {
                     medium.com/@ai.omar.rehan
                   </a>
                 </div>
+              </div>
+              <div className="mt-8 pt-6 border-t border-gray-700 light:border-gray-300">
+                <CVDownloadButton buttonSize="lg" />
               </div>
             </div>
           </div>
@@ -648,14 +650,72 @@ export default async function Home() {
         )}
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 rounded-xl text-center fade-in" aria-label="Call to action for collaboration">
-        <h2 className="text-3xl font-bold mb-4">Interested in collaborating?</h2>
-        <p className="text-gray-400 mb-6 max-w-xl mx-auto">
-          I'm always open to new opportunities and interesting projects. Feel free to reach out!
-        </p>
-        <ScrollToContactButton />
-      </section>
+      {/* Bottom Section Grid - Contact & QR Codes Side by Side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* CTA Section - Left */}
+        <section className="py-16 bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 rounded-xl fade-in" aria-label="Contact form section">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-4">Interested in collaborating?</h2>
+            <p className="text-gray-400 mb-2 max-w-xl mx-auto">
+              I'm always open to new opportunities and interesting projects.
+            </p>
+            <p className="text-gray-400 mb-6 max-w-xl mx-auto">
+              Feel free to reach out!
+            </p>
+            <div className="mb-8">
+              <ScrollToContactButton />
+            </div>
+          </div>
+          <ContactForm />
+        </section>
+
+        {/* QR Section - Right */}
+        <section
+          className="py-12 px-6 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-cyan-500/10 border border-cyan-400/30 light:border-purple-400/40 rounded-xl fade-in"
+          aria-label="QR codes for CV and WhatsApp"
+        >
+          <div className="text-center mb-8">
+            <h3 className="text-2xl font-bold mb-2 text-white light:text-gray-900">Scan & Connect</h3>
+            <p className="text-gray-300 light:text-gray-700">Use these QR codes for my CV and WhatsApp contact.</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mx-auto">
+            <div className="qr-theme-card rounded-2xl p-5 border border-cyan-300/25 light:border-cyan-500/30">
+              <div className="qr-theme-card-content rounded-xl p-5">
+                <h4 className="text-lg font-semibold mb-4 text-cyan-300 light:text-cyan-700">CV QR Code</h4>
+                <div className="qr-dynamic-glow rounded-xl p-4 bg-gray-900/50 light:bg-white/60 flex justify-center">
+                  <img
+                    src="/qr_code/My_CV-1024.svg"
+                    alt="QR code for CV"
+                    className="w-52 h-52 max-w-full"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="mt-4 pt-4 border-t border-cyan-300/20">
+                  <CVDownloadButton buttonSize="sm" />
+                </div>
+              </div>
+            </div>
+
+            <div className="qr-theme-card rounded-2xl p-5 border border-purple-300/25 light:border-purple-500/30">
+              <div className="qr-theme-card-content rounded-xl p-5">
+                <h4 className="text-sm font-semibold mb-4 text-purple-300 light:text-purple-700">WhatsApp QR Code</h4>
+                <div className="qr-dynamic-glow rounded-xl p-4 bg-gray-900/50 light:bg-white/60 flex justify-center">
+                  <img
+                    src="/qr_code/Contact_Omar-1024.svg"
+                    alt="QR code for WhatsApp"
+                    className="w-52 h-52 max-w-full"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="mt-4 pt-4 border-t border-purple-300/20">
+                  <WhatsAppButton />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   )
 }

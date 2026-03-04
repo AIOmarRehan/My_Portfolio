@@ -17,9 +17,18 @@ export default function AdminArticlesPage() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [formData, setFormData] = useState({ title: '', description: '', url: '', tags: '', image: '' })
   const [imageInputMethod, setImageInputMethod] = useState<'upload' | 'url'>('upload')
+  const [isDarkMode, setIsDarkMode] = useState(false)
 
   useEffect(() => {
     fetchArticles()
+    
+    const updateTheme = () => {
+      setIsDarkMode(document.documentElement.classList.contains('dark-mode'))
+    }
+    updateTheme()
+    const observer = new MutationObserver(updateTheme)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    return () => observer.disconnect()
   }, [])
 
   const fetchArticles = async () => {
@@ -142,55 +151,55 @@ export default function AdminArticlesPage() {
       <h1 className="text-3xl font-bold mb-8">Manage Articles</h1>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md border border-gray-200 space-y-6">
+      <form onSubmit={handleSubmit} className={`p-8 rounded-lg shadow-md border space-y-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
         <div>
-          <label className="block text-gray-700 font-semibold mb-2">Title *</label>
+          <label className={`block font-semibold mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>Title *</label>
           <input
             type="text"
             required
             value={formData.title}
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
             placeholder="Article title"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
           />
         </div>
 
         <div>
-          <label className="block text-gray-700 font-semibold mb-2">Description</label>
+          <label className={`block font-semibold mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>Description</label>
           <textarea
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             placeholder="Article description"
             rows={3}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
           />
         </div>
 
         <div>
-          <label className="block text-gray-700 font-semibold mb-2">URL *</label>
+          <label className={`block font-semibold mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>URL *</label>
           <input
             type="url"
             required
             value={formData.url}
             onChange={(e) => setFormData({ ...formData, url: e.target.value })}
             placeholder="https://medium.com/..."
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
           />
         </div>
 
         <div>
-          <label className="block text-gray-700 font-semibold mb-2">Tags (comma-separated)</label>
+          <label className={`block font-semibold mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>Tags (comma-separated)</label>
           <TagSearchInput
             value={formData.tags}
             onChange={(value) => setFormData({ ...formData, tags: value })}
             placeholder="AI, Machine Learning, Python"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
           />
         </div>
 
         {/* Image Input - Upload or URL */}
         <div className="space-y-3">
-          <label className="block text-gray-700 font-semibold mb-2">Image</label>
+          <label className={`block font-semibold mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>Image</label>
           <div className="flex gap-4 mb-3">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -203,7 +212,7 @@ export default function AdminArticlesPage() {
                   setFormData({ ...formData, image: '' })
                 }}
               />
-              <span className="text-gray-700">Upload File (max 3MB)</span>
+              <span className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>Upload File (max 3MB)</span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -216,7 +225,7 @@ export default function AdminArticlesPage() {
                   setFormData({ ...formData, image: '' })
                 }}
               />
-              <span className="text-gray-700">Use URL (CatBox, Imgur, etc.)</span>
+              <span className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>Use URL (CatBox, Imgur, etc.)</span>
             </label>
           </div>
 
@@ -232,7 +241,7 @@ export default function AdminArticlesPage() {
               <button
                 type="button"
                 onClick={() => document.getElementById('articleImageUpload')?.click()}
-                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition"
+                className={`px-4 py-2 text-white rounded-lg transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-600 hover:bg-gray-700'}`}
               >
                 Choose File
               </button>
@@ -248,7 +257,7 @@ export default function AdminArticlesPage() {
               value={formData.image}
               onChange={handleImageUrlChange}
               placeholder="https://example.com/image.jpg"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
             />
           )}
         </div>
@@ -257,7 +266,7 @@ export default function AdminArticlesPage() {
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold disabled:opacity-50 transition"
+            className={`px-6 py-2 text-white rounded-lg font-semibold disabled:opacity-50 transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-blue-700 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'}`}
           >
             {editingId ? 'Update Article' : 'Create Article'}
           </button>
@@ -269,7 +278,7 @@ export default function AdminArticlesPage() {
                 setFormData({ title: '', description: '', url: '', tags: '', image: '' })
                 setImageInputMethod('upload')
               }}
-              className="px-6 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg font-semibold transition"
+              className={`px-6 py-2 text-white rounded-lg font-semibold transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-gray-600 hover:bg-gray-500' : 'bg-gray-400 hover:bg-gray-500'}`}
             >
               Cancel
             </button>
@@ -280,10 +289,10 @@ export default function AdminArticlesPage() {
       {/* Articles List */}
       <div className="grid gap-4">
         {articles.length === 0 ? (
-          <p className="text-gray-600 text-center py-8">No articles yet.</p>
+          <p className={`text-center py-8 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>No articles yet.</p>
         ) : (
           articles.map((article) => (
-            <div key={String(article.id)} className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition p-4 flex gap-4">
+            <div key={String(article.id)} className={`rounded-lg shadow-md border overflow-hidden hover:shadow-lg transition p-4 flex gap-4 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
               {article.image && (
                 <img
                   src={article.image}
@@ -292,12 +301,12 @@ export default function AdminArticlesPage() {
                 />
               )}
               <div className="flex-1">
-                <h3 className="font-bold text-lg text-gray-900">{article.title}</h3>
-                {article.description && <p className="text-gray-600 text-sm mt-1">{article.description}</p>}
+                <h3 className={`font-bold text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{article.title}</h3>
+                {article.description && <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{article.description}</p>}
                 {article.tags && article.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
                     {article.tags.map((tag) => (
-                      <span key={tag} className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
+                      <span key={tag} className={`px-2 py-1 text-xs rounded-full ${isDarkMode ? 'bg-purple-900 text-purple-200' : 'bg-purple-100 text-purple-700'}`}>
                         {tag}
                       </span>
                     ))}
@@ -309,7 +318,7 @@ export default function AdminArticlesPage() {
                       href={article.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline text-sm font-semibold flex items-center gap-1"
+                      className={`text-sm font-semibold flex items-center gap-1 hover:underline ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}
                     >
                       {article.url.includes('medium') ? (
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -324,13 +333,13 @@ export default function AdminArticlesPage() {
               <div className="flex flex-col gap-2 justify-start">
                 <button
                   onClick={() => handleEdit(article)}
-                  className="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded font-semibold text-sm transition"
+                  className="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded font-semibold text-sm transition-transform duration-300 ease-out hover:scale-105"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(String(article.id))}
-                  className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded font-semibold text-sm transition"
+                  className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded font-semibold text-sm transition-transform duration-300 ease-out hover:scale-105"
                 >
                   Delete
                 </button>

@@ -19,9 +19,18 @@ export default function AdminProjectsPage() {
   const [formData, setFormData] = useState({ title: '', description: '', url: '', tags: '', image: '', demo_video: '' })
   const [imageInputMethod, setImageInputMethod] = useState<'upload' | 'url'>('upload')
   const [uploadingVideo, setUploadingVideo] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(false)
 
   useEffect(() => {
     fetchProjects()
+    
+    const updateTheme = () => {
+      setIsDarkMode(document.documentElement.classList.contains('dark-mode'))
+    }
+    updateTheme()
+    const observer = new MutationObserver(updateTheme)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    return () => observer.disconnect()
   }, [])
 
   const fetchProjects = async () => {
@@ -187,45 +196,45 @@ export default function AdminProjectsPage() {
     <section className="space-y-6">
       <h1 className="text-2xl font-semibold">Manage Projects</h1>
 
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 space-y-4">
+      <form onSubmit={handleSubmit} className={`p-6 rounded-lg shadow-sm border space-y-4 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
         <div>
-          <label className="block font-medium mb-1 text-black">Title</label>
+          <label className={`block font-medium mb-1 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>Title</label>
           <input
             type="text"
             required
             value={formData.title}
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded text-black placeholder-gray-400"
+            className={`w-full px-3 py-2 border rounded ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
           />
         </div>
         <div>
-          <label className="block font-medium mb-1 text-black">Description</label>
+          <label className={`block font-medium mb-1 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>Description</label>
           <textarea
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded h-24 text-black placeholder-gray-400"
+            className={`w-full px-3 py-2 border rounded h-24 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
           />
         </div>
         <div>
-          <label className="block font-medium mb-1 text-black">URL</label>
+          <label className={`block font-medium mb-1 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>URL</label>
           <input
             type="url"
             value={formData.url}
             onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded text-black placeholder-gray-400"
+            className={`w-full px-3 py-2 border rounded ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
           />
         </div>
         <div>
-          <label className="block font-medium mb-1 text-black">Tags (comma separated)</label>
+          <label className={`block font-medium mb-1 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>Tags (comma separated)</label>
           <TagSearchInput
             value={formData.tags}
             onChange={(value) => setFormData({ ...formData, tags: value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded text-black placeholder-gray-400"
+            className={`w-full px-3 py-2 border rounded ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
             placeholder="React, Next.js, TypeScript"
           />
         </div>
         <div>
-          <label className="block font-medium mb-2 text-black">Image / GIF</label>
+          <label className={`block font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>Image / GIF</label>
           
           {/* Image input method selector */}
           <div className="flex gap-4 mb-3">
@@ -240,7 +249,7 @@ export default function AdminProjectsPage() {
                 }}
                 className="cursor-pointer"
               />
-              <span className="text-sm text-gray-700">Upload File (max 3MB)</span>
+              <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Upload File (max 3MB)</span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -253,18 +262,18 @@ export default function AdminProjectsPage() {
                 }}
                 className="cursor-pointer"
               />
-              <span className="text-sm text-gray-700">Use URL (CatBox, Imgur, etc.)</span>
+              <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Use URL (CatBox, Imgur, etc.)</span>
             </label>
           </div>
 
           {/* File upload option */}
           {imageInputMethod === 'upload' && (
             <div className="flex items-center gap-4">
-              <label htmlFor="project-image" className="px-4 py-2 bg-gray-200 text-gray-900 rounded cursor-pointer hover:bg-gray-300">
+              <label htmlFor="project-image" className={`px-4 py-2 rounded cursor-pointer transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-gray-700 text-gray-200 hover:bg-gray-600' : 'bg-gray-200 text-gray-900 hover:bg-gray-300'}`}>
                 Choose File
               </label>
               <input id="project-image" type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-              <span className="text-sm text-gray-700">{formData.image && !formData.image.startsWith('http') ? 'File selected' : 'No file chosen'}</span>
+              <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>{formData.image && !formData.image.startsWith('http') ? 'File selected' : 'No file chosen'}</span>
             </div>
           )}
 
@@ -275,7 +284,7 @@ export default function AdminProjectsPage() {
               placeholder="https://files.catbox.moe/abc123.gif"
               value={formData.image?.startsWith('http') ? formData.image : ''}
               onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded text-black placeholder-gray-400"
+              className={`w-full px-3 py-2 border rounded ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
             />
           )}
 
@@ -290,11 +299,11 @@ export default function AdminProjectsPage() {
 
         {/* Video upload section */}
         <div>
-          <label className="block font-medium mb-2 text-black">Demo Video (Optional)</label>
-          <p className="text-xs text-gray-600 mb-3">Upload a video to showcase your project. Videos are stored as static assets for fast loading. Max 50MB. Supported: MP4, WebM, OGG, MOV.</p>
+          <label className={`block font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>Demo Video (Optional)</label>
+          <p className={`text-xs mb-3 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Upload a video to showcase your project. Videos are stored as static assets for fast loading. Max 50MB. Supported: MP4, WebM, OGG, MOV.</p>
           
           <div className="flex items-center gap-4">
-            <label htmlFor="project-video" className="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded cursor-pointer hover:opacity-90 disabled:opacity-50">
+            <label htmlFor="project-video" className={`px-4 py-2 rounded cursor-pointer disabled:opacity-50 transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' : 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:opacity-90'}`}>
               {uploadingVideo ? 'Uploading...' : 'Choose Video'}
             </label>
             <input 
@@ -305,14 +314,14 @@ export default function AdminProjectsPage() {
               disabled={uploadingVideo}
               className="hidden" 
             />
-            <span className="text-sm text-gray-700">
+            <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
               {formData.demo_video ? formData.demo_video.split('/').pop() : 'No video chosen'}
             </span>
             {formData.demo_video && (
               <button
                 type="button"
                 onClick={() => setFormData(prev => ({ ...prev, demo_video: '' }))}
-                className="text-xs text-red-600 hover:text-red-800"
+                className="text-xs text-red-600 hover:text-red-800 transition-transform duration-300 ease-out hover:scale-105"
               >
                 Remove
               </button>
@@ -327,7 +336,7 @@ export default function AdminProjectsPage() {
               muted
               loop
               playsInline
-              className="mt-3 max-h-60 rounded border border-gray-300"
+              className={`mt-3 max-h-60 rounded border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'}`}
               onError={(e) => {
                 console.error('Video preview error')
               }}
@@ -340,7 +349,7 @@ export default function AdminProjectsPage() {
         <button
           type="submit"
           disabled={loading}
-          className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
+          className={`px-4 py-2 rounded disabled:opacity-50 transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-blue-700 text-white hover:bg-blue-600' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
         >
           {editingId ? 'Update' : 'Create'} Project
         </button>
@@ -352,7 +361,7 @@ export default function AdminProjectsPage() {
               setFormData({ title: '', description: '', url: '', tags: '', image: '', demo_video: '' })
               setImageInputMethod('upload')
             }}
-            className="ml-2 px-4 py-2 bg-gray-400 text-white rounded"
+            className={`ml-2 px-4 py-2 rounded transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-gray-600 text-white hover:bg-gray-500' : 'bg-gray-400 text-white hover:bg-gray-500'}`}
           >
             Cancel
           </button>
@@ -361,22 +370,22 @@ export default function AdminProjectsPage() {
 
       <div className="space-y-3">
         {projects.map((proj) => (
-          <div key={String(proj.id)} className="p-4 bg-white rounded-lg shadow-sm border border-gray-200 flex justify-between items-start gap-4">
+          <div key={String(proj.id)} className={`p-4 rounded-lg shadow-sm border flex justify-between items-start gap-4 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
             <div className="flex gap-4 items-start">
               {proj.demo_video ? (
                 <video src={proj.demo_video} className="w-32 h-24 object-cover rounded" autoPlay muted loop playsInline />
               ) : proj.image ? (
                 <img src={proj.image} alt={proj.title} className="w-32 h-24 object-cover rounded" />
               ) : (
-                <div className="w-32 h-24 bg-gray-100 rounded flex items-center justify-center text-sm text-gray-500">No Media</div>
+                <div className={`w-32 h-24 rounded flex items-center justify-center text-sm ${isDarkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-100 text-gray-500'}`}>No Media</div>
               )}
               <div>
-                <h3 className="font-semibold text-black">{proj.title}</h3>
-                {proj.description && <p className="text-gray-600 text-sm">{proj.description}</p>}
+                <h3 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-black'}`}>{proj.title}</h3>
+                {proj.description && <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{proj.description}</p>}
                 {proj.tags && proj.tags.length > 0 && (
                   <div className="mt-2 flex gap-1">
                     {proj.tags.map((tag) => (
-                      <span key={tag} className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">
+                      <span key={tag} className={`px-2 py-1 text-xs rounded ${isDarkMode ? 'bg-blue-900 text-blue-200' : 'bg-blue-100 text-blue-700'}`}>
                         {tag}
                       </span>
                     ))}
@@ -384,15 +393,15 @@ export default function AdminProjectsPage() {
                 )}
                 {proj.url && (
                   <div className="mt-2 flex items-center gap-2">
-                    <a href={proj.url} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm text-blue-600 hover:underline">
+                    <a href={proj.url} target="_blank" rel="noreferrer" className={`flex items-center gap-2 text-sm hover:underline ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>
                       {proj.url.includes('github.com') ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>
                           <path d="M12 0.5C5.5 0.5 0.5 5.5 0.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.2-1.6-1.2-1.6-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1 1.6.8 1.6.8.9 1.5 2.4 1.1 3 .8.1-.7.4-1.1.7-1.4-2.5-.3-5.1-1.2-5.1-5.3 0-1.2.4-2.1 1.1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .9-.3 2.9 1.1.8-.2 1.7-.4 2.6-.4s1.8.1 2.6.4c2-1.4 2.9-1.1 2.9-1.1.6 1.5.2 2.6.1 2.9.7.7 1.1 1.6 1.1 2.8 0 4-2.6 5-5.1 5.3.4.4.8 1 .8 2v3c0 .3.2.7.8.6C20.7 21.4 24 17.1 24 12c0-6.5-5-11.5-12-11.5z" />
                         </svg>
                       ) : proj.url.includes('huggingface') ? (
                         <span className="text-lg">🤗</span>
                       ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>
                           <path d="M10 9h4v6h-4z"/>
                           <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/>
                         </svg>
@@ -406,13 +415,13 @@ export default function AdminProjectsPage() {
             <div className="flex gap-2">
               <button
                 onClick={() => handleEdit(proj)}
-                className="px-3 py-1 bg-yellow-500 text-white rounded text-sm"
+                className="px-3 py-1 bg-yellow-500 text-white rounded text-sm transition-transform duration-300 ease-out hover:scale-105"
               >
                 Edit
               </button>
               <button
                 onClick={() => handleDelete(String(proj.id))}
-                className="px-3 py-1 bg-red-500 text-white rounded text-sm"
+                className="px-3 py-1 bg-red-500 text-white rounded text-sm transition-transform duration-300 ease-out hover:scale-105"
               >
                 Delete
               </button>
