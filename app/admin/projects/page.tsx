@@ -1,12 +1,14 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { SiHuggingface } from 'react-icons/si'
 import TagSearchInput from '@/components/TagSearchInput'
 
 interface IProject {
   id: number
   title: string
   description?: string
-  url?: string
+  github_url?: string
+  huggingface_url?: string
   tags?: string[]
   image?: string
   demo_video?: string
@@ -16,7 +18,7 @@ export default function AdminProjectsPage() {
   const [projects, setProjects] = useState<IProject[]>([])
   const [loading, setLoading] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [formData, setFormData] = useState({ title: '', description: '', url: '', tags: '', image: '', demo_video: '' })
+  const [formData, setFormData] = useState({ title: '', description: '', github_url: '', huggingface_url: '', tags: '', image: '', demo_video: '' })
   const [imageInputMethod, setImageInputMethod] = useState<'upload' | 'url'>('upload')
   const [uploadingVideo, setUploadingVideo] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
@@ -57,10 +59,18 @@ export default function AdminProjectsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    
+    if (!formData.github_url?.trim() && !formData.huggingface_url?.trim()) {
+      alert('At least one URL (GitHub repository or Hugging Face link) is required')
+      setLoading(false)
+      return
+    }
+    
     const body = {
       title: formData.title,
       description: formData.description,
-      url: formData.url,
+      github_url: formData.github_url,
+      huggingface_url: formData.huggingface_url,
       tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
       image: formData.image || '',
       demo_video: formData.demo_video || ''
@@ -76,7 +86,7 @@ export default function AdminProjectsPage() {
         })
         if (res.ok) {
           setEditingId(null)
-          setFormData({ title: '', description: '', url: '', tags: '', image: '', demo_video: '' })
+          setFormData({ title: '', description: '', github_url: '', huggingface_url: '', tags: '', image: '', demo_video: '' })
           setImageInputMethod('upload')
           fetchProjects()
         } else {
@@ -90,7 +100,7 @@ export default function AdminProjectsPage() {
           body: JSON.stringify(body)
         })
         if (res.ok) {
-          setFormData({ title: '', description: '', url: '', tags: '', image: '', demo_video: '' })
+          setFormData({ title: '', description: '', github_url: '', huggingface_url: '', tags: '', image: '', demo_video: '' })
           setImageInputMethod('upload')
           fetchProjects()
         } else {
@@ -118,7 +128,8 @@ export default function AdminProjectsPage() {
     setFormData({
       title: proj.title,
       description: proj.description || '',
-      url: proj.url || '',
+      github_url: proj.github_url || '',
+      huggingface_url: proj.huggingface_url || '',
       tags: (proj.tags || []).join(', '),
       image: imageValue,
       demo_video: proj.demo_video || ''
@@ -216,13 +227,25 @@ export default function AdminProjectsPage() {
           />
         </div>
         <div>
-          <label className={`block font-medium mb-1 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>URL</label>
+          <label className={`block font-medium mb-1 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>GitHub Repository URL (Optional)</label>
           <input
             type="url"
-            value={formData.url}
-            onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+            value={formData.github_url}
+            onChange={(e) => setFormData({ ...formData, github_url: e.target.value })}
+            placeholder="https://github.com/username/repo"
             className={`w-full px-3 py-2 border rounded ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
           />
+        </div>
+        <div>
+          <label className={`block font-medium mb-1 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>Hugging Face Live Project URL (Optional)</label>
+          <input
+            type="url"
+            value={formData.huggingface_url}
+            onChange={(e) => setFormData({ ...formData, huggingface_url: e.target.value })}
+            placeholder="https://huggingface.co/spaces/username/project"
+            className={`w-full px-3 py-2 border rounded ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
+          />
+          <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>At least one URL is required. Use GitHub for repositories and Hugging Face for live demos.</p>
         </div>
         <div>
           <label className={`block font-medium mb-1 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>Tags (comma separated)</label>
@@ -358,7 +381,7 @@ export default function AdminProjectsPage() {
             type="button"
             onClick={() => {
               setEditingId(null)
-              setFormData({ title: '', description: '', url: '', tags: '', image: '', demo_video: '' })
+              setFormData({ title: '', description: '', github_url: '', huggingface_url: '', tags: '', image: '', demo_video: '' })
               setImageInputMethod('upload')
             }}
             className={`ml-2 px-4 py-2 rounded transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-gray-600 text-white hover:bg-gray-500' : 'bg-gray-400 text-white hover:bg-gray-500'}`}
@@ -391,25 +414,22 @@ export default function AdminProjectsPage() {
                     ))}
                   </div>
                 )}
-                {proj.url && (
-                  <div className="mt-2 flex items-center gap-2">
-                    <a href={proj.url} target="_blank" rel="noreferrer" className={`flex items-center gap-2 text-sm hover:underline ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>
-                      {proj.url.includes('github.com') ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>
-                          <path d="M12 0.5C5.5 0.5 0.5 5.5 0.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.2-1.6-1.2-1.6-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1 1.6.8 1.6.8.9 1.5 2.4 1.1 3 .8.1-.7.4-1.1.7-1.4-2.5-.3-5.1-1.2-5.1-5.3 0-1.2.4-2.1 1.1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .9-.3 2.9 1.1.8-.2 1.7-.4 2.6-.4s1.8.1 2.6.4c2-1.4 2.9-1.1 2.9-1.1.6 1.5.2 2.6.1 2.9.7.7 1.1 1.6 1.1 2.8 0 4-2.6 5-5.1 5.3.4.4.8 1 .8 2v3c0 .3.2.7.8.6C20.7 21.4 24 17.1 24 12c0-6.5-5-11.5-12-11.5z" />
-                        </svg>
-                      ) : proj.url.includes('huggingface') ? (
-                        <span className="text-lg">🤗</span>
-                      ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>
-                          <path d="M10 9h4v6h-4z"/>
-                          <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/>
-                        </svg>
-                      )}
-                      <span>View Project</span>
+                <div className="mt-2 flex items-center gap-3">
+                  {proj.github_url && (
+                    <a href={proj.github_url} target="_blank" rel="noreferrer" className={`flex items-center gap-2 text-sm hover:underline ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>
+                        <path d="M12 0.5C5.5 0.5 0.5 5.5 0.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.2-1.6-1.2-1.6-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1 1.6.8 1.6.8.9 1.5 2.4 1.1 3 .8.1-.7.4-1.1.7-1.4-2.5-.3-5.1-1.2-5.1-5.3 0-1.2.4-2.1 1.1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .9-.3 2.9 1.1.8-.2 1.7-.4 2.6-.4s1.8.1 2.6.4c2-1.4 2.9-1.1 2.9-1.1.6 1.5.2 2.6.1 2.9.7.7 1.1 1.6 1.1 2.8 0 4-2.6 5-5.1 5.3.4.4.8 1 .8 2v3c0 .3.2.7.8.6C20.7 21.4 24 17.1 24 12c0-6.5-5-11.5-12-11.5z" />
+                      </svg>
+                      <span>Repo</span>
                     </a>
-                  </div>
-                )}
+                  )}
+                  {proj.huggingface_url && (
+                    <a href={proj.huggingface_url} target="_blank" rel="noreferrer" className={`flex items-center gap-2 text-sm hover:underline ${isDarkMode ? 'text-amber-400' : 'text-amber-600'}`}>
+                      <SiHuggingface className="w-4 h-4" />
+                      <span>Live Project</span>
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex gap-2">

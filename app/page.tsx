@@ -408,19 +408,22 @@ export default async function Home() {
                 className="group hover-scale p-5 sm:p-6 bg-gray-800/50 light:bg-white/90 backdrop-blur border border-gray-700 light:border-gray-300 rounded-xl hover:border-blue-500 transition duration-300 flex flex-col w-full"
                 role="listitem"
               >
-                {p.demo_video ? (
-                  <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48">
-                    <LazyVideo
-                      src={p.demo_video}
-                      alt={`${p.title} demo`}
-                      className="w-full h-full"
-                    />
-                  </div>
-                ) : p.image ? (
-                  <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48">
+                {/* Project Image - No autoplay */}
+                {p.image ? (
+                  <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48 bg-gray-700 flex items-center justify-center">
                     <img src={p.image} alt={`Screenshot of ${p.title} project`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                   </div>
-                ) : null}
+                ) : p.demo_video ? (
+                  <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48 bg-gray-700 flex items-center justify-center">
+                    <svg className="w-16 h-16 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                    </svg>
+                  </div>
+                ) : (
+                  <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48 bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+                    <span className="text-white text-center px-4 font-semibold">{p.title}</span>
+                  </div>
+                )}
                 
               <div className="mb-4">
                 <h3 className="text-xl font-semibold group-hover:text-blue-400 transition duration-300 break-words" id={`project-${p.id}`}>
@@ -428,7 +431,7 @@ export default async function Home() {
                 </h3>
               </div>
                 {p.description && (
-                  <p className="text-gray-400 text-sm mb-4">{p.description}</p>
+                  <p className="text-gray-400 text-sm mb-4 line-clamp-2">{p.description}</p>
                 )}
                 
                 {p.tags && p.tags.length > 0 && (
@@ -439,29 +442,42 @@ export default async function Home() {
                   </div>
                 )}
                 
-                {p.url && (
+                <div className="flex flex-wrap gap-3 mt-auto">
+                  {/* Details Link */}
                   <a
-                    href={p.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition duration-300 text-sm font-semibold"
-                    aria-label={`View ${p.title} project`}
+                    href={`/projects/${p.id}`}
+                    className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition duration-300 text-sm font-semibold hover:underline"
                   >
-                    {p.url.includes('github.com') ? (
+                    <span>Details →</span>
+                  </a>
+                  
+                  {p.github_url && (
+                    <a
+                      href={p.github_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition duration-300 text-sm font-semibold"
+                      aria-label={`View ${p.title} repository`}
+                    >
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 0.5C5.5 0.5 0.5 5.5 0.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.2-1.6-1.2-1.6-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1 1.6.8 1.6.8.9 1.5 2.4 1.1 3 .8.1-.7.4-1.1.7-1.4-2.5-.3-5.1-1.2-5.1-5.3 0-1.2.4-2.1 1.1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .9-.3 2.9 1.1.8-.2 1.7-.4 2.6-.4s1.8.1 2.6.4c2-1.4 2.9-1.1 2.9-1.1.6 1.5.2 2.6.1 2.9.7.7 1.1 1.6 1.1 2.8 0 4-2.6 5-5.1 5.3.4.4.8 1 .8 2v3c0 .3.2.7.8.6C20.7 21.4 24 17.1 24 12c0-6.5-5-11.5-12-11.5z" />
                       </svg>
-                    ) : p.url.includes('huggingface') ? (
-                      <span className="text-lg">🤗</span>
-                    ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M10 9h4v6h-4z"/>
-                        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/>
-                      </svg>
-                    )}
-                    <span>View Project</span>
-                  </a>
-                )}
+                      <span>Repo</span>
+                    </a>
+                  )}
+                  {p.huggingface_url && (
+                    <a
+                      href={p.huggingface_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-amber-400 hover:text-amber-300 transition duration-300 text-sm font-semibold"
+                      aria-label={`View ${p.title} live project`}
+                    >
+                      <SiHuggingface className="w-4 h-4" />
+                      <span>Live Project</span>
+                    </a>
+                  )}
+                </div>
               </div>
             ))}
           </div>
