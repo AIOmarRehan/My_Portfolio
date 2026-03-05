@@ -11,11 +11,17 @@ export async function POST(req: NextRequest) {
     if (!token || token?.email !== process.env.ADMIN_EMAIL) return new Response('Not Found', { status: 404 })
     const body = await req.json()
     if (!body?.title) return new Response('Bad Request', { status: 400 })
+    
+    // Validate that at least one URL is provided
+    if (!body?.github_url && !body?.huggingface_url) {
+      return new Response('At least one URL is required', { status: 400 })
+    }
 
     const payload = {
       title: body.title,
       description: body.description || '',
-      url: body.url || '',
+      github_url: body.github_url || null,
+      huggingface_url: body.huggingface_url || null,
       tags: body.tags || [],
       image: body.image || null,
       demo_video: body.demo_video || null,
@@ -45,8 +51,19 @@ export async function PUT(req: NextRequest) {
     if (!body?.id) return new Response('Bad Request', { status: 400 })
 
     const updates: any = body.updates || {}
-    if (body.image) updates.image = body.image
+    if (body.image !== undefined) updates.image = body.image
     if (body.demo_video !== undefined) updates.demo_video = body.demo_video
+    
+    // Add the new URL fields
+    if (updates.github_url !== undefined || updates.huggingface_url !== undefined) {
+      // Validate that at least one URL is provided
+      const hasGithub = updates.github_url || (body.existing?.github_url)
+      const hasHuggingface = updates.huggingface_url || (body.existing?.huggingface_url)
+      
+      if (!hasGithub && !hasHuggingface) {
+        return new Response('At least one URL is required', { status: 400 })
+      }
+    }
 
     const { data, error } = await supabase.from('projects').update(updates).eq('id', body.id).select().single()
     if (error) {
