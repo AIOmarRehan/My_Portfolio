@@ -27,7 +27,6 @@ export default function ProjectDetailsPage() {
   const [project, setProject] = useState<IProject | null>(null)
   const [allProjects, setAllProjects] = useState<IProject[]>([])
   const [loading, setLoading] = useState(true)
-  const [scrollPosition, setScrollPosition] = useState(0)
 
   useEffect(() => {
     fetchProject()
@@ -65,12 +64,14 @@ export default function ProjectDetailsPage() {
     const carousel = document.getElementById('carousel')
     if (carousel) {
       const scrollAmount = 400
-      const newPosition = direction === 'left' 
-        ? Math.max(0, scrollPosition - scrollAmount)
-        : scrollPosition + scrollAmount
-      
-      carousel.scrollLeft = newPosition
-      setScrollPosition(newPosition)
+      const currentPosition = carousel.scrollLeft
+      const maxScrollLeft = Math.max(0, carousel.scrollWidth - carousel.clientWidth)
+      const targetPosition = direction === 'left'
+        ? currentPosition - scrollAmount
+        : currentPosition + scrollAmount
+      const newPosition = Math.min(maxScrollLeft, Math.max(0, targetPosition))
+
+      carousel.scrollTo({ left: newPosition, behavior: 'smooth' })
     }
   }
 
