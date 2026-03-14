@@ -3,11 +3,11 @@ import ContactForm from '../components/ContactForm'
 import ScrollToContactButton from '../components/ScrollToContactButton'
 import LazyVideo from '../components/LazyVideo'
 import HeroTitle from '../components/HeroSection'
-import CVDownloadButton from '../components/CVDownloadButton'
-import WhatsAppButton from '../components/WhatsAppButton'
 import Typewriter from '../components/Typewriter'
-import { FaEnvelope, FaGithub, FaLinkedin, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa'
-import { SiHuggingface, SiKaggle, SiMedium } from 'react-icons/si'
+import ContactCard from '../components/ContactCard'
+import QRSection from '../components/QRSection'
+import { FaExternalLinkAlt } from 'react-icons/fa'
+import { SiHuggingface } from 'react-icons/si'
 import { supabase } from '@/lib/supabaseServer'
 
 // Revalidate page every hour
@@ -61,6 +61,32 @@ async function getCertificates() {
   
   if (error) {
     console.error('Error fetching certificates:', error)
+    return []
+  }
+  return data || []
+}
+
+async function getFullstackProjects() {
+  const { data, error } = await supabase
+    .from('fullstack_projects')
+    .select('*')
+    .order('created_at', { ascending: false })
+  
+  if (error) {
+    console.error('Error fetching fullstack projects:', error)
+    return []
+  }
+  return data || []
+}
+
+async function getSiteCards() {
+  const { data, error } = await supabase
+    .from('site_cards')
+    .select('*')
+    .order('sort_order', { ascending: true })
+
+  if (error) {
+    console.error('Error fetching site cards:', error)
     return []
   }
   return data || []
@@ -241,9 +267,22 @@ const mockCertificates = [
 export default async function Home() {
   // Fetch all data from database
   const projects = await getProjects()
+  const fullstackProjects = await getFullstackProjects()
   const experiences = await getExperiences()
   const articles = await getArticles()
   const certificates = await getCertificates()
+  const siteCards = await getSiteCards()
+
+  // Parse contact and QR card data from the database
+  const contactRow = siteCards.find((c: { section: string }) => c.section === 'contact')
+  const contactData = contactRow?.card_data as { links?: Array<{ label: string; href: string; icon: string; displayText: string }>; cvPath?: string } | undefined
+  const contactLinks = contactData?.links
+  const contactCvPath = contactData?.cvPath
+
+  const qrRows = siteCards.filter((c: { section: string }) => c.section === 'qr')
+  const qrCards = qrRows.length > 0
+    ? qrRows.map((r: { card_data: Record<string, unknown> }) => r.card_data as { label: string; imageSrc: string; borderColor: string; textColor: string; buttonType: 'cv' | 'whatsapp'; linkUrl: string })
+    : undefined
 
   return (
     <div id="top" className="space-y-20">
@@ -270,9 +309,16 @@ export default async function Home() {
                 <a
                   href="#projects"
                   className="px-6 py-3 min-h-[44px] bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 flex items-center justify-center"
-                  aria-label="Navigate to projects section"
+                  aria-label="Navigate to AI projects section"
                 >
-                  View My Projects
+                  AI Projects
+                </a>
+                <a
+                  href="#fullstack-projects"
+                  className="px-6 py-3 min-h-[44px] bg-gradient-to-r from-cyan-500 to-teal-600 text-white rounded-lg font-semibold hover:opacity-90 transition duration-300 focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 flex items-center justify-center"
+                  aria-label="Navigate to full-stack projects section"
+                >
+                  Full-Stack Projects
                 </a>
                 <a
                   href="#experience"
@@ -299,104 +345,14 @@ export default async function Home() {
             </div>
           </div>
 
-          <div id="contact-card" className="animated-border-card hero-theme-card w-full">
-            <div className="hero-theme-card-content relative z-10 h-full rounded-2xl bg-gray-900/70 light:bg-white/90 p-6 sm:p-8 md:p-10 backdrop-blur flex flex-col">
-              <h2 className="text-2xl font-semibold text-white light:text-gray-900 mb-6">Contact & Profiles</h2>
-              <div className="space-y-4 text-sm" role="list">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
-                  <span className="text-gray-300 light:text-gray-800 uppercase tracking-widest text-xs">Location</span>
-                  <span className="text-gray-200 light:text-gray-900 inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
-                    <FaMapMarkerAlt className="text-blue-300 light:text-blue-600" aria-hidden="true" />
-                    Ajman, UAE
-                  </span>
-                </div>
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
-                  <span className="text-gray-300 light:text-gray-800 uppercase tracking-widest text-xs">Phone Number</span>
-                  <a href="tel:+971509669311" className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
-                    <FaPhoneAlt aria-hidden="true" />
-                    +971 50 966 9311
-                  </a>
-                </div>
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
-                  <span className="text-gray-300 light:text-gray-800 uppercase tracking-widest text-xs">Email</span>
-                  <a href="mailto:ai.omar.rehan@gmail.com" className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right">
-                    <FaEnvelope aria-hidden="true" />
-                    ai.omar.rehan@gmail.com
-                  </a>
-                </div>
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
-                  <span className="text-gray-300 light:text-gray-800 uppercase tracking-widest text-xs">GitHub</span>
-                  <a
-                    href="https://github.com/AIOmarRehan"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
-                  >
-                    <FaGithub aria-hidden="true" />
-                    github.com/AIOmarRehan
-                  </a>
-                </div>
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
-                  <span className="text-gray-300 light:text-gray-800 uppercase tracking-widest text-xs">LinkedIn</span>
-                  <a
-                    href="https://linkedin.com/in/omar-rehan-47b98636a"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
-                  >
-                    <FaLinkedin aria-hidden="true" />
-                    linkedin.com/in/omar-rehan-47b98636a
-                  </a>
-                </div>
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
-                  <span className="text-gray-300 light:text-gray-800 uppercase tracking-widest text-xs">Kaggle</span>
-                  <a
-                    href="https://kaggle.com/aiomarrehan"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
-                  >
-                    <SiKaggle aria-hidden="true" />
-                    kaggle.com/aiomarrehan
-                  </a>
-                </div>
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
-                  <span className="text-gray-300 light:text-gray-800 uppercase tracking-widest text-xs">HuggingFace</span>
-                  <a
-                    href="https://huggingface.co/AIOmarRehan"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
-                  >
-                    <SiHuggingface aria-hidden="true" />
-                    huggingface.co/AIOmarRehan
-                  </a>
-                </div>
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-6" role="listitem">
-                  <span className="text-gray-300 light:text-gray-800 uppercase tracking-widest text-xs">Medium</span>
-                  <a
-                    href="https://medium.com/@ai.omar.rehan"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-300 hover:text-blue-200 light:text-blue-600 light:hover:text-blue-700 transition inline-flex items-center gap-2 break-words w-full sm:w-auto sm:justify-end sm:text-right"
-                  >
-                    <SiMedium aria-hidden="true" />
-                    medium.com/@ai.omar.rehan
-                  </a>
-                </div>
-              </div>
-              <div className="mt-8 pt-6 border-t border-gray-700 light:border-gray-300">
-                <CVDownloadButton buttonSize="lg" />
-              </div>
-            </div>
-          </div>
+          <ContactCard initialLinks={contactLinks} initialCvPath={contactCvPath} />
         </div>
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="fade-in overflow-visible" aria-label="Featured projects">
+      <section id="projects" className="fade-in overflow-visible" aria-label="AI projects">
         <div className="flex items-center gap-4 mb-12">
-          <h2 className="text-4xl font-bold text-white light:text-gray-900">Featured Projects</h2>
+          <h2 className="text-4xl font-bold text-white light:text-gray-900">AI Projects</h2>
           <div className="flex-1 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded"></div>
         </div>
         
@@ -484,6 +440,99 @@ export default async function Home() {
         ) : (
           <div className="text-center py-12 bg-gray-800/30 border border-gray-700 rounded-lg">
             <p className="text-gray-400">No projects yet. Check back soon!</p>
+          </div>
+        )}
+      </section>
+
+      {/* Full-Stack Projects Section */}
+      <section id="fullstack-projects" className="fade-in overflow-visible" aria-label="Full-Stack projects">
+        <div className="flex items-center gap-4 mb-12">
+          <h2 className="text-4xl font-bold text-white light:text-gray-900">Full-Stack Projects</h2>
+          <div className="flex-1 h-1 bg-gradient-to-r from-cyan-500 to-teal-600 rounded"></div>
+        </div>
+        
+        {fullstackProjects.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full overflow-visible" role="list">
+            {fullstackProjects.map((p: any, idx: number) => (
+              <div
+                key={String(p.id)}
+                className="group hover-scale p-5 sm:p-6 bg-gray-800/50 light:bg-white/90 backdrop-blur border border-gray-700 light:border-gray-300 rounded-xl hover:border-cyan-500 transition duration-300 flex flex-col w-full"
+                role="listitem"
+              >
+                {/* Project Image */}
+                {p.image ? (
+                  <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48 bg-gray-700 flex items-center justify-center">
+                    <img src={p.image} alt={`Screenshot of ${p.title} project`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+                  </div>
+                ) : p.demo_video ? (
+                  <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48 bg-gray-700 flex items-center justify-center">
+                    <svg className="w-16 h-16 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                    </svg>
+                  </div>
+                ) : (
+                  <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48 bg-gradient-to-br from-cyan-600 to-teal-600 flex items-center justify-center">
+                    <span className="text-white text-center px-4 font-semibold">{p.title}</span>
+                  </div>
+                )}
+                
+                <div className="mb-4">
+                  <h3 className="text-xl font-semibold group-hover:text-cyan-400 transition duration-300 break-words">
+                    {p.title}
+                  </h3>
+                </div>
+                {p.description && (
+                  <p className="text-gray-400 text-sm mb-4">{p.description}</p>
+                )}
+                
+                {p.tags && p.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {p.tags.map((tag: string, tIdx: number) => (
+                      <TagBadge key={tIdx} tag={tag} variant="blue" />
+                    ))}
+                  </div>
+                )}
+                
+                <div className="flex flex-wrap gap-3 mt-auto">
+                  {/* Details Link */}
+                  <a
+                    href={`/fullstack-projects/${p.id}`}
+                    className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition duration-300 text-sm font-semibold hover:underline"
+                  >
+                    <span>Details →</span>
+                  </a>
+                  
+                  {p.github_url && (
+                    <a
+                      href={p.github_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition duration-300 text-sm font-semibold"
+                      aria-label={`View ${p.title} repository on GitHub`}
+                    >
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                      <span>Repo</span>
+                    </a>
+                  )}
+                  {p.live_project_link && (
+                    <a
+                      href={p.live_project_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 transition duration-300 text-sm font-semibold"
+                      aria-label={`View ${p.title} live`}
+                    >
+                      <FaExternalLinkAlt className="w-3.5 h-3.5" />
+                      <span>Live Project</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 bg-gray-800/30 border border-gray-700 rounded-lg">
+            <p className="text-gray-400">No full-stack projects yet. Check back soon!</p>
           </div>
         )}
       </section>
@@ -700,51 +749,7 @@ export default async function Home() {
         </section>
 
         {/* QR Section - Right */}
-        <section
-          className="py-12 px-6 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-cyan-500/10 border border-cyan-400/30 light:border-purple-400/40 rounded-xl fade-in"
-          aria-label="QR codes for CV and WhatsApp"
-        >
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold mb-2 text-white light:text-gray-900">Scan & Connect</h3>
-            <p className="text-gray-300 light:text-gray-700">Use these QR codes for my CV and WhatsApp contact.</p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mx-auto">
-            <div className="qr-theme-card rounded-2xl p-5 border border-cyan-300/25 light:border-cyan-500/30">
-              <div className="qr-theme-card-content rounded-xl p-5">
-                <h4 className="text-sm font-semibold mb-4 text-cyan-300 light:text-cyan-700">CV QR Code</h4>
-                <div className="qr-dynamic-glow rounded-xl p-4 bg-gray-900/50 light:bg-white/60 flex justify-center">
-                  <img
-                    src="/qr_code/My_CV-1024.svg"
-                    alt="QR code for CV"
-                    className="w-52 h-52 max-w-full"
-                    loading="lazy"
-                  />
-                </div>
-                <div className="mt-4 pt-4 border-t border-cyan-300/20">
-                  <CVDownloadButton buttonSize="sm" />
-                </div>
-              </div>
-            </div>
-
-            <div className="qr-theme-card rounded-2xl p-5 border border-purple-300/25 light:border-purple-500/30">
-              <div className="qr-theme-card-content rounded-xl p-5">
-                <h4 className="text-sm font-semibold mb-4 text-purple-300 light:text-purple-700">WhatsApp QR Code</h4>
-                <div className="qr-dynamic-glow rounded-xl p-4 bg-gray-900/50 light:bg-white/60 flex justify-center">
-                  <img
-                    src="/qr_code/Contact_Omar-1024.svg"
-                    alt="QR code for WhatsApp"
-                    className="w-52 h-52 max-w-full"
-                    loading="lazy"
-                  />
-                </div>
-                <div className="mt-4 pt-4 border-t border-purple-300/20">
-                  <WhatsAppButton />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <QRSection initialCards={qrCards} />
       </div>
     </div>
   )

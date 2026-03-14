@@ -38,6 +38,7 @@ export const techIcons: Record<string, IconData> = {
   django: { icon: 'si/SiDjango', color: '#092e20', label: 'Django' },
   flask: { icon: 'si/SiFlask', color: '#000000', label: 'Flask' },
   fastapi: { icon: 'si/SiFastapi', color: '#000000', label: 'FastAPI' },
+  chartjs: { icon: 'si/SiChartdotjs', color: '#FF6384', label: 'Chart.js' },
 
   // AI/ML Libraries
   tensorflow: { icon: 'si/SiTensorflow', color: '#ff6f00', label: 'TensorFlow' },
@@ -72,11 +73,12 @@ export const techIcons: Record<string, IconData> = {
   kubernetes: { icon: 'ai/AiOutlineKubernetes', color: '#326ce5', label: 'Kubernetes' },
   git: { icon: 'fa6/FaGitAlt', color: '#f1502f', label: 'Git' },
   github: { icon: 'fa/FaGithub', color: '#151B22', label: 'GitHub' },
+  vite: { icon: 'tb/TbBrandVite', color: '#646cff', label: 'Vite' },
 
   // Frontend
   html: { icon: 'fa/FaHtml5', color: '#e34f26', label: 'HTML' },
   css: { icon: 'fa/FaCss3Alt', color: '#1572b6', label: 'CSS' },
-  tailwind: { icon: 'ri/RiTailwindCssFill', color: '#06b6d4', label: 'Tailwind CSS' },
+  // tailwind: { icon: 'si/SiTailwindcss', color: '#06b6d4', label: 'Tailwind CSS' },
   bootstrap: { icon: 'fa/FaBootstrap', color: '#7952b3', label: 'Bootstrap' },
 
   // APIs & Protocols
@@ -105,7 +107,8 @@ export const techIcons: Record<string, IconData> = {
   
   // Custom SVGs from /public/svg-icons/
   gradio: { icon: 'svg/gradio', color: '#FF7C00', label: 'Gradio' },
-  antigravity: { icon: 'svg/antigravity-color', label: 'Antigravity' }
+  antigravity: { icon: 'svg/antigravity-color', label: 'Antigravity' },
+  tailwindcss: { icon: 'svg/tailwind-css', color: '#00BCFF', label: 'Tailwind CSS' }
 }
 
 const normalizeTag = (tagName: string): string => {

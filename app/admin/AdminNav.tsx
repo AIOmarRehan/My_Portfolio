@@ -10,9 +10,22 @@ export default function AdminNav() {
           <Link href="/admin" className="text-gray-300 hover:text-blue-400 transition duration-300 font-medium">
             Dashboard
           </Link>
-          <Link href="/admin/projects" className="text-gray-300 hover:text-blue-400 transition duration-300 font-medium">
-            Projects
-          </Link>
+          <div className="relative group">
+            <span className="text-gray-300 hover:text-blue-400 transition duration-300 font-medium cursor-pointer select-none flex items-center gap-1">
+              Projects
+              <svg className="w-3 h-3 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+            </span>
+            <div className="absolute left-0 top-full pt-1 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200">
+              <div className="bg-gray-800 border border-gray-700 rounded-lg shadow-xl py-2 min-w-[180px]">
+                <Link href="/admin/projects" className="block px-4 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-700/50 transition duration-200 text-sm font-medium">
+                  AI Projects
+                </Link>
+                <Link href="/admin/fullstack-projects" className="block px-4 py-2 text-gray-300 hover:text-blue-400 hover:bg-gray-700/50 transition duration-200 text-sm font-medium">
+                  Full-Stack Projects
+                </Link>
+              </div>
+            </div>
+          </div>
           <Link href="/admin/experience" className="text-gray-300 hover:text-blue-400 transition duration-300 font-medium">
             Experience
           </Link>
