@@ -34,6 +34,7 @@ export default async function AdminPage() {
 
   // Fetch data
   let projects = []
+  let fullstackProjects = []
   let articles = []
   let experiences = []
   let certificates = []
@@ -48,6 +49,19 @@ export default async function AdminPage() {
     }
   } catch (err) {
     console.log('Failed to fetch projects')
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('fullstack_projects')
+      .select('*')
+      .order('created_at', { ascending: false })
+    
+    if (!error && data) {
+      fullstackProjects = data
+    }
+  } catch (err) {
+    console.log('Failed to fetch fullstack projects')
   }
 
   try {
@@ -98,9 +112,16 @@ export default async function AdminPage() {
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="p-6 bg-gray-800 rounded-lg shadow-sm border border-gray-700">
-          <h3 className="font-semibold text-lg mb-2 text-white">Projects</h3>
+          <h3 className="font-semibold text-lg mb-2 text-white">AI Projects</h3>
           <p className="text-gray-400 text-sm mb-4">{projects.length} projects</p>
           <a href="/admin/projects" className="text-blue-400 hover:text-blue-300">
+            Manage →
+          </a>
+        </div>
+        <div className="p-6 bg-gray-800 rounded-lg shadow-sm border border-gray-700">
+          <h3 className="font-semibold text-lg mb-2 text-white">Full-Stack Projects</h3>
+          <p className="text-gray-400 text-sm mb-4">{fullstackProjects.length} projects</p>
+          <a href="/admin/fullstack-projects" className="text-cyan-400 hover:text-cyan-300">
             Manage →
           </a>
         </div>

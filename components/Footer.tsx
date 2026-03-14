@@ -21,7 +21,12 @@ About</h3>
             <ul className="space-y-2 text-xs sm:text-sm">
               <li>
                 <a href="#projects" className="hover:text-blue-400 transition duration-300">
-                  Projects
+                  AI Projects
+                </a>
+              </li>
+              <li>
+                <a href="#fullstack-projects" className="hover:text-blue-400 transition duration-300">
+                  Full-Stack Projects
                 </a>
               </li>
               <li>

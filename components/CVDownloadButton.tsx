@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react'
 
 interface CVDownloadButtonProps {
   buttonSize?: 'lg' | 'sm'
+  cvUrl?: string
 }
 
-export default function CVDownloadButton({ buttonSize = 'lg' }: CVDownloadButtonProps) {
+export default function CVDownloadButton({ buttonSize = 'lg', cvUrl }: CVDownloadButtonProps) {
   const [isDarkMode, setIsDarkMode] = useState(false)
 
   useEffect(() => {
@@ -25,17 +26,17 @@ export default function CVDownloadButton({ buttonSize = 'lg' }: CVDownloadButton
     return () => observer.disconnect()
   }, [])
 
-  const handleViewAndDownload = () => {
-    // Open PDF directly
-    window.open('/cv/Omar_Rehan_CV.pdf', '_blank')
-    
-    // Trigger download simultaneously
-    setTimeout(() => {
-      const link = document.createElement('a')
-      link.href = '/cv/Omar_Rehan_CV.pdf'
-      link.download = 'Omar_Rehan_CV.pdf'
-      link.click()
-    }, 100)
+  const handleDownloadCV = () => {
+    const url = cvUrl || '/cv/Omar_Rehan_CV.pdf'
+    // Open PDF in a new tab
+    window.open(url, '_blank', 'noopener,noreferrer')
+    // Also trigger a download
+    const a = document.createElement('a')
+    a.href = url
+    a.download = url.split('/').pop() || 'CV.pdf'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
   }
 
   const sizeClasses = buttonSize === 'lg' 
@@ -48,7 +49,7 @@ export default function CVDownloadButton({ buttonSize = 'lg' }: CVDownloadButton
 
   return (
     <button
-      onClick={handleViewAndDownload}
+      onClick={handleDownloadCV}
       className={`${sizeClasses} font-semibold ${textSize} rounded-lg flex items-center justify-center gap-2 transition-transform duration-300 ease-out hover:scale-105`}
       style={{
         background: isDarkMode
@@ -59,7 +60,7 @@ export default function CVDownloadButton({ buttonSize = 'lg' }: CVDownloadButton
           ? '0 0 20px #93c5fd, 0 0 40px #e9d5ff, inset 0 0 20px rgba(147, 197, 253, 0.3)'
           : '0 0 20px #0284c7, 0 0 40px #7c3aed, inset 0 0 20px rgba(2, 132, 199, 0.2)',
       }}
-      aria-label="View and Download CV"
+      aria-label="Download CV"
     >
       <svg className={buttonSize === 'lg' ? 'w-5 h-5' : 'w-4 h-4'} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />

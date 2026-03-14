@@ -44,9 +44,22 @@ export default function SvgIcon({ name, className = '', style = {} }: SvgIconPro
 
   // Apply color styling to the SVG by modifying the content
   let modifiedSvg = svgContent
+
+  // Force the SVG to fill its container by removing explicit width/height
+  // and ensuring it scales via CSS
+  modifiedSvg = modifiedSvg.replace(
+    /<svg([^>]*)>/,
+    (match, attrs) => {
+      // Strip width and height attributes so CSS controls sizing
+      let cleaned = attrs
+        .replace(/\s*width\s*=\s*["'][^"']*["']/gi, '')
+        .replace(/\s*height\s*=\s*["'][^"']*["']/gi, '')
+      return `<svg${cleaned} width="100%" height="100%">`
+    }
+  )
+
   if (style?.color) {
-    // Add fill and color to the root SVG element
-    modifiedSvg = svgContent.replace(
+    modifiedSvg = modifiedSvg.replace(
       '<svg',
       `<svg style="fill: ${style.color}; stroke: ${style.color};"`
     )
@@ -54,11 +67,12 @@ export default function SvgIcon({ name, className = '', style = {} }: SvgIconPro
 
   return (
     <div
-      className={`inline-block flex-shrink-0 ${className}`}
+      className={`inline-flex items-center justify-center flex-shrink-0 ${className}`}
       dangerouslySetInnerHTML={{ __html: modifiedSvg }}
       style={{
         width: '1em',
         height: '1em',
+        overflow: 'hidden',
         ...style
       }}
     />

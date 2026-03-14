@@ -1,31 +1,31 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { SiHuggingface } from 'react-icons/si'
+import { FaExternalLinkAlt, FaGithub } from 'react-icons/fa'
 import TagSearchInput from '@/components/TagSearchInput'
 
-interface IProject {
+interface IFullstackProject {
   id: number
   title: string
   description?: string
   github_url?: string
-  huggingface_url?: string
+  live_project_link?: string
   tags?: string[]
   image?: string
   demo_video?: string
 }
 
-export default function AdminProjectsPage() {
-  const [projects, setProjects] = useState<IProject[]>([])
+export default function AdminFullstackProjectsPage() {
+  const [projects, setProjects] = useState<IFullstackProject[]>([])
   const [loading, setLoading] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [formData, setFormData] = useState({ title: '', description: '', github_url: '', huggingface_url: '', tags: '', image: '', demo_video: '' })
+  const [formData, setFormData] = useState({ title: '', description: '', github_url: '', live_project_link: '', tags: '', image: '', demo_video: '' })
   const [imageInputMethod, setImageInputMethod] = useState<'upload' | 'url'>('upload')
   const [uploadingVideo, setUploadingVideo] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
 
   useEffect(() => {
     fetchProjects()
-    
+
     const updateTheme = () => {
       setIsDarkMode(document.documentElement.classList.contains('dark-mode'))
     }
@@ -37,9 +37,9 @@ export default function AdminProjectsPage() {
 
   const fetchProjects = async () => {
     try {
-      const res = await fetch('/api/projects')
+      const res = await fetch('/api/fullstack-projects')
       if (!res.ok) {
-        console.error('Failed to fetch projects', res.status)
+        console.error('Failed to fetch fullstack projects', res.status)
         setProjects([])
         return
       }
@@ -51,7 +51,7 @@ export default function AdminProjectsPage() {
       const data = JSON.parse(text)
       setProjects(data)
     } catch (err) {
-      console.error('Error fetching projects', err)
+      console.error('Error fetching fullstack projects', err)
       setProjects([])
     }
   }
@@ -59,18 +59,12 @@ export default function AdminProjectsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    
-    if (!formData.github_url?.trim() && !formData.huggingface_url?.trim()) {
-      alert('At least one URL (GitHub repository or Hugging Face link) is required')
-      setLoading(false)
-      return
-    }
-    
+
     const body = {
       title: formData.title,
       description: formData.description,
-      github_url: formData.github_url,
-      huggingface_url: formData.huggingface_url,
+      github_url: formData.github_url || null,
+      live_project_link: formData.live_project_link || null,
       tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
       image: formData.image || '',
       demo_video: formData.demo_video || ''
@@ -78,7 +72,7 @@ export default function AdminProjectsPage() {
 
     try {
       if (editingId) {
-        const res = await fetch('/api/admin/projects', {
+        const res = await fetch('/api/admin/fullstack-projects', {
           method: 'PUT',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
@@ -86,21 +80,21 @@ export default function AdminProjectsPage() {
         })
         if (res.ok) {
           setEditingId(null)
-          setFormData({ title: '', description: '', github_url: '', huggingface_url: '', tags: '', image: '', demo_video: '' })
+          setFormData({ title: '', description: '', github_url: '', live_project_link: '', tags: '', image: '', demo_video: '' })
           setImageInputMethod('upload')
           fetchProjects()
         } else {
           console.error('Failed to update project', await res.text())
         }
       } else {
-        const res = await fetch('/api/admin/projects', {
+        const res = await fetch('/api/admin/fullstack-projects', {
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body)
         })
         if (res.ok) {
-          setFormData({ title: '', description: '', github_url: '', huggingface_url: '', tags: '', image: '', demo_video: '' })
+          setFormData({ title: '', description: '', github_url: '', live_project_link: '', tags: '', image: '', demo_video: '' })
           setImageInputMethod('upload')
           fetchProjects()
         } else {
@@ -116,20 +110,19 @@ export default function AdminProjectsPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure?')) return
-    const res = await fetch(`/api/admin/projects?id=${id}`, { method: 'DELETE' })
+    const res = await fetch(`/api/admin/fullstack-projects?id=${id}`, { method: 'DELETE' })
     if (res.ok) fetchProjects()
   }
 
-  const handleEdit = (proj: IProject) => {
+  const handleEdit = (proj: IFullstackProject) => {
     setEditingId(String(proj.id))
     const imageValue = proj.image || ''
-    // Check if URL or base64
     setImageInputMethod(imageValue.startsWith('http') ? 'url' : 'upload')
     setFormData({
       title: proj.title,
       description: proj.description || '',
       github_url: proj.github_url || '',
-      huggingface_url: proj.huggingface_url || '',
+      live_project_link: proj.live_project_link || '',
       tags: (proj.tags || []).join(', '),
       image: imageValue,
       demo_video: proj.demo_video || ''
@@ -139,8 +132,7 @@ export default function AdminProjectsPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    
-    // 3MB limit for base64
+
     const maxSize = 3 * 1024 * 1024
     if (file.size > maxSize) {
       const sizeMB = (file.size / (1024 * 1024)).toFixed(2)
@@ -148,7 +140,7 @@ export default function AdminProjectsPage() {
       e.target.value = ''
       return
     }
-    
+
     const reader = new FileReader()
     reader.onload = () => {
       setFormData(prev => ({ ...prev, image: String(reader.result) }))
@@ -164,7 +156,6 @@ export default function AdminProjectsPage() {
     const file = e.target.files?.[0]
     if (!file) return
 
-    // Max 50MB for videos
     const maxSize = 50 * 1024 * 1024
     if (file.size > maxSize) {
       const sizeMB = (file.size / (1024 * 1024)).toFixed(2)
@@ -175,13 +166,13 @@ export default function AdminProjectsPage() {
 
     setUploadingVideo(true)
     try {
-      const formData = new FormData()
-      formData.append('video', file)
+      const fd = new FormData()
+      fd.append('video', file)
 
       const res = await fetch('/api/admin/upload-video', {
         method: 'POST',
         credentials: 'include',
-        body: formData
+        body: fd
       })
 
       if (!res.ok) {
@@ -205,7 +196,7 @@ export default function AdminProjectsPage() {
 
   return (
     <section className="space-y-6">
-      <h1 className="text-2xl font-semibold">Manage AI Projects</h1>
+      <h1 className="text-2xl font-semibold">Manage Full-Stack Projects</h1>
 
       <form onSubmit={handleSubmit} className={`p-6 rounded-lg shadow-sm border space-y-4 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
         <div>
@@ -237,15 +228,14 @@ export default function AdminProjectsPage() {
           />
         </div>
         <div>
-          <label className={`block font-medium mb-1 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>Hugging Face Live Project URL (Optional)</label>
+          <label className={`block font-medium mb-1 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>Live Project URL (Optional)</label>
           <input
             type="url"
-            value={formData.huggingface_url}
-            onChange={(e) => setFormData({ ...formData, huggingface_url: e.target.value })}
-            placeholder="https://huggingface.co/spaces/username/project"
+            value={formData.live_project_link}
+            onChange={(e) => setFormData({ ...formData, live_project_link: e.target.value })}
+            placeholder="https://myproject.vercel.app"
             className={`w-full px-3 py-2 border rounded ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
           />
-          <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>At least one URL is required. Use GitHub for repositories and Hugging Face for live demos.</p>
         </div>
         <div>
           <label className={`block font-medium mb-1 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>Tags (comma separated)</label>
@@ -258,8 +248,7 @@ export default function AdminProjectsPage() {
         </div>
         <div>
           <label className={`block font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>Image / GIF</label>
-          
-          {/* Image input method selector */}
+
           <div className="flex gap-4 mb-3">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -289,18 +278,16 @@ export default function AdminProjectsPage() {
             </label>
           </div>
 
-          {/* File upload option */}
           {imageInputMethod === 'upload' && (
             <div className="flex items-center gap-4">
-              <label htmlFor="project-image" className={`px-4 py-2 rounded cursor-pointer transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-gray-700 text-gray-200 hover:bg-gray-600' : 'bg-gray-200 text-gray-900 hover:bg-gray-300'}`}>
+              <label htmlFor="fs-project-image" className={`px-4 py-2 rounded cursor-pointer transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-gray-700 text-gray-200 hover:bg-gray-600' : 'bg-gray-200 text-gray-900 hover:bg-gray-300'}`}>
                 Choose File
               </label>
-              <input id="project-image" type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+              <input id="fs-project-image" type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
               <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>{formData.image && !formData.image.startsWith('http') ? 'File selected' : 'No file chosen'}</span>
             </div>
           )}
 
-          {/* URL input option */}
           {imageInputMethod === 'url' && (
             <input
               type="url"
@@ -311,7 +298,6 @@ export default function AdminProjectsPage() {
             />
           )}
 
-          {/* Image preview */}
           {formData.image && (
             <img src={formData.image} alt="preview" className="mt-2 max-h-40 rounded" onError={(e) => {
               e.currentTarget.src = ''
@@ -324,18 +310,18 @@ export default function AdminProjectsPage() {
         <div>
           <label className={`block font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>Demo Video (Optional)</label>
           <p className={`text-xs mb-3 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Upload a video to showcase your project. Videos are stored as static assets for fast loading. Max 50MB. Supported: MP4, WebM, OGG, MOV.</p>
-          
+
           <div className="flex items-center gap-4">
-            <label htmlFor="project-video" className={`px-4 py-2 rounded cursor-pointer disabled:opacity-50 transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' : 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:opacity-90'}`}>
+            <label htmlFor="fs-project-video" className={`px-4 py-2 rounded cursor-pointer disabled:opacity-50 transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' : 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:opacity-90'}`}>
               {uploadingVideo ? 'Uploading...' : 'Choose Video'}
             </label>
-            <input 
-              id="project-video" 
-              type="file" 
-              accept="video/mp4,video/webm,video/ogg,video/quicktime" 
-              onChange={handleVideoUpload} 
+            <input
+              id="fs-project-video"
+              type="file"
+              accept="video/mp4,video/webm,video/ogg,video/quicktime"
+              onChange={handleVideoUpload}
               disabled={uploadingVideo}
-              className="hidden" 
+              className="hidden"
             />
             <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
               {formData.demo_video ? formData.demo_video.split('/').pop() : 'No video chosen'}
@@ -351,16 +337,15 @@ export default function AdminProjectsPage() {
             )}
           </div>
 
-          {/* Video preview */}
           {formData.demo_video && (
-            <video 
-              src={formData.demo_video} 
+            <video
+              src={formData.demo_video}
               autoPlay
               muted
               loop
               playsInline
               className={`mt-3 max-h-60 rounded border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'}`}
-              onError={(e) => {
+              onError={() => {
                 console.error('Video preview error')
               }}
             >
@@ -372,7 +357,7 @@ export default function AdminProjectsPage() {
         <button
           type="submit"
           disabled={loading}
-          className={`px-4 py-2 rounded disabled:opacity-50 transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-blue-700 text-white hover:bg-blue-600' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+          className={`px-4 py-2 rounded disabled:opacity-50 transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-cyan-700 text-white hover:bg-cyan-600' : 'bg-cyan-600 text-white hover:bg-cyan-700'}`}
         >
           {editingId ? 'Update' : 'Create'} Project
         </button>
@@ -381,7 +366,7 @@ export default function AdminProjectsPage() {
             type="button"
             onClick={() => {
               setEditingId(null)
-              setFormData({ title: '', description: '', github_url: '', huggingface_url: '', tags: '', image: '', demo_video: '' })
+              setFormData({ title: '', description: '', github_url: '', live_project_link: '', tags: '', image: '', demo_video: '' })
               setImageInputMethod('upload')
             }}
             className={`ml-2 px-4 py-2 rounded transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-gray-600 text-white hover:bg-gray-500' : 'bg-gray-400 text-white hover:bg-gray-500'}`}
@@ -408,28 +393,28 @@ export default function AdminProjectsPage() {
                 {proj.tags && proj.tags.length > 0 && (
                   <div className="mt-2 flex gap-1">
                     {proj.tags.map((tag) => (
-                      <span key={tag} className={`px-2 py-1 text-xs rounded ${isDarkMode ? 'bg-blue-900 text-blue-200' : 'bg-blue-100 text-blue-700'}`}>
+                      <span key={tag} className={`px-2 py-1 text-xs rounded ${isDarkMode ? 'bg-cyan-900 text-cyan-200' : 'bg-cyan-100 text-cyan-700'}`}>
                         {tag}
                       </span>
                     ))}
                   </div>
                 )}
-                <div className="mt-2 flex items-center gap-3">
-                  {proj.github_url && (
-                    <a href={proj.github_url} target="_blank" rel="noreferrer" className={`flex items-center gap-2 text-sm hover:underline ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>
-                        <path d="M12 0.5C5.5 0.5 0.5 5.5 0.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.2-1.6-1.2-1.6-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1 1.6.8 1.6.8.9 1.5 2.4 1.1 3 .8.1-.7.4-1.1.7-1.4-2.5-.3-5.1-1.2-5.1-5.3 0-1.2.4-2.1 1.1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .9-.3 2.9 1.1.8-.2 1.7-.4 2.6-.4s1.8.1 2.6.4c2-1.4 2.9-1.1 2.9-1.1.6 1.5.2 2.6.1 2.9.7.7 1.1 1.6 1.1 2.8 0 4-2.6 5-5.1 5.3.4.4.8 1 .8 2v3c0 .3.2.7.8.6C20.7 21.4 24 17.1 24 12c0-6.5-5-11.5-12-11.5z" />
-                      </svg>
-                      <span>Repo</span>
-                    </a>
-                  )}
-                  {proj.huggingface_url && (
-                    <a href={proj.huggingface_url} target="_blank" rel="noreferrer" className={`flex items-center gap-2 text-sm hover:underline ${isDarkMode ? 'text-amber-400' : 'text-amber-600'}`}>
-                      <SiHuggingface className="w-4 h-4" />
-                      <span>Live Project</span>
-                    </a>
-                  )}
-                </div>
+                {(proj.github_url || proj.live_project_link) && (
+                  <div className="mt-2 flex items-center gap-3">
+                    {proj.github_url && (
+                      <a href={proj.github_url} target="_blank" rel="noreferrer" className={`flex items-center gap-1.5 text-sm hover:underline ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>
+                        <FaGithub className="w-4 h-4" />
+                        <span>Repo</span>
+                      </a>
+                    )}
+                    {proj.live_project_link && (
+                      <a href={proj.live_project_link} target="_blank" rel="noreferrer" className={`flex items-center gap-1.5 text-sm hover:underline ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>
+                        <FaExternalLinkAlt className="w-3.5 h-3.5" />
+                        <span>Live Project</span>
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex gap-2">

@@ -7,6 +7,7 @@ import { useTheme } from './ThemeProvider'
 
 function HeaderComponent() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [projectsOpen, setProjectsOpen] = useState(false)
   const { data: session } = useSession()
   const { theme, toggleTheme } = useTheme()
   const pathname = usePathname()
@@ -38,9 +39,22 @@ function HeaderComponent() {
               <Link href="/admin" className="text-gray-300 light:text-gray-700 hover:text-blue-400 transition duration-300 font-medium">
                 Dashboard
               </Link>
-              <Link href="/admin/projects" className="text-gray-300 light:text-gray-700 hover:text-blue-400 transition duration-300 font-medium">
-                Projects
-              </Link>
+              <div className="relative group">
+                <span className="text-gray-300 light:text-gray-700 hover:text-blue-400 transition duration-300 font-medium cursor-pointer select-none flex items-center gap-1">
+                  Projects
+                  <svg className="w-3 h-3 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                </span>
+                <div className="absolute left-0 top-full pt-1 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200">
+                  <div className="bg-gray-800 light:bg-white border border-gray-700 light:border-gray-300 rounded-lg shadow-xl py-2 min-w-[180px]">
+                    <Link href="/admin/projects" className="block px-4 py-2 text-gray-300 light:text-gray-700 hover:text-blue-400 hover:bg-gray-700/50 light:hover:bg-gray-100 transition duration-200 text-sm font-medium">
+                      AI Projects
+                    </Link>
+                    <Link href="/admin/fullstack-projects" className="block px-4 py-2 text-gray-300 light:text-gray-700 hover:text-blue-400 hover:bg-gray-700/50 light:hover:bg-gray-100 transition duration-200 text-sm font-medium">
+                      Full-Stack Projects
+                    </Link>
+                  </div>
+                </div>
+              </div>
               <Link href="/admin/experience" className="text-gray-300 light:text-gray-700 hover:text-blue-400 transition duration-300 font-medium">
                 Experience
               </Link>
@@ -57,9 +71,22 @@ function HeaderComponent() {
           ) : (
             <>
               {/* Public Navigation */}
-              <a href="/#projects" className="text-gray-300 light:text-gray-700 hover:text-white light:hover:text-black transition duration-300">
-                Projects
-              </a>
+              <div className="relative group">
+                <a href="/#projects" className="text-gray-300 light:text-gray-700 hover:text-white light:hover:text-black transition duration-300 flex items-center gap-1">
+                  Projects
+                  <svg className="w-3 h-3 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                </a>
+                <div className="absolute left-0 top-full pt-1 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200">
+                  <div className="bg-gray-800 light:bg-white border border-gray-700 light:border-gray-300 rounded-lg shadow-xl py-2 min-w-[180px]">
+                    <a href="/#projects" className="block px-4 py-2 text-gray-300 light:text-gray-700 hover:text-blue-400 hover:bg-gray-700/50 light:hover:bg-gray-100 transition duration-200 text-sm font-medium">
+                      AI Projects
+                    </a>
+                    <a href="/#fullstack-projects" className="block px-4 py-2 text-gray-300 light:text-gray-700 hover:text-blue-400 hover:bg-gray-700/50 light:hover:bg-gray-100 transition duration-200 text-sm font-medium">
+                      Full-Stack Projects
+                    </a>
+                  </div>
+                </div>
+              </div>
               <a href="/#experience" className="text-gray-300 light:text-gray-700 hover:text-white light:hover:text-black transition duration-300">
                 Experience
               </a>
@@ -177,13 +204,31 @@ function HeaderComponent() {
               >
                 Dashboard
               </Link>
-              <Link
-                href="/admin/projects"
-                onClick={() => setMenuOpen(false)}
-                className="text-gray-300 light:text-gray-700 hover:text-blue-400 transition duration-300 font-medium"
-              >
-                Projects
-              </Link>
+              <div>
+                <button
+                  onClick={() => setProjectsOpen(!projectsOpen)}
+                  className="text-gray-300 light:text-gray-700 hover:text-blue-400 transition duration-300 font-medium flex items-center gap-1 w-full"
+                >
+                  Projects
+                  <svg className={`w-3 h-3 transition-transform duration-200 ${projectsOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                </button>
+                <div className={`overflow-hidden transition-all duration-200 ${projectsOpen ? 'max-h-24 opacity-100 mt-2' : 'max-h-0 opacity-0'}`}>
+                  <Link
+                    href="/admin/projects"
+                    onClick={() => setMenuOpen(false)}
+                    className="block pl-4 py-1 text-gray-400 light:text-gray-600 hover:text-blue-400 transition duration-200 text-sm font-medium"
+                  >
+                    AI Projects
+                  </Link>
+                  <Link
+                    href="/admin/fullstack-projects"
+                    onClick={() => setMenuOpen(false)}
+                    className="block pl-4 py-1 text-gray-400 light:text-gray-600 hover:text-blue-400 transition duration-200 text-sm font-medium"
+                  >
+                    Full-Stack Projects
+                  </Link>
+                </div>
+              </div>
               <Link
                 href="/admin/experience"
                 onClick={() => setMenuOpen(false)}
@@ -216,13 +261,31 @@ function HeaderComponent() {
           ) : (
             <>
               {/* Public Navigation */}
-              <a
-                href="/#projects"
-                onClick={() => setMenuOpen(false)}
-                className="text-gray-300 light:text-gray-700 hover:text-white light:hover:text-black transition duration-300"
-              >
-                Projects
-              </a>
+              <div>
+                <button
+                  onClick={() => setProjectsOpen(!projectsOpen)}
+                  className="text-gray-300 light:text-gray-700 hover:text-white light:hover:text-black transition duration-300 flex items-center gap-1 w-full"
+                >
+                  Projects
+                  <svg className={`w-3 h-3 transition-transform duration-200 ${projectsOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                </button>
+                <div className={`overflow-hidden transition-all duration-200 ${projectsOpen ? 'max-h-24 opacity-100 mt-2' : 'max-h-0 opacity-0'}`}>
+                  <a
+                    href="/#projects"
+                    onClick={() => setMenuOpen(false)}
+                    className="block pl-4 py-1 text-gray-400 light:text-gray-600 hover:text-blue-400 transition duration-200 text-sm font-medium"
+                  >
+                    AI Projects
+                  </a>
+                  <a
+                    href="/#fullstack-projects"
+                    onClick={() => setMenuOpen(false)}
+                    className="block pl-4 py-1 text-gray-400 light:text-gray-600 hover:text-blue-400 transition duration-200 text-sm font-medium"
+                  >
+                    Full-Stack Projects
+                  </a>
+                </div>
+              </div>
               <a
                 href="/#experience"
                 onClick={() => setMenuOpen(false)}

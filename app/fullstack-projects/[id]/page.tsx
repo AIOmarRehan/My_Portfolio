@@ -1,25 +1,25 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import { SiHuggingface } from 'react-icons/si'
+import { useParams } from 'next/navigation'
+import { FaExternalLinkAlt } from 'react-icons/fa'
 import LazyVideo from '@/components/LazyVideo'
 import TagBadge from '@/components/TagBadge'
 import Link from 'next/link'
 
-interface IProject {
+interface IFullstackProject {
   id: number
   title: string
   description?: string
   github_url?: string
-  huggingface_url?: string
+  live_project_link?: string
   tags?: string[]
   image?: string
   demo_video?: string
   created_at?: string
 }
 
-interface IFullstackProject {
+interface IAIProject {
   id: number
   title: string
   description?: string
@@ -28,14 +28,13 @@ interface IFullstackProject {
   demo_video?: string
 }
 
-export default function ProjectDetailsPage() {
+export default function FullstackProjectDetailsPage() {
   const params = useParams()
-  const router = useRouter()
   const projectId = params.id as string
-  
-  const [project, setProject] = useState<IProject | null>(null)
-  const [allProjects, setAllProjects] = useState<IProject[]>([])
-  const [fullstackProjects, setFullstackProjects] = useState<IFullstackProject[]>([])
+
+  const [project, setProject] = useState<IFullstackProject | null>(null)
+  const [allFullstack, setAllFullstack] = useState<IFullstackProject[]>([])
+  const [aiProjects, setAiProjects] = useState<IAIProject[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -44,17 +43,17 @@ export default function ProjectDetailsPage() {
 
   const fetchData = async () => {
     try {
-      const [aiRes, fsRes] = await Promise.all([
-        fetch('/api/projects'),
+      const [fsRes, aiRes] = await Promise.all([
         fetch('/api/fullstack-projects'),
+        fetch('/api/projects'),
       ])
-      const aiData: IProject[] = await aiRes.json()
       const fsData: IFullstackProject[] = await fsRes.json()
+      const aiData: IAIProject[] = await aiRes.json()
 
-      const found = aiData.find((p) => p.id === parseInt(projectId))
+      const found = fsData.find((p) => p.id === parseInt(projectId))
       if (found) setProject(found)
-      setAllProjects(aiData)
-      setFullstackProjects(fsData)
+      setAllFullstack(fsData)
+      setAiProjects(aiData)
     } catch (err) {
       console.error('Failed to fetch project data', err)
     } finally {
@@ -62,24 +61,28 @@ export default function ProjectDetailsPage() {
     }
   }
 
-  const otherProjects = allProjects.filter(p => p.id !== parseInt(projectId))
+  const otherFullstack = allFullstack.filter((p) => p.id !== parseInt(projectId))
 
   const scroll = (carouselId: string, direction: 'left' | 'right') => {
     const carousel = document.getElementById(carouselId)
     if (carousel) {
       const scrollAmount = 400
       const maxScrollLeft = Math.max(0, carousel.scrollWidth - carousel.clientWidth)
-      const target = direction === 'left'
-        ? carousel.scrollLeft - scrollAmount
-        : carousel.scrollLeft + scrollAmount
-      carousel.scrollTo({ left: Math.min(maxScrollLeft, Math.max(0, target)), behavior: 'smooth' })
+      const target =
+        direction === 'left'
+          ? carousel.scrollLeft - scrollAmount
+          : carousel.scrollLeft + scrollAmount
+      carousel.scrollTo({
+        left: Math.min(maxScrollLeft, Math.max(0, target)),
+        behavior: 'smooth',
+      })
     }
   }
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-500"></div>
       </div>
     )
   }
@@ -89,8 +92,8 @@ export default function ProjectDetailsPage() {
       <div className="min-h-screen flex items-center justify-center bg-gray-900">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-white mb-4">Project Not Found</h1>
-          <Link href="/#projects" className="text-blue-400 hover:text-blue-300 underline">
-            Back to Projects
+          <Link href="/#fullstack-projects" className="text-cyan-400 hover:text-cyan-300 underline">
+            Back to Full-Stack Projects
           </Link>
         </div>
       </div>
@@ -102,23 +105,21 @@ export default function ProjectDetailsPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Header */}
         <div className="mb-12">
-          <Link 
-            href="/#projects"
-            className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition mb-6"
+          <Link
+            href="/#fullstack-projects"
+            className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition mb-6"
           >
-            ← Back to Projects
+            ← Back to Full-Stack Projects
           </Link>
-          
+
           <h1 className="text-4xl md:text-5xl font-bold mb-4 break-words">{project.title}</h1>
-          
+
           {project.description && (
-            <p className="text-lg text-gray-300 mb-8 leading-relaxed">
-              {project.description}
-            </p>
+            <p className="text-lg text-gray-300 mb-8 leading-relaxed">{project.description}</p>
           )}
 
           {/* External Links */}
-          {(project.github_url || project.huggingface_url) && (
+          {(project.github_url || project.live_project_link) && (
             <div className="flex flex-wrap gap-4 mb-8">
               {project.github_url && (
                 <a
@@ -133,15 +134,15 @@ export default function ProjectDetailsPage() {
                   <span className="font-semibold">View Repository</span>
                 </a>
               )}
-              {project.huggingface_url && (
+              {project.live_project_link && (
                 <a
-                  href={project.huggingface_url}
+                  href={project.live_project_link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-amber-900/30 hover:bg-amber-900/50 border border-amber-700 rounded-lg transition"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-green-900/30 hover:bg-green-900/50 border border-green-700 rounded-lg transition"
                 >
-                  <SiHuggingface className="w-5 h-5" />
-                  <span className="font-semibold">View Live Demo</span>
+                  <FaExternalLinkAlt className="w-4 h-4" />
+                  <span className="font-semibold">View Live Project</span>
                 </a>
               )}
             </div>
@@ -175,131 +176,21 @@ export default function ProjectDetailsPage() {
         {project.image && !project.demo_video && (
           <div className="mb-16">
             <div className="rounded-xl overflow-hidden shadow-2xl">
-              <img
-                src={project.image}
-                alt={project.title}
-                className="w-full h-auto object-cover"
-              />
+              <img src={project.image} alt={project.title} className="w-full h-auto object-cover" />
             </div>
           </div>
         )}
 
-        {/* Related Projects Carousel */}
-        {otherProjects.length > 0 && (
+        {/* More Full-Stack Projects Carousel */}
+        {otherFullstack.length > 0 && (
           <div className="mt-20 pt-12 border-t border-gray-700">
-            <h2 className="text-2xl font-bold mb-8">More AI Projects</h2>
-            
-            <div className="relative group/ai">
-              {/* Carousel */}
-              <div
-                id="carousel-ai"
-                className="flex gap-6 overflow-x-auto pb-4 scroll-smooth"
-                style={{ scrollBehavior: 'smooth' }}
-              >
-                {otherProjects.map((p) => (
-                  <Link
-                    key={p.id}
-                    href={`/projects/${p.id}`}
-                    className="flex-shrink-0 w-80 group/card"
-                  >
-                    <div className="rounded-lg overflow-hidden bg-gray-800 group-hover/card:shadow-xl transition-all duration-300 h-full flex flex-col cursor-pointer group-hover/card:border-blue-500 border border-gray-700">
-                      {/* Image with optional play overlay */}
-                      {p.image || p.demo_video ? (
-                        <div className="h-48 overflow-hidden bg-gray-700 relative">
-                          <img
-                            src={p.image}
-                            alt={p.title}
-                            className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-300"
-                          />
-                          {/* Play Icon Overlay for Videos */}
-                          {p.demo_video && (
-                            <div className="absolute inset-0 bg-black/40 group-hover/card:bg-black/50 flex items-center justify-center transition-colors duration-300">
-                              <svg 
-                                className="w-12 h-12 text-white/80 group-hover/card:text-white transition-colors duration-300" 
-                                fill="currentColor" 
-                                viewBox="0 0 20 20"
-                              >
-                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                              </svg>
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="h-48 bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center group-hover/card:shadow-lg transition-all duration-300">
-                          <span className="text-gray-200 text-center px-4">{p.title}</span>
-                        </div>
-                      )}
-                      
-                      {/* Content */}
-                      <div className="p-4 flex-grow flex flex-col justify-between">
-                        <div>
-                          <h3 className="font-bold text-lg leading-snug whitespace-normal break-words text-white group-hover/card:text-blue-400 transition-colors duration-300 mb-2">
-                            {p.title}
-                          </h3>
-                          {p.description && (
-                            <p className="text-sm text-gray-400 group-hover/card:text-gray-300 line-clamp-2 transition-colors duration-300">
-                              {p.description}
-                            </p>
-                          )}
-                        </div>
-                        
-                        {/* Tags */}
-                        {p.tags && p.tags.length > 0 && (
-                          <div className="mt-3 flex flex-wrap gap-1">
-                            {p.tags.slice(0, 2).map((tag: string, idx: number) => (
-                              <span
-                                key={idx}
-                                className="text-xs px-2 py-1 bg-gray-700 text-gray-300 rounded group-hover/card:bg-gray-600 transition-colors duration-300"
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                            {p.tags.length > 2 && (
-                              <span className="text-xs px-2 py-1 text-gray-400 group-hover/card:text-gray-300 transition-colors duration-300">
-                                +{p.tags.length - 2}
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-
-              {/* Carousel Controls */}
-              <button
-                onClick={() => scroll('carousel-ai', 'left')}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-blue-600 hover:bg-blue-700 rounded-full p-3 opacity-0 group-hover/ai:opacity-100 transition z-10"
-                aria-label="Scroll left"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <button
-                onClick={() => scroll('carousel-ai', 'right')}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-blue-600 hover:bg-blue-700 rounded-full p-3 opacity-0 group-hover/ai:opacity-100 transition z-10"
-                aria-label="Scroll right"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Full-Stack Projects Carousel */}
-        {fullstackProjects.length > 0 && (
-          <div className="mt-16 pt-12 border-t border-gray-700">
-            <h2 className="text-2xl font-bold mb-8">Full-Stack Projects</h2>
+            <h2 className="text-2xl font-bold mb-8">More Full-Stack Projects</h2>
             <div className="relative group/fs">
               <div
                 id="carousel-fullstack"
                 className="flex gap-6 overflow-x-auto pb-4 scroll-smooth"
               >
-                {fullstackProjects.map((p) => (
+                {otherFullstack.map((p) => (
                   <Link key={p.id} href={`/fullstack-projects/${p.id}`} className="flex-shrink-0 w-80 group/card">
                     <div className="rounded-lg overflow-hidden bg-gray-800 group-hover/card:shadow-xl transition-all duration-300 h-full flex flex-col cursor-pointer group-hover/card:border-cyan-500 border border-gray-700">
                       {p.image || p.demo_video ? (
@@ -344,6 +235,66 @@ export default function ProjectDetailsPage() {
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               </button>
               <button onClick={() => scroll('carousel-fullstack', 'right')} className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-cyan-600 hover:bg-cyan-700 rounded-full p-3 opacity-0 group-hover/fs:opacity-100 transition z-10" aria-label="Scroll right">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* AI Projects Carousel */}
+        {aiProjects.length > 0 && (
+          <div className="mt-16 pt-12 border-t border-gray-700">
+            <h2 className="text-2xl font-bold mb-8">AI Projects</h2>
+            <div className="relative group/ai">
+              <div
+                id="carousel-ai"
+                className="flex gap-6 overflow-x-auto pb-4 scroll-smooth"
+              >
+                {aiProjects.map((p) => (
+                  <Link key={p.id} href={`/projects/${p.id}`} className="flex-shrink-0 w-80 group/card">
+                    <div className="rounded-lg overflow-hidden bg-gray-800 group-hover/card:shadow-xl transition-all duration-300 h-full flex flex-col cursor-pointer group-hover/card:border-blue-500 border border-gray-700">
+                      {p.image || p.demo_video ? (
+                        <div className="h-48 overflow-hidden bg-gray-700 relative">
+                          <img src={p.image} alt={p.title} className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-300" />
+                          {p.demo_video && (
+                            <div className="absolute inset-0 bg-black/40 group-hover/card:bg-black/50 flex items-center justify-center transition-colors duration-300">
+                              <svg className="w-12 h-12 text-white/80 group-hover/card:text-white transition-colors duration-300" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="h-48 bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+                          <span className="text-gray-200 text-center px-4">{p.title}</span>
+                        </div>
+                      )}
+                      <div className="p-4 flex-grow flex flex-col justify-between">
+                        <div>
+                          <h3 className="font-bold text-lg leading-snug whitespace-normal break-words text-white group-hover/card:text-blue-400 transition-colors duration-300 mb-2">{p.title}</h3>
+                          {p.description && (
+                            <p className="text-sm text-gray-400 group-hover/card:text-gray-300 line-clamp-2 transition-colors duration-300">{p.description}</p>
+                          )}
+                        </div>
+                        {p.tags && p.tags.length > 0 && (
+                          <div className="mt-3 flex flex-wrap gap-1">
+                            {p.tags.slice(0, 2).map((tag: string, idx: number) => (
+                              <span key={idx} className="text-xs px-2 py-1 bg-gray-700 text-gray-300 rounded group-hover/card:bg-gray-600 transition-colors duration-300">{tag}</span>
+                            ))}
+                            {p.tags.length > 2 && (
+                              <span className="text-xs px-2 py-1 text-gray-400 group-hover/card:text-gray-300 transition-colors duration-300">+{p.tags.length - 2}</span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              <button onClick={() => scroll('carousel-ai', 'left')} className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-blue-600 hover:bg-blue-700 rounded-full p-3 opacity-0 group-hover/ai:opacity-100 transition z-10" aria-label="Scroll left">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+              </button>
+              <button onClick={() => scroll('carousel-ai', 'right')} className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-blue-600 hover:bg-blue-700 rounded-full p-3 opacity-0 group-hover/ai:opacity-100 transition z-10" aria-label="Scroll right">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
               </button>
             </div>
