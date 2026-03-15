@@ -45,11 +45,23 @@ export default function SvgIcon({ name, className = '', style = {} }: SvgIconPro
   // Apply color styling to the SVG by modifying the content
   let modifiedSvg = svgContent
 
+  // Strip XML prolog and comments that precede the <svg> tag
+  modifiedSvg = modifiedSvg.replace(/^[\s\S]*?(?=<svg)/i, '')
+
   // Force the SVG to fill its container by removing explicit width/height
   // and ensuring it scales via CSS
   modifiedSvg = modifiedSvg.replace(
     /<svg([^>]*)>/,
     (match, attrs) => {
+      // If no viewBox exists, synthesize one from the original width/height
+      const hasViewBox = /viewBox/i.test(attrs)
+      if (!hasViewBox) {
+        const wMatch = attrs.match(/width\s*=\s*["']([\d.]+)/i)
+        const hMatch = attrs.match(/height\s*=\s*["']([\d.]+)/i)
+        if (wMatch && hMatch) {
+          attrs += ` viewBox="0 0 ${wMatch[1]} ${hMatch[1]}"`
+        }
+      }
       // Strip width and height attributes so CSS controls sizing
       let cleaned = attrs
         .replace(/\s*width\s*=\s*["'][^"']*["']/gi, '')
@@ -58,11 +70,17 @@ export default function SvgIcon({ name, className = '', style = {} }: SvgIconPro
     }
   )
 
-  if (style?.color) {
-    modifiedSvg = modifiedSvg.replace(
-      '<svg',
-      `<svg style="fill: ${style.color}; stroke: ${style.color};"`
-    )
+  // Replace hardcoded black fills/strokes with currentColor so icons
+  // adapt to the badge text color instead of being invisible on dark backgrounds
+  modifiedSvg = modifiedSvg
+    .replace(/fill\s*=\s*"(#000000|#000|black)"/gi, 'fill="currentColor"')
+    .replace(/stroke\s*=\s*"(#000000|#000|black)"/gi, 'stroke="currentColor"')
+
+  // If root <svg> has no fill attribute, add fill="currentColor" so child
+  // elements without explicit fills inherit a visible color instead of defaulting to black
+  const svgOpenTag = modifiedSvg.match(/^(<svg\s[^>]*>)/i)
+  if (svgOpenTag && !/\bfill\s*=/i.test(svgOpenTag[1])) {
+    modifiedSvg = modifiedSvg.replace(/^<svg\s/, '<svg fill="currentColor" ')
   }
 
   return (
