@@ -18,6 +18,7 @@ import * as CiIcons from 'react-icons/ci'
 import * as LiaIcons from 'react-icons/lia'
 import * as GiIcons from 'react-icons/gi'
 import * as LuIcons from 'react-icons/lu'
+import * as MdIcons from 'react-icons/md'
 
 interface TagBadgeProps {
   tag: string
@@ -63,6 +64,17 @@ function TagBadge({ tag, variant = 'blue' }: TagBadgeProps) {
 
   const styles = variantStyles[variant]
 
+  // Hex color for each variant — used as fallback when an icon has no explicit color
+  const variantHex: Record<string, string> = {
+    blue: '#93c5fd',
+    pink: '#f9a8d4',
+    yellow: '#fde047',
+    green: '#86efac',
+    gray: '#e5e7eb'
+  }
+
+  const iconColor = iconData?.color || variantHex[variant]
+
   let IconComponent: any = null
   let isSvgIcon = false
   let svgIconName = ''
@@ -82,7 +94,8 @@ function TagBadge({ tag, variant = 'blue' }: TagBadgeProps) {
     ci: CiIcons,
     lia: LiaIcons,
     gi: GiIcons,
-    lu: LuIcons
+    lu: LuIcons,
+    md: MdIcons
   }
 
   if (iconData) {
@@ -108,13 +121,13 @@ function TagBadge({ tag, variant = 'blue' }: TagBadgeProps) {
         <SvgIcon
           name={svgIconName}
           className="w-4 h-4 flex-shrink-0"
-          style={{ color: iconData?.color }}
+          style={{ color: iconColor }}
         />
       )}
       {IconComponent && (
         <IconComponent
           className="w-4 h-4 flex-shrink-0"
-          style={{ color: iconData?.color }}
+          style={{ color: iconColor }}
         />
       )}
       {tag}
