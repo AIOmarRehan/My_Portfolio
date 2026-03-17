@@ -38,10 +38,13 @@ export default function ContactForm() {
     })
   }
 
+  const [showCaptchaWarning, setShowCaptchaWarning] = useState(false)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!captchaToken) {
+    if (!captchaToken && !!process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
+      setShowCaptchaWarning(true)
       return
     }
 
@@ -129,15 +132,15 @@ export default function ContactForm() {
             ref={recaptchaRef}
             sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
             theme={isDarkMode ? 'dark' : 'light'}
-            onChange={(token) => setCaptchaToken(token)}
-            onExpired={() => setCaptchaToken(null)}
+            onChange={(token) => { setCaptchaToken(token); setShowCaptchaWarning(false) }}
+            onExpired={() => { setCaptchaToken(null) }}
           />
         </div>
       )}
 
       <button
         type="submit"
-        disabled={isSubmitting || (!captchaToken && !!process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY)}
+        disabled={isSubmitting}
         className="w-full font-semibold py-3 px-6 rounded-lg transition-transform duration-300 ease-out hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
         style={{
           background: isDarkMode
@@ -151,6 +154,12 @@ export default function ContactForm() {
       >
         {isSubmitting ? 'Sending...' : 'Send Message'}
       </button>
+
+      {showCaptchaWarning && (
+        <div className="text-red-500 text-sm text-center font-medium">
+          You have to click on CAPTCHA first
+        </div>
+      )}
 
       {submitStatus === 'success' && (
         <div className="p-4 bg-green-500/20 border border-green-500/50 rounded-lg text-green-400 text-center">
