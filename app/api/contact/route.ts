@@ -5,12 +5,37 @@ import nodemailer from 'nodemailer'
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { name, email, message } = body
+    const { name, email, message, captchaToken } = body
 
     // Validate input
     if (!name || !email || !message) {
       return NextResponse.json(
         { error: 'All fields are required' },
+        { status: 400 }
+      )
+    }
+
+    // Verify reCAPTCHA
+    if (!captchaToken) {
+      return NextResponse.json(
+        { error: 'Please complete the CAPTCHA' },
+        { status: 400 }
+      )
+    }
+
+    const captchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        secret: process.env.RECAPTCHA_SECRET_KEY!,
+        response: captchaToken,
+      }),
+    })
+
+    const captchaResult = await captchaResponse.json()
+    if (!captchaResult.success) {
+      return NextResponse.json(
+        { error: 'CAPTCHA verification failed' },
         { status: 400 }
       )
     }

@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import ReCAPTCHA from 'react-google-recaptcha'
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -11,6 +12,8 @@ export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [isDarkMode, setIsDarkMode] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const recaptchaRef = useRef<ReCAPTCHA>(null)
 
   useEffect(() => {
     const updateTheme = () => {
@@ -37,6 +40,11 @@ export default function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!captchaToken) {
+      return
+    }
+
     setIsSubmitting(true)
     setSubmitStatus('idle')
 
@@ -46,12 +54,14 @@ export default function ContactForm() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, captchaToken }),
       })
 
       if (response.ok) {
         setSubmitStatus('success')
         setFormData({ name: '', email: '', message: '' })
+        setCaptchaToken(null)
+        recaptchaRef.current?.reset()
       } else {
         setSubmitStatus('error')
       }
@@ -113,9 +123,21 @@ export default function ContactForm() {
         />
       </div>
 
+      {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && (
+        <div className="flex justify-center">
+          <ReCAPTCHA
+            ref={recaptchaRef}
+            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+            theme={isDarkMode ? 'dark' : 'light'}
+            onChange={(token) => setCaptchaToken(token)}
+            onExpired={() => setCaptchaToken(null)}
+          />
+        </div>
+      )}
+
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={isSubmitting || (!captchaToken && !!process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY)}
         className="w-full font-semibold py-3 px-6 rounded-lg transition-transform duration-300 ease-out hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
         style={{
           background: isDarkMode
