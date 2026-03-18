@@ -295,7 +295,7 @@ export default function AdminExperiencePage() {
                     {exp.end_date === 'Present' ? 'Present' : new Date(exp.end_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                   </p>
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 flex-shrink-0">
                   <button
                     onClick={() => handleEdit(exp)}
                     className="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded font-semibold text-sm transition-transform duration-300 ease-out hover:scale-105"

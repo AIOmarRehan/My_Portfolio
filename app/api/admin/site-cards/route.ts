@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
-import { revalidatePath } from 'next/cache'
+import { revalidateSite } from '../../../../lib/revalidate'
 import { supabase } from '../../../../lib/supabaseServer'
 
 const SECRET = process.env.NEXTAUTH_SECRET || ''
@@ -49,6 +49,6 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to save' }, { status: 500 })
   }
 
-  revalidatePath('/', 'layout')
+  await revalidateSite()
   return NextResponse.json(data)
 }
