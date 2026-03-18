@@ -300,7 +300,7 @@ export default function AdminArticlesPage() {
                   className="w-32 h-32 object-cover rounded-lg flex-shrink-0"
                 />
               )}
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <h3 className={`font-bold text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{article.title}</h3>
                 {article.description && <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{article.description}</p>}
                 {article.tags && article.tags.length > 0 && (
@@ -330,7 +330,7 @@ export default function AdminArticlesPage() {
                   )}
                 </div>
               </div>
-              <div className="flex flex-col gap-2 justify-start">
+              <div className="flex flex-col gap-2 justify-start flex-shrink-0">
                 <button
                   onClick={() => handleEdit(article)}
                   className="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded font-semibold text-sm transition-transform duration-300 ease-out hover:scale-105"

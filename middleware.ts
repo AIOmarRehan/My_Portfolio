@@ -7,12 +7,26 @@ const ADMIN_PATH = '/admin'
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
+  const isProduction = process.env.NODE_ENV === 'production'
+
+  // Block all admin UI routes in production — return 404
+  if (isProduction && (pathname === ADMIN_PATH || pathname.startsWith(ADMIN_PATH + '/'))) {
+    const url = req.nextUrl.clone()
+    url.pathname = '/not-found'
+    return NextResponse.rewrite(url)
+  }
+
+  // Block admin API routes in production — return plain 404
+  if (isProduction && pathname.startsWith('/api/admin')) {
+    return new Response('Not Found', { status: 404 })
+  }
+
   // Allow access to login page
   if (pathname === ADMIN_PATH) {
     return NextResponse.next()
   }
 
-  // Protect admin routes
+  // Protect admin routes in development
   if (pathname.startsWith(ADMIN_PATH + '/') || pathname.startsWith('/api/admin')) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
     if (!token || token?.email !== process.env.ADMIN_EMAIL) {
