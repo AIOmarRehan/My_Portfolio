@@ -305,8 +305,8 @@ export default function AdminArticlesPage() {
                 {article.description && <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{article.description}</p>}
                 {article.tags && article.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {article.tags.map((tag) => (
-                      <span key={tag} className={`px-2 py-1 text-xs rounded-full ${isDarkMode ? 'bg-purple-900 text-purple-200' : 'bg-purple-100 text-purple-700'}`}>
+                    {article.tags.map((tag, idx) => (
+                      <span key={idx} className={`px-2 py-1 text-xs rounded-full ${isDarkMode ? 'bg-purple-900 text-purple-200' : 'bg-purple-100 text-purple-700'}`}>
                         {tag}
                       </span>
                     ))}

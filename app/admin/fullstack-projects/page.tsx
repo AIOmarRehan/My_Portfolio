@@ -392,8 +392,8 @@ export default function AdminFullstackProjectsPage() {
                 {proj.description && <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{proj.description}</p>}
                 {proj.tags && proj.tags.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-1">
-                    {proj.tags.map((tag) => (
-                      <span key={tag} className={`px-2 py-1 text-xs rounded ${isDarkMode ? 'bg-cyan-900 text-cyan-200' : 'bg-cyan-100 text-cyan-700'}`}>
+                    {proj.tags.map((tag, idx) => (
+                      <span key={idx} className={`px-2 py-1 text-xs rounded ${isDarkMode ? 'bg-cyan-900 text-cyan-200' : 'bg-cyan-100 text-cyan-700'}`}>
                         {tag}
                       </span>
                     ))}
