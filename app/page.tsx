@@ -387,7 +387,7 @@ export default async function Home() {
                 </h3>
               </div>
                 {p.description && (
-                  <p className="text-gray-400 text-sm mb-4 line-clamp-2">{p.description}</p>
+                  <p className="text-gray-400 text-sm mb-4">{p.description}</p>
                 )}
                 
                 {p.tags && p.tags.length > 0 && (
