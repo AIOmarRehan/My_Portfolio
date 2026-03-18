@@ -394,7 +394,7 @@ export default function AdminProjectsPage() {
       <div className="space-y-3">
         {projects.map((proj) => (
           <div key={String(proj.id)} className={`p-4 rounded-lg shadow-sm border flex justify-between items-start gap-4 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
-            <div className="flex gap-4 items-start">
+            <div className="flex gap-4 items-start min-w-0 flex-1">
               {proj.demo_video ? (
                 <video src={proj.demo_video} className="w-32 h-24 object-cover rounded" autoPlay muted loop playsInline />
               ) : proj.image ? (
@@ -406,7 +406,7 @@ export default function AdminProjectsPage() {
                 <h3 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-black'}`}>{proj.title}</h3>
                 {proj.description && <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{proj.description}</p>}
                 {proj.tags && proj.tags.length > 0 && (
-                  <div className="mt-2 flex gap-1">
+                  <div className="mt-2 flex flex-wrap gap-1">
                     {proj.tags.map((tag) => (
                       <span key={tag} className={`px-2 py-1 text-xs rounded ${isDarkMode ? 'bg-blue-900 text-blue-200' : 'bg-blue-100 text-blue-700'}`}>
                         {tag}

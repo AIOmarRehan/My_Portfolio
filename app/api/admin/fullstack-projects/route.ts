@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 import { supabase } from '../../../../lib/supabaseServer'
+import { revalidatePath } from 'next/cache'
 
 const SECRET = process.env.NEXTAUTH_SECRET || ''
 
@@ -27,6 +28,7 @@ export async function POST(req: NextRequest) {
       console.error('Supabase insert error', error)
       return new Response('Bad Gateway', { status: 502 })
     }
+    revalidatePath('/')
     return NextResponse.json(data)
   } catch (err) {
     console.error('POST /api/admin/fullstack-projects error', err)
@@ -51,6 +53,7 @@ export async function PUT(req: NextRequest) {
       console.error('Supabase update error', error)
       return new Response('Bad Gateway', { status: 502 })
     }
+    revalidatePath('/')
     return NextResponse.json(data)
   } catch (err) {
     console.error('PUT /api/admin/fullstack-projects error', err)
@@ -70,5 +73,6 @@ export async function DELETE(req: NextRequest) {
     console.error('Supabase delete error', error)
     return new Response('Bad Gateway', { status: 502 })
   }
+  revalidatePath('/')
   return new Response(null, { status: 204 })
 }
