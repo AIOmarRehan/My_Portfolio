@@ -378,16 +378,16 @@ export default function AdminFullstackProjectsPage() {
 
       <div className="space-y-3">
         {projects.map((proj) => (
-          <div key={String(proj.id)} className={`p-4 rounded-lg shadow-sm border flex justify-between items-start gap-4 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
+          <div key={String(proj.id)} className={`p-4 rounded-lg shadow-sm border overflow-hidden flex justify-between items-start gap-4 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
             <div className="flex gap-4 items-start min-w-0 flex-1">
               {proj.demo_video ? (
-                <video src={proj.demo_video} className="w-32 h-24 object-cover rounded" autoPlay muted loop playsInline />
+                <video src={proj.demo_video} className="w-32 h-24 object-cover rounded flex-shrink-0" autoPlay muted loop playsInline />
               ) : proj.image ? (
-                <img src={proj.image} alt={proj.title} className="w-32 h-24 object-cover rounded" />
+                <img src={proj.image} alt={proj.title} className="w-32 h-24 object-cover rounded flex-shrink-0" />
               ) : (
-                <div className={`w-32 h-24 rounded flex items-center justify-center text-sm ${isDarkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-100 text-gray-500'}`}>No Media</div>
+                <div className={`w-32 h-24 rounded flex-shrink-0 flex items-center justify-center text-sm ${isDarkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-100 text-gray-500'}`}>No Media</div>
               )}
-              <div>
+              <div className="min-w-0">
                 <h3 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-black'}`}>{proj.title}</h3>
                 {proj.description && <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{proj.description}</p>}
                 {proj.tags && proj.tags.length > 0 && (
@@ -417,7 +417,7 @@ export default function AdminFullstackProjectsPage() {
                 )}
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-shrink-0">
               <button
                 onClick={() => handleEdit(proj)}
                 className="px-3 py-1 bg-yellow-500 text-white rounded text-sm transition-transform duration-300 ease-out hover:scale-105"

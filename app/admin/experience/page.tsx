@@ -283,9 +283,9 @@ export default function AdminExperiencePage() {
           <p className={`text-center py-8 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>No experience yet.</p>
         ) : (
           experiences.map((exp) => (
-            <div key={String(exp.id)} className={`rounded-lg shadow-md border hover:shadow-lg transition p-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
+            <div key={String(exp.id)} className={`rounded-lg shadow-md border overflow-hidden hover:shadow-lg transition p-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
               <div className="flex justify-between items-start mb-4">
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <h3 className={`font-bold text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{exp.title}</h3>
                   <p className={`font-semibold ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>{exp.organization}</p>
                   {exp.location && <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{exp.location}</p>}
