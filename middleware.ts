@@ -7,15 +7,6 @@ const ADMIN_PATH = '/admin'
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
-  const isProduction = process.env.NODE_ENV === 'production'
-
-  if (
-    isProduction &&
-    (pathname === ADMIN_PATH || pathname.startsWith(ADMIN_PATH + '/') || pathname.startsWith('/api/admin'))
-  ) {
-    return new Response('Not Found', { status: 404 })
-  }
-
   // Allow access to login page
   if (pathname === ADMIN_PATH) {
     return NextResponse.next()

@@ -235,9 +235,9 @@ export default function AdminCertificatesPage() {
           <p className={`text-center py-8 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>No certificates yet.</p>
         ) : (
           certificates.map((cert) => (
-            <div key={String(cert.id)} className={`rounded-lg shadow-md border hover:shadow-lg transition p-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
+            <div key={String(cert.id)} className={`rounded-lg shadow-md border overflow-hidden hover:shadow-lg transition p-6 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
               <div className="flex justify-between items-start mb-4">
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <h3 className={`font-bold text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{cert.title}</h3>
                   <p className={`font-semibold ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>{cert.issuer}</p>
                   <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
