@@ -29,6 +29,7 @@ export default function AdminExperiencePage() {
     tags: ''
   })
   const [isDarkMode, setIsDarkMode] = useState(false)
+  const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   useEffect(() => {
     fetchExperiences()
@@ -41,6 +42,12 @@ export default function AdminExperiencePage() {
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
     return () => observer.disconnect()
   }, [])
+
+  useEffect(() => {
+    if (!statusMsg) return
+    const t = setTimeout(() => setStatusMsg(null), 5000)
+    return () => clearTimeout(t)
+  }, [statusMsg])
 
   const fetchExperiences = async () => {
     try {
@@ -89,8 +96,11 @@ export default function AdminExperiencePage() {
           setEditingId(null)
           setFormData({ title: '', organization: '', location: '', start_date: '', end_date: 'Present', description: '', highlights: '', tags: '' })
           fetchExperiences()
+          setStatusMsg({ type: 'success', text: 'Experience updated successfully!' })
         } else {
-          console.error('Failed to update experience', await res.text())
+          const errText = await res.text()
+          console.error('Failed to update experience', errText)
+          setStatusMsg({ type: 'error', text: 'Failed to update experience.' })
         }
       } else {
         const res = await fetch('/api/admin/experience', {
@@ -102,12 +112,16 @@ export default function AdminExperiencePage() {
         if (res.ok) {
           setFormData({ title: '', organization: '', location: '', start_date: '', end_date: 'Present', description: '', highlights: '', tags: '' })
           fetchExperiences()
+          setStatusMsg({ type: 'success', text: 'Experience added successfully!' })
         } else {
-          console.error('Failed to create experience', await res.text())
+          const errText = await res.text()
+          console.error('Failed to create experience', errText)
+          setStatusMsg({ type: 'error', text: 'Failed to create experience.' })
         }
       }
     } catch (err) {
       console.error('Error saving experience', err)
+      setStatusMsg({ type: 'error', text: 'An unexpected error occurred.' })
     } finally {
       setLoading(false)
     }
@@ -115,8 +129,17 @@ export default function AdminExperiencePage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure?')) return
-    const res = await fetch(`/api/admin/experience?id=${id}`, { method: 'DELETE' })
-    if (res.ok) fetchExperiences()
+    try {
+      const res = await fetch(`/api/admin/experience?id=${id}`, { method: 'DELETE' })
+      if (res.ok) {
+        fetchExperiences()
+        setStatusMsg({ type: 'success', text: 'Experience deleted successfully!' })
+      } else {
+        setStatusMsg({ type: 'error', text: 'Failed to delete experience.' })
+      }
+    } catch {
+      setStatusMsg({ type: 'error', text: 'An unexpected error occurred.' })
+    }
   }
 
   const handleEdit = (exp: IExperience) => {
@@ -258,9 +281,10 @@ export default function AdminExperiencePage() {
           <button
             type="submit"
             disabled={loading}
-            className={`px-6 py-2 text-white rounded-lg font-semibold disabled:opacity-50 transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-green-700 hover:bg-green-600' : 'bg-green-600 hover:bg-green-700'}`}
+            className={`px-6 py-2 text-white rounded-lg font-semibold disabled:opacity-50 transition-transform duration-300 ease-out hover:scale-105 flex items-center gap-2 ${isDarkMode ? 'bg-green-700 hover:bg-green-600' : 'bg-green-600 hover:bg-green-700'}`}
           >
-            {editingId ? 'Update Experience' : 'Add Experience'}
+            {loading && <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+            {loading ? 'Publishing...' : editingId ? 'Update Experience' : 'Add Experience'}
           </button>
           {editingId && (
             <button
@@ -275,6 +299,16 @@ export default function AdminExperiencePage() {
             </button>
           )}
         </div>
+
+        {statusMsg && (
+          <div className={`mt-4 px-4 py-3 rounded-lg font-medium text-sm flex items-center gap-2 ${
+            statusMsg.type === 'success'
+              ? isDarkMode ? 'bg-green-900/50 text-green-300 border border-green-700' : 'bg-green-50 text-green-700 border border-green-300'
+              : isDarkMode ? 'bg-red-900/50 text-red-300 border border-red-700' : 'bg-red-50 text-red-700 border border-red-300'
+          }`}>
+            {statusMsg.type === 'success' ? '✓' : '✕'} {statusMsg.text}
+          </div>
+        )}
       </form>
 
       {/* Experiences List */}

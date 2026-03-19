@@ -22,6 +22,7 @@ export default function AdminProjectsPage() {
   const [imageInputMethod, setImageInputMethod] = useState<'upload' | 'url'>('upload')
   const [uploadingVideo, setUploadingVideo] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
+  const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   useEffect(() => {
     fetchProjects()
@@ -34,6 +35,12 @@ export default function AdminProjectsPage() {
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
     return () => observer.disconnect()
   }, [])
+
+  useEffect(() => {
+    if (!statusMsg) return
+    const t = setTimeout(() => setStatusMsg(null), 5000)
+    return () => clearTimeout(t)
+  }, [statusMsg])
 
   const fetchProjects = async () => {
     try {
@@ -89,8 +96,11 @@ export default function AdminProjectsPage() {
           setFormData({ title: '', description: '', github_url: '', huggingface_url: '', tags: '', image: '', demo_video: '' })
           setImageInputMethod('upload')
           fetchProjects()
+          setStatusMsg({ type: 'success', text: 'Project updated successfully!' })
         } else {
-          console.error('Failed to update project', await res.text())
+          const errText = await res.text()
+          console.error('Failed to update project', errText)
+          setStatusMsg({ type: 'error', text: 'Failed to update project.' })
         }
       } else {
         const res = await fetch('/api/admin/projects', {
@@ -103,12 +113,16 @@ export default function AdminProjectsPage() {
           setFormData({ title: '', description: '', github_url: '', huggingface_url: '', tags: '', image: '', demo_video: '' })
           setImageInputMethod('upload')
           fetchProjects()
+          setStatusMsg({ type: 'success', text: 'Project created successfully!' })
         } else {
-          console.error('Failed to create project', await res.text())
+          const errText = await res.text()
+          console.error('Failed to create project', errText)
+          setStatusMsg({ type: 'error', text: 'Failed to create project.' })
         }
       }
     } catch (err) {
       console.error('Error saving project', err)
+      setStatusMsg({ type: 'error', text: 'An unexpected error occurred.' })
     } finally {
       setLoading(false)
     }
@@ -116,8 +130,17 @@ export default function AdminProjectsPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure?')) return
-    const res = await fetch(`/api/admin/projects?id=${id}`, { method: 'DELETE' })
-    if (res.ok) fetchProjects()
+    try {
+      const res = await fetch(`/api/admin/projects?id=${id}`, { method: 'DELETE' })
+      if (res.ok) {
+        fetchProjects()
+        setStatusMsg({ type: 'success', text: 'Project deleted successfully!' })
+      } else {
+        setStatusMsg({ type: 'error', text: 'Failed to delete project.' })
+      }
+    } catch {
+      setStatusMsg({ type: 'error', text: 'An unexpected error occurred.' })
+    }
   }
 
   const handleEdit = (proj: IProject) => {
@@ -369,25 +392,38 @@ export default function AdminProjectsPage() {
           )}
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className={`px-4 py-2 rounded disabled:opacity-50 transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-blue-700 text-white hover:bg-blue-600' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
-        >
-          {editingId ? 'Update' : 'Create'} Project
-        </button>
-        {editingId && (
+        <div className="flex items-center gap-3">
           <button
-            type="button"
-            onClick={() => {
-              setEditingId(null)
-              setFormData({ title: '', description: '', github_url: '', huggingface_url: '', tags: '', image: '', demo_video: '' })
-              setImageInputMethod('upload')
-            }}
-            className={`ml-2 px-4 py-2 rounded transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-gray-600 text-white hover:bg-gray-500' : 'bg-gray-400 text-white hover:bg-gray-500'}`}
+            type="submit"
+            disabled={loading}
+            className={`px-4 py-2 rounded disabled:opacity-50 transition-transform duration-300 ease-out hover:scale-105 flex items-center gap-2 ${isDarkMode ? 'bg-blue-700 text-white hover:bg-blue-600' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
           >
-            Cancel
+            {loading && <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+            {loading ? 'Publishing...' : editingId ? 'Update Project' : 'Create Project'}
           </button>
+          {editingId && (
+            <button
+              type="button"
+              onClick={() => {
+                setEditingId(null)
+                setFormData({ title: '', description: '', github_url: '', huggingface_url: '', tags: '', image: '', demo_video: '' })
+                setImageInputMethod('upload')
+              }}
+              className={`px-4 py-2 rounded transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-gray-600 text-white hover:bg-gray-500' : 'bg-gray-400 text-white hover:bg-gray-500'}`}
+            >
+              Cancel
+            </button>
+          )}
+        </div>
+
+        {statusMsg && (
+          <div className={`mt-4 px-4 py-3 rounded-lg font-medium text-sm flex items-center gap-2 ${
+            statusMsg.type === 'success'
+              ? isDarkMode ? 'bg-green-900/50 text-green-300 border border-green-700' : 'bg-green-50 text-green-700 border border-green-300'
+              : isDarkMode ? 'bg-red-900/50 text-red-300 border border-red-700' : 'bg-red-50 text-red-700 border border-red-300'
+          }`}>
+            {statusMsg.type === 'success' ? '✓' : '✕'} {statusMsg.text}
+          </div>
         )}
       </form>
 
