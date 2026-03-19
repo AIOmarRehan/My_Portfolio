@@ -265,13 +265,16 @@ const mockCertificates = [
 ]
 
 export default async function Home() {
-  // Fetch all data from database
-  const projects = await getProjects()
-  const fullstackProjects = await getFullstackProjects()
-  const experiences = await getExperiences()
-  const articles = await getArticles()
-  const certificates = await getCertificates()
-  const siteCards = await getSiteCards()
+  // Fetch all data from database in parallel
+  const [projects, fullstackProjects, experiences, articles, certificates, siteCards] =
+    await Promise.all([
+      getProjects(),
+      getFullstackProjects(),
+      getExperiences(),
+      getArticles(),
+      getCertificates(),
+      getSiteCards(),
+    ])
 
   // Parse contact and QR card data from the database
   const contactRow = siteCards.find((c: { section: string }) => c.section === 'contact')
