@@ -19,6 +19,11 @@ export async function revalidateSite() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ secret }),
       })
+
+      // Pre-warm the homepage cache so the next visit loads instantly
+      // instead of waiting for a full server render after cache purge.
+      // Fire-and-forget — runs on the local Node process, won't be killed.
+      fetch(siteUrl).catch(() => {})
     } catch {
       // Non-critical — local write already succeeded
       console.warn('Failed to trigger production revalidation')
