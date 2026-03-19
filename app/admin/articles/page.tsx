@@ -19,6 +19,7 @@ export default function AdminArticlesPage() {
   const [imageInputMethod, setImageInputMethod] = useState<'upload' | 'url'>('upload')
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   useEffect(() => {
     fetchArticles()
@@ -117,6 +118,7 @@ export default function AdminArticlesPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure?')) return
+    setDeletingId(id)
     try {
       const res = await fetch(`/api/admin/articles?id=${id}`, { method: 'DELETE' })
       if (res.ok) {
@@ -127,6 +129,8 @@ export default function AdminArticlesPage() {
       }
     } catch {
       setStatusMsg({ type: 'error', text: 'An unexpected error occurred.' })
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -373,9 +377,11 @@ export default function AdminArticlesPage() {
                 </button>
                 <button
                   onClick={() => handleDelete(String(article.id))}
-                  className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded font-semibold text-sm transition-transform duration-300 ease-out hover:scale-105"
+                  disabled={deletingId === String(article.id)}
+                  className={`px-3 py-1 bg-red-500 text-white rounded font-semibold text-sm transition-transform duration-300 ease-out hover:scale-105 flex items-center gap-1 disabled:opacity-50 ${deletingId === String(article.id) ? '' : 'hover:bg-red-600'}`}
                 >
-                  Delete
+                  {deletingId === String(article.id) && <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+                  {deletingId === String(article.id) ? 'Deleting...' : 'Delete'}
                 </button>
               </div>
             </div>

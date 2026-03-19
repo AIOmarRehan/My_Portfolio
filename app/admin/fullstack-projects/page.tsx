@@ -23,6 +23,7 @@ export default function AdminFullstackProjectsPage() {
   const [uploadingVideo, setUploadingVideo] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   useEffect(() => {
     fetchProjects()
@@ -124,6 +125,7 @@ export default function AdminFullstackProjectsPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure?')) return
+    setDeletingId(id)
     try {
       const res = await fetch(`/api/admin/fullstack-projects?id=${id}`, { method: 'DELETE' })
       if (res.ok) {
@@ -134,6 +136,8 @@ export default function AdminFullstackProjectsPage() {
       }
     } catch {
       setStatusMsg({ type: 'error', text: 'An unexpected error occurred.' })
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -462,9 +466,11 @@ export default function AdminFullstackProjectsPage() {
               </button>
               <button
                 onClick={() => handleDelete(String(proj.id))}
-                className="px-3 py-1 bg-red-500 text-white rounded text-sm transition-transform duration-300 ease-out hover:scale-105"
+                disabled={deletingId === String(proj.id)}
+                className={`px-3 py-1 bg-red-500 text-white rounded text-sm transition-transform duration-300 ease-out hover:scale-105 flex items-center gap-1 disabled:opacity-50 ${deletingId === String(proj.id) ? '' : 'hover:bg-red-600'}`}
               >
-                Delete
+                {deletingId === String(proj.id) && <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+                {deletingId === String(proj.id) ? 'Deleting...' : 'Delete'}
               </button>
             </div>
           </div>
