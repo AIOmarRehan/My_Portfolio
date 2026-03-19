@@ -8,6 +8,7 @@ out/
 dist/
 build/
 .nuxt/
+next-env.d.ts
 
 # Environment files
 .env
