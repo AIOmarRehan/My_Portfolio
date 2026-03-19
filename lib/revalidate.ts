@@ -20,10 +20,12 @@ export async function revalidateSite() {
         body: JSON.stringify({ secret }),
       })
 
-      // Pre-warm the homepage cache so the next visit loads instantly
-      // instead of waiting for a full server render after cache purge.
-      // Fire-and-forget — runs on the local Node process, won't be killed.
-      fetch(siteUrl).catch(() => {})
+      // Pre-warm the homepage cache so the page is already cached
+      // by the time the admin switches to the browser.
+      // Awaited intentionally — the admin action stays "loading" until
+      // the Vercel page is fully rendered and cached. After this,
+      // visiting the site is instant.
+      await fetch(siteUrl).catch(() => {})
     } catch {
       // Non-critical — local write already succeeded
       console.warn('Failed to trigger production revalidation')
