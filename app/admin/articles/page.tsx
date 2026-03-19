@@ -18,6 +18,7 @@ export default function AdminArticlesPage() {
   const [formData, setFormData] = useState({ title: '', description: '', url: '', tags: '', image: '' })
   const [imageInputMethod, setImageInputMethod] = useState<'upload' | 'url'>('upload')
   const [isDarkMode, setIsDarkMode] = useState(false)
+  const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   useEffect(() => {
     fetchArticles()
@@ -30,6 +31,12 @@ export default function AdminArticlesPage() {
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
     return () => observer.disconnect()
   }, [])
+
+  useEffect(() => {
+    if (!statusMsg) return
+    const t = setTimeout(() => setStatusMsg(null), 5000)
+    return () => clearTimeout(t)
+  }, [statusMsg])
 
   const fetchArticles = async () => {
     try {
@@ -76,8 +83,11 @@ export default function AdminArticlesPage() {
           setFormData({ title: '', description: '', url: '', tags: '', image: '' })
           setImageInputMethod('upload')
           fetchArticles()
+          setStatusMsg({ type: 'success', text: 'Article updated successfully!' })
         } else {
-          console.error('Failed to update article', await res.text())
+          const errText = await res.text()
+          console.error('Failed to update article', errText)
+          setStatusMsg({ type: 'error', text: 'Failed to update article.' })
         }
       } else {
         const res = await fetch('/api/admin/articles', {
@@ -90,12 +100,16 @@ export default function AdminArticlesPage() {
           setFormData({ title: '', description: '', url: '', tags: '', image: '' })
           setImageInputMethod('upload')
           fetchArticles()
+          setStatusMsg({ type: 'success', text: 'Article created successfully!' })
         } else {
-          console.error('Failed to create article', await res.text())
+          const errText = await res.text()
+          console.error('Failed to create article', errText)
+          setStatusMsg({ type: 'error', text: 'Failed to create article.' })
         }
       }
     } catch (err) {
       console.error('Error saving article', err)
+      setStatusMsg({ type: 'error', text: 'An unexpected error occurred.' })
     } finally {
       setLoading(false)
     }
@@ -103,8 +117,17 @@ export default function AdminArticlesPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure?')) return
-    const res = await fetch(`/api/admin/articles?id=${id}`, { method: 'DELETE' })
-    if (res.ok) fetchArticles()
+    try {
+      const res = await fetch(`/api/admin/articles?id=${id}`, { method: 'DELETE' })
+      if (res.ok) {
+        fetchArticles()
+        setStatusMsg({ type: 'success', text: 'Article deleted successfully!' })
+      } else {
+        setStatusMsg({ type: 'error', text: 'Failed to delete article.' })
+      }
+    } catch {
+      setStatusMsg({ type: 'error', text: 'An unexpected error occurred.' })
+    }
   }
 
   const handleEdit = (article: IArticle) => {
@@ -266,9 +289,10 @@ export default function AdminArticlesPage() {
           <button
             type="submit"
             disabled={loading}
-            className={`px-6 py-2 text-white rounded-lg font-semibold disabled:opacity-50 transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-blue-700 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'}`}
+            className={`px-6 py-2 text-white rounded-lg font-semibold disabled:opacity-50 transition-transform duration-300 ease-out hover:scale-105 flex items-center gap-2 ${isDarkMode ? 'bg-blue-700 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'}`}
           >
-            {editingId ? 'Update Article' : 'Create Article'}
+            {loading && <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+            {loading ? 'Publishing...' : editingId ? 'Update Article' : 'Create Article'}
           </button>
           {editingId && (
             <button
@@ -284,6 +308,16 @@ export default function AdminArticlesPage() {
             </button>
           )}
         </div>
+
+        {statusMsg && (
+          <div className={`mt-4 px-4 py-3 rounded-lg font-medium text-sm flex items-center gap-2 ${
+            statusMsg.type === 'success'
+              ? isDarkMode ? 'bg-green-900/50 text-green-300 border border-green-700' : 'bg-green-50 text-green-700 border border-green-300'
+              : isDarkMode ? 'bg-red-900/50 text-red-300 border border-red-700' : 'bg-red-50 text-red-700 border border-red-300'
+          }`}>
+            {statusMsg.type === 'success' ? '✓' : '✕'} {statusMsg.text}
+          </div>
+        )}
       </form>
 
       {/* Articles List */}

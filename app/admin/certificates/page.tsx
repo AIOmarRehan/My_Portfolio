@@ -25,6 +25,7 @@ export default function AdminCertificatesPage() {
     tags: ''
   })
   const [isDarkMode, setIsDarkMode] = useState(false)
+  const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   useEffect(() => {
     fetchCertificates()
@@ -37,6 +38,12 @@ export default function AdminCertificatesPage() {
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
     return () => observer.disconnect()
   }, [])
+
+  useEffect(() => {
+    if (!statusMsg) return
+    const t = setTimeout(() => setStatusMsg(null), 5000)
+    return () => clearTimeout(t)
+  }, [statusMsg])
 
   const fetchCertificates = async () => {
     try {
@@ -88,8 +95,11 @@ export default function AdminCertificatesPage() {
           setEditingId(null)
           setFormData({ title: '', issuer: '', issue_date: '', credential_url: '', description: '', tags: '' })
           fetchCertificates()
+          setStatusMsg({ type: 'success', text: 'Certificate updated successfully!' })
         } else {
-          console.error('Failed to update certificate', await res.text())
+          const errText = await res.text()
+          console.error('Failed to update certificate', errText)
+          setStatusMsg({ type: 'error', text: 'Failed to update certificate.' })
         }
       } else {
         const res = await fetch('/api/admin/certificates', {
@@ -101,12 +111,16 @@ export default function AdminCertificatesPage() {
         if (res.ok) {
           setFormData({ title: '', issuer: '', issue_date: '', credential_url: '', description: '', tags: '' })
           fetchCertificates()
+          setStatusMsg({ type: 'success', text: 'Certificate added successfully!' })
         } else {
-          console.error('Failed to create certificate', await res.text())
+          const errText = await res.text()
+          console.error('Failed to create certificate', errText)
+          setStatusMsg({ type: 'error', text: 'Failed to create certificate.' })
         }
       }
     } catch (err) {
       console.error('Error saving certificate', err)
+      setStatusMsg({ type: 'error', text: 'An unexpected error occurred.' })
     } finally {
       setLoading(false)
     }
@@ -114,8 +128,17 @@ export default function AdminCertificatesPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure?')) return
-    const res = await fetch(`/api/admin/certificates?id=${id}`, { method: 'DELETE' })
-    if (res.ok) fetchCertificates()
+    try {
+      const res = await fetch(`/api/admin/certificates?id=${id}`, { method: 'DELETE' })
+      if (res.ok) {
+        fetchCertificates()
+        setStatusMsg({ type: 'success', text: 'Certificate deleted successfully!' })
+      } else {
+        setStatusMsg({ type: 'error', text: 'Failed to delete certificate.' })
+      }
+    } catch {
+      setStatusMsg({ type: 'error', text: 'An unexpected error occurred.' })
+    }
   }
 
   const handleEdit = (cert: ICertificate) => {
@@ -210,9 +233,10 @@ export default function AdminCertificatesPage() {
           <button
             type="submit"
             disabled={loading}
-            className={`px-6 py-2 text-white rounded-lg font-semibold disabled:opacity-50 transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-blue-700 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'}`}
+            className={`px-6 py-2 text-white rounded-lg font-semibold disabled:opacity-50 transition-transform duration-300 ease-out hover:scale-105 flex items-center gap-2 ${isDarkMode ? 'bg-blue-700 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'}`}
           >
-            {editingId ? 'Update Certificate' : 'Add Certificate'}
+            {loading && <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+            {loading ? 'Publishing...' : editingId ? 'Update Certificate' : 'Add Certificate'}
           </button>
           {editingId && (
             <button
@@ -227,6 +251,16 @@ export default function AdminCertificatesPage() {
             </button>
           )}
         </div>
+
+        {statusMsg && (
+          <div className={`mt-4 px-4 py-3 rounded-lg font-medium text-sm flex items-center gap-2 ${
+            statusMsg.type === 'success'
+              ? isDarkMode ? 'bg-green-900/50 text-green-300 border border-green-700' : 'bg-green-50 text-green-700 border border-green-300'
+              : isDarkMode ? 'bg-red-900/50 text-red-300 border border-red-700' : 'bg-red-50 text-red-700 border border-red-300'
+          }`}>
+            {statusMsg.type === 'success' ? '✓' : '✕'} {statusMsg.text}
+          </div>
+        )}
       </form>
 
       {/* Certificates List */}
