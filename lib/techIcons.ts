@@ -170,6 +170,8 @@ const normalizeTag = (tagName: string): string => {
     'react.js': 'react',
     'google cloud': 'gcp',
     'googlecloud': 'gcp',
+    'google colab': 'colab',
+    'googlecolab': 'colab',
     'machine learning': 'machinelearning',
     'deep learning': 'deeplearning',
     'computer vision': 'cv',
