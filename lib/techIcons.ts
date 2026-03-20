@@ -48,6 +48,7 @@ export const techIcons: Record<string, IconData> = {
   pandas: { icon: 'si/SiPandas', color: '#150458', label: 'Pandas' },
   numpy: { icon: 'si/SiNumpy', color: '#08AFC4', label: 'NumPy' },
   opencv: { icon: 'si/SiOpencv', label: 'OpenCV' },
+  llama: { icon: 'si/SiOllama', label: 'LLaMA' },
 
   // Cloud Platforms
   aws: { icon: 'fa/FaAws', color: '#ff9900', label: 'AWS' },
@@ -58,6 +59,7 @@ export const techIcons: Record<string, IconData> = {
   vercel: { icon: 'io5/IoLogoVercel', label: 'Vercel' },
   netlify: { icon: 'bi/BiLogoNetlify', color: '#00c7b7', label: 'Netlify' },
   heroku: { icon: 'di/DiHeroku', color: '#430098', label: 'Heroku' },
+  colab: { icon: 'si/SiGooglecolab', color: '#f9ab00', label: 'Google Colab' },
 
   // Databases & Backend
   sql: { icon: 'tb/TbSql', color: '#336791', label: 'SQL' },
@@ -146,6 +148,7 @@ export const techIcons: Record<string, IconData> = {
   eda: { icon: 'svg/exploratory-analysis', label: 'EDA' },
   audiodenoise: { icon: 'svg/auddenoise', label: 'Audio Denoising' },
   audioclean: { icon: 'svg/audio-cleaning', label: 'Audio Cleaning' },
+  qwen: {icon: 'svg/Qwen_logo', label: 'Qwen'},
 
   // Other
   balls: { icon: 'lia/LiaVolleyballBallSolid', label: 'Balls Classification' },
