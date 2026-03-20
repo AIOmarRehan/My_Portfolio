@@ -7,7 +7,15 @@ export default function NotFound() {
   const [isDarkMode, setIsDarkMode] = useState(false)
 
   useEffect(() => {
-    setIsDarkMode(document.documentElement.classList.contains('dark-mode'))
+    const html = document.documentElement
+    setIsDarkMode(html.classList.contains('dark-mode'))
+
+    const observer = new MutationObserver(() => {
+      setIsDarkMode(html.classList.contains('dark-mode'))
+    })
+    observer.observe(html, { attributes: true, attributeFilter: ['class'] })
+
+    return () => observer.disconnect()
   }, [])
 
   return (
