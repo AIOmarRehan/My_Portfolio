@@ -46,13 +46,17 @@ export default function NotFound() {
 
       <Link
         href="/"
-        className={`
-          relative px-8 py-3 rounded-lg font-semibold text-white
-          bg-gradient-to-r from-blue-600 to-purple-600
-          hover:from-blue-700 hover:to-purple-700
-          transition-all duration-300 hover:scale-105
-          hover:shadow-[0_0_20px_rgba(124,58,237,0.5)]
-        `}
+        className="relative px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105"
+        style={{
+          color: isDarkMode ? '#fff' : '#fff',
+          background: isDarkMode
+            ? 'linear-gradient(to right, #7c3aed, #6d28d9)'
+            : 'linear-gradient(to right, #2563eb, #7c3aed)',
+          boxShadow: isDarkMode
+            ? '0 0 15px rgba(139,92,246,0.4), 0 0 30px rgba(124,58,237,0.2)'
+            : '0 4px 14px rgba(37,99,235,0.3)',
+          animation: isDarkMode ? 'btnGlow 2s ease-in-out infinite' : 'none',
+        }}
       >
         Back to Home
       </Link>
@@ -74,6 +78,10 @@ export default function NotFound() {
           80%  { opacity: 0.3; }
           90%  { opacity: 1; }
           100% { opacity: 0.9; }
+        }
+        @keyframes btnGlow {
+          0%, 100% { box-shadow: 0 0 15px rgba(139,92,246,0.4), 0 0 30px rgba(124,58,237,0.2); }
+          50%      { box-shadow: 0 0 25px rgba(167,139,250,0.6), 0 0 50px rgba(139,92,246,0.35); }
         }
       `}</style>
     </section>
