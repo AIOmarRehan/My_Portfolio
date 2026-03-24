@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from 'react'
 
-export default function WhatsAppButton() {
+interface WhatsAppButtonProps {
+  href?: string
+}
+
+export default function WhatsAppButton({ href = 'https://wa.me/971509669311' }: WhatsAppButtonProps) {
   const [isDarkMode, setIsDarkMode] = useState(false)
 
   useEffect(() => {
@@ -23,7 +27,7 @@ export default function WhatsAppButton() {
 
   return (
     <a
-      href="https://scanned.page/mHF8g5"
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       className="w-full px-4 py-2 font-semibold text-sm rounded-lg flex items-center justify-center gap-2 transition-transform duration-300 ease-out hover:scale-105"

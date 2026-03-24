@@ -227,7 +227,7 @@ export default function QRSection({ initialCards }: QRSectionProps) {
                     <img
                       src={card.imageSrc}
                       alt={`QR code for ${card.label}`}
-                      className="w-52 h-52 max-w-full"
+                      className="w-52 h-52 max-w-full object-contain"
                       loading="lazy"
                     />
                   </div>
@@ -254,7 +254,7 @@ export default function QRSection({ initialCards }: QRSectionProps) {
                         View CV
                       </a>
                     ) : (
-                      <WhatsAppButton />
+                      <WhatsAppButton href={card.linkUrl} />
                     )}
                   </div>
                 </div>
