@@ -284,7 +284,16 @@ export default async function Home() {
 
   const qrRows = siteCards.filter((c: { section: string }) => c.section === 'qr')
   const qrCards = qrRows.length > 0
-    ? qrRows.map((r: { card_data: Record<string, unknown> }) => r.card_data as { label: string; imageSrc: string; borderColor: string; textColor: string; buttonType: 'cv' | 'whatsapp'; linkUrl: string })
+    ? qrRows.map((r: { card_data: Record<string, unknown> }) => {
+        const card = r.card_data as { label: string; imageSrc: string; borderColor: string; textColor: string; buttonType: 'cv' | 'whatsapp'; linkUrl: string }
+        // Strip base64 data URLs to prevent oversized ISR pages
+        if (card.imageSrc?.startsWith('data:')) {
+          card.imageSrc = card.buttonType === 'cv'
+            ? '/qr_code/My_CV-1024.svg'
+            : '/qr_code/Contact_Omar-1024.svg'
+        }
+        return card
+      })
     : undefined
 
   return (
