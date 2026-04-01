@@ -289,8 +289,8 @@ export default async function Home() {
         // Strip base64 data URLs to prevent oversized ISR pages
         if (card.imageSrc?.startsWith('data:')) {
           card.imageSrc = card.buttonType === 'cv'
-            ? '/qr_code/My_CV-1024.svg'
-            : '/qr_code/Contact_Omar-1024.svg'
+            ? '/qr_code/CV.svg'
+            : '/qr_code/WhatsApp.svg'
         }
         return card
       })
