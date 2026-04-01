@@ -17,7 +17,7 @@ interface QRCard {
 const defaultCards: QRCard[] = [
   {
     label: 'CV QR Code',
-    imageSrc: '/qr_code/My_CV-1024.svg',
+    imageSrc: '/qr_code/CV.svg',
     borderColor: 'cyan',
     textColor: 'cyan',
     buttonType: 'cv',
@@ -25,7 +25,7 @@ const defaultCards: QRCard[] = [
   },
   {
     label: 'WhatsApp QR Code',
-    imageSrc: '/qr_code/Contact_Omar-1024.svg',
+    imageSrc: '/qr_code/WhatsApp.svg',
     borderColor: 'purple',
     textColor: 'purple',
     buttonType: 'whatsapp',
