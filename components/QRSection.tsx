@@ -71,14 +71,25 @@ export default function QRSection({ initialCards }: QRSectionProps) {
     setCards(prev => prev.map((card, i) => i === index ? { ...card, [field]: value } : card))
   }
 
-  const handleImageUpload = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+  const [uploading, setUploading] = useState<number | null>(null)
+
+  const handleImageUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    const reader = new FileReader()
-    reader.onload = () => {
-      updateCard(index, 'imageSrc', String(reader.result))
+    setUploading(index)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const res = await fetch('/api/admin/upload-qr', { method: 'POST', body: formData })
+      if (!res.ok) throw new Error('Upload failed')
+      const { url } = await res.json()
+      updateCard(index, 'imageSrc', url)
+    } catch (err) {
+      console.error('Image upload error:', err)
+      alert('Failed to upload image. Please try again.')
+    } finally {
+      setUploading(null)
     }
-    reader.readAsDataURL(file)
   }
 
   const handleSave = async () => {
@@ -174,9 +185,10 @@ export default function QRSection({ initialCards }: QRSectionProps) {
                     <button
                       type="button"
                       onClick={() => fileInputRefs.current[idx]?.click()}
-                      className="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-white text-sm rounded transition"
+                      disabled={uploading === idx}
+                      className="px-3 py-1 bg-gray-600 hover:bg-gray-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm rounded transition"
                     >
-                      Upload New QR
+                      {uploading === idx ? 'Uploading...' : 'Upload New QR'}
                     </button>
                     <input
                       ref={el => { fileInputRefs.current[idx] = el }}
