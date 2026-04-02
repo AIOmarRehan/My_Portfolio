@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { FaCog, FaTimes, FaSave } from 'react-icons/fa'
 import WhatsAppButton from './WhatsAppButton'
+import AnimatedTechCards from './AnimatedTechCards'
 
 interface QRCard {
   label: string
@@ -274,6 +275,9 @@ export default function QRSection({ initialCards }: QRSectionProps) {
             ))}
           </div>
         )}
+
+        {/* Animated tech cards filler */}
+        {!editing && <AnimatedTechCards />}
       </div>
     </section>
   )
