@@ -21,6 +21,7 @@ export default function AdminProjectsPage() {
   const [formData, setFormData] = useState({ title: '', description: '', github_url: '', huggingface_url: '', tags: '', image: '', demo_video: '' })
   const [imageInputMethod, setImageInputMethod] = useState<'upload' | 'url'>('upload')
   const [uploadingVideo, setUploadingVideo] = useState(false)
+  const [uploadingImage, setUploadingImage] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
@@ -163,28 +164,31 @@ export default function AdminProjectsPage() {
     })
   }
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    
-    // 3MB limit for base64
-    const maxSize = 3 * 1024 * 1024
-    if (file.size > maxSize) {
-      const sizeMB = (file.size / (1024 * 1024)).toFixed(2)
-      alert(`File size is ${sizeMB}MB. Maximum allowed is 3MB due to database limits. Please use a smaller file or compress the GIF.`)
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert(`File size is ${(file.size / (1024 * 1024)).toFixed(2)}MB. Maximum allowed is 5MB.`)
       e.target.value = ''
       return
     }
-    
-    const reader = new FileReader()
-    reader.onload = () => {
-      setFormData(prev => ({ ...prev, image: String(reader.result) }))
-    }
-    reader.onerror = () => {
-      alert('Failed to read file. Please try again.')
+
+    setUploadingImage(true)
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      fd.append('folder', 'projects')
+      const res = await fetch('/api/admin/upload-image', { method: 'POST', body: fd })
+      if (!res.ok) throw new Error('Upload failed')
+      const { url } = await res.json()
+      setFormData(prev => ({ ...prev, image: url }))
+    } catch {
+      alert('Failed to upload image. Please try again.')
       e.target.value = ''
+    } finally {
+      setUploadingImage(false)
     }
-    reader.readAsDataURL(file)
   }
 
   const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

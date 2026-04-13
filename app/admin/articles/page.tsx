@@ -20,6 +20,7 @@ export default function AdminArticlesPage() {
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [uploadingImage, setUploadingImage] = useState(false)
 
   useEffect(() => {
     fetchArticles()
@@ -151,21 +152,29 @@ export default function AdminArticlesPage() {
     }
   }
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
-    // 3MB max
-    if (file.size > 3 * 1024 * 1024) {
-      alert('File size must be less than 3MB')
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size must be less than 5MB')
       return
     }
 
-    const reader = new FileReader()
-    reader.onload = (event) => {
-      setFormData({ ...formData, image: event.target?.result as string })
+    setUploadingImage(true)
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      fd.append('folder', 'articles')
+      const res = await fetch('/api/admin/upload-image', { method: 'POST', body: fd })
+      if (!res.ok) throw new Error('Upload failed')
+      const { url } = await res.json()
+      setFormData({ ...formData, image: url })
+    } catch {
+      alert('Failed to upload image. Please try again.')
+    } finally {
+      setUploadingImage(false)
     }
-    reader.readAsDataURL(file)
   }
 
   const handleImageUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {

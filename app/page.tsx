@@ -276,6 +276,22 @@ export default async function Home() {
       getSiteCards(),
     ])
 
+  // Strip base64 data URLs from all database records to prevent oversized ISR pages
+  const stripBase64 = (items: Record<string, unknown>[]) =>
+    items.map(item => {
+      const clean = { ...item }
+      for (const key of Object.keys(clean)) {
+        if (typeof clean[key] === 'string' && (clean[key] as string).startsWith('data:')) {
+          clean[key] = ''
+        }
+      }
+      return clean
+    })
+
+  const safeProjects = stripBase64(projects as Record<string, unknown>[]) as typeof projects
+  const safeFullstackProjects = stripBase64(fullstackProjects as Record<string, unknown>[]) as typeof fullstackProjects
+  const safeArticles = stripBase64(articles as Record<string, unknown>[]) as typeof articles
+
   // Parse contact and QR card data from the database
   const contactRow = siteCards.find((c: { section: string }) => c.section === 'contact')
   const contactData = contactRow?.card_data as { links?: Array<{ label: string; href: string; icon: string; displayText: string }>; cvPath?: string } | undefined
@@ -368,9 +384,9 @@ export default async function Home() {
           <div className="flex-1 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded"></div>
         </div>
         
-        {projects.length > 0 ? (
+        {safeProjects.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full overflow-visible" role="list">
-            {projects.map((p: any, idx: number) => (
+            {safeProjects.map((p: any, idx: number) => (
               <div
                 key={String(p.id)}
                 className="group hover-scale p-5 sm:p-6 bg-gray-800/50 light:bg-white/90 backdrop-blur border border-gray-700 light:border-gray-300 rounded-xl hover:border-blue-500 transition duration-300 flex flex-col w-full"
@@ -463,9 +479,9 @@ export default async function Home() {
           <div className="flex-1 h-1 bg-gradient-to-r from-cyan-500 to-teal-600 rounded"></div>
         </div>
         
-        {fullstackProjects.length > 0 ? (
+        {safeFullstackProjects.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full overflow-visible" role="list">
-            {fullstackProjects.map((p: any, idx: number) => (
+            {safeFullstackProjects.map((p: any, idx: number) => (
               <div
                 key={String(p.id)}
                 className="group hover-scale p-5 sm:p-6 bg-gray-800/50 light:bg-white/90 backdrop-blur border border-gray-700 light:border-gray-300 rounded-xl hover:border-cyan-500 transition duration-300 flex flex-col w-full"
@@ -683,9 +699,9 @@ export default async function Home() {
           <div className="flex-1 h-1 bg-gradient-to-r from-pink-500 to-rose-600 rounded"></div>
         </div>
         
-        {articles.length > 0 ? (
+        {safeArticles.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-visible" role="list">
-            {articles.map((article: any, idx: number) => (
+            {safeArticles.map((article: any, idx: number) => (
               <div
                 key={String(article.id)}
                 className="group hover-scale p-6 bg-gray-800/50 backdrop-blur border border-gray-700 rounded-xl hover:border-pink-500 transition duration-300 flex flex-col"
