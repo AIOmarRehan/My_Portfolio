@@ -276,21 +276,22 @@ export default async function Home() {
       getSiteCards(),
     ])
 
-  // Strip base64 data URLs from all database records to prevent oversized ISR pages
-  const stripBase64 = (items: Record<string, unknown>[]) =>
+  // Replace base64 images with API URLs to prevent oversized ISR pages
+  // URL-based images (from Supabase Storage) are kept as-is since they're tiny strings
+  const replaceBase64Images = <T extends { id: number; image?: string }>(
+    items: T[],
+    table: string
+  ): T[] =>
     items.map(item => {
-      const clean = { ...item }
-      for (const key of Object.keys(clean)) {
-        if (typeof clean[key] === 'string' && (clean[key] as string).startsWith('data:')) {
-          clean[key] = ''
-        }
+      if (typeof item.image === 'string' && item.image.startsWith('data:')) {
+        return { ...item, image: `/api/media/${table}/${item.id}` }
       }
-      return clean
+      return item
     })
 
-  const safeProjects = stripBase64(projects as Record<string, unknown>[]) as typeof projects
-  const safeFullstackProjects = stripBase64(fullstackProjects as Record<string, unknown>[]) as typeof fullstackProjects
-  const safeArticles = stripBase64(articles as Record<string, unknown>[]) as typeof articles
+  const safeProjects = replaceBase64Images(projects as any[], 'projects') as typeof projects
+  const safeFullstackProjects = replaceBase64Images(fullstackProjects as any[], 'fullstack_projects') as typeof fullstackProjects
+  const safeArticles = replaceBase64Images(articles as any[], 'articles') as typeof articles
 
   // Parse contact and QR card data from the database
   const contactRow = siteCards.find((c: { section: string }) => c.section === 'contact')
