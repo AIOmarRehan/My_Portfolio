@@ -315,6 +315,22 @@ export default async function Home() {
 
   return (
     <div id="top" className="space-y-20">
+      {/* Preload first batch of images so the browser fetches them during HTML parse */}
+      {safeProjects.slice(0, 6).map((p: any) =>
+        p.image ? (
+          <link key={`preload-p-${p.id}`} rel="preload" as="image" href={p.image} />
+        ) : null
+      )}
+      {safeFullstackProjects.slice(0, 6).map((p: any) =>
+        p.image ? (
+          <link key={`preload-fp-${p.id}`} rel="preload" as="image" href={p.image} />
+        ) : null
+      )}
+      {safeArticles.slice(0, 3).map((a: any) =>
+        a.image ? (
+          <link key={`preload-a-${a.id}`} rel="preload" as="image" href={a.image} />
+        ) : null
+      )}
       {/* Hero Section */}
       <section id="hero" className="py-20 fade-in overflow-visible" aria-label="Welcome section">
         <Typewriter 
@@ -396,7 +412,7 @@ export default async function Home() {
                 {/* Project Image - No autoplay */}
                 {p.image ? (
                   <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48 bg-gray-700 flex items-center justify-center">
-                    <img src={p.image} alt={`Screenshot of ${p.title} project`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+                    <img src={p.image} alt={`Screenshot of ${p.title} project`} className="w-full h-full object-cover" decoding="async" fetchPriority="high" />
                   </div>
                 ) : p.demo_video ? (
                   <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48 bg-gray-700 flex items-center justify-center">
@@ -491,7 +507,7 @@ export default async function Home() {
                 {/* Project Image */}
                 {p.image ? (
                   <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48 bg-gray-700 flex items-center justify-center">
-                    <img src={p.image} alt={`Screenshot of ${p.title} project`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+                    <img src={p.image} alt={`Screenshot of ${p.title} project`} className="w-full h-full object-cover" decoding="async" fetchPriority="high" />
                   </div>
                 ) : p.demo_video ? (
                   <div className="mb-4 rounded-lg overflow-hidden h-40 sm:h-48 bg-gray-700 flex items-center justify-center">
@@ -710,7 +726,7 @@ export default async function Home() {
               >
                 {article.image && (
                   <div className="mb-4 rounded-lg overflow-hidden h-48">
-                    <img src={article.image} alt={`Featured image for ${article.title} article`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+                    <img src={article.image} alt={`Featured image for ${article.title} article`} className="w-full h-full object-cover" decoding="async" fetchPriority="high" />
                   </div>
                 )}
                 

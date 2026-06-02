@@ -179,6 +179,8 @@ export default function ProjectDetailsPage() {
                 src={project.image}
                 alt={project.title}
                 className="w-full h-auto object-cover"
+                decoding="async"
+                fetchPriority="high"
               />
             </div>
           </div>

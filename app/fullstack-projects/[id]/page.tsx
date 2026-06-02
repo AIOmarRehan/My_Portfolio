@@ -176,7 +176,13 @@ export default function FullstackProjectDetailsPage() {
         {project.image && !project.demo_video && (
           <div className="mb-16">
             <div className="rounded-xl overflow-hidden shadow-2xl">
-              <img src={project.image} alt={project.title} className="w-full h-auto object-cover" />
+              <img
+                src={project.image}
+                alt={project.title}
+                className="w-full h-auto object-cover"
+                decoding="async"
+                fetchPriority="high"
+              />
             </div>
           </div>
         )}
