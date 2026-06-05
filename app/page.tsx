@@ -31,13 +31,24 @@ async function getExperiences() {
   const { data, error } = await supabase
     .from('experiences')
     .select('*')
-    .order('start_date', { ascending: false })
   
   if (error) {
     console.error('Error fetching experiences:', error)
     return []
   }
-  return data || []
+  
+  // Sort with "Present" entries first, then by start_date descending
+  const sorted = (data || []).sort((a, b) => {
+    // If both are "Present" or both are not, sort by start_date
+    if ((a.end_date === 'Present' && b.end_date === 'Present') || 
+        (a.end_date !== 'Present' && b.end_date !== 'Present')) {
+      return new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
+    }
+    // Otherwise, "Present" comes first
+    return a.end_date === 'Present' ? -1 : 1
+  })
+  
+  return sorted
 }
 
 async function getArticles() {
