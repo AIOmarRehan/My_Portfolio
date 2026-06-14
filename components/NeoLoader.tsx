@@ -3,13 +3,30 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 
+/** The inner loader visual (logo + bouncing 6-colour blocks). Reusable. */
+export function NeoLoaderVisual() {
+  return (
+    <div className="relative flex flex-col items-center gap-7">
+      <div className="neo-card neo-card-alt w-20 h-20 p-2 flex items-center justify-center -rotate-2">
+        <img src="/favicon.svg?v=2" alt="" width={64} height={64} className="w-full h-full object-contain" />
+      </div>
+      <div className="neo-loader">
+        <span style={{ background: 'var(--neo-blue)' }} />
+        <span style={{ background: 'var(--neo-cyan)' }} />
+        <span style={{ background: 'var(--neo-orange)' }} />
+        <span style={{ background: 'var(--neo-lime)' }} />
+        <span style={{ background: 'var(--neo-yellow)' }} />
+        <span style={{ background: 'var(--neo-pink)' }} />
+      </div>
+      <div className="neo-tag neo-tag-yellow uppercase tracking-widest">Loading…</div>
+    </div>
+  )
+}
+
 /**
- * Shared neubrutalist full-screen loader (logo + bouncing 6-colour blocks).
- *
- * It is PORTALED to <body> so it escapes the <main> stacking context
- * (main has `relative z-10`, which would otherwise trap the overlay BELOW the
- * fixed header). This guarantees the loader covers the header on every loading
- * page (route transitions, project details, etc.).
+ * Full-screen loader PORTALED to <body>. Used by in-`main` loaders (route
+ * loading.tsx, project detail pages) so the overlay escapes main's
+ * `relative z-10` stacking context and covers the fixed header.
  */
 export default function NeoLoader() {
   const [mounted, setMounted] = useState(false)
@@ -25,22 +42,7 @@ export default function NeoLoader() {
       aria-label="Loading"
       role="status"
     >
-      <div className="relative flex flex-col items-center gap-7">
-        <div className="neo-card neo-card-alt w-20 h-20 p-2 flex items-center justify-center -rotate-2">
-          <img src="/favicon.svg?v=2" alt="" width={64} height={64} className="w-full h-full object-contain" />
-        </div>
-
-        <div className="neo-loader">
-          <span style={{ background: 'var(--neo-blue)' }} />
-          <span style={{ background: 'var(--neo-cyan)' }} />
-          <span style={{ background: 'var(--neo-orange)' }} />
-          <span style={{ background: 'var(--neo-lime)' }} />
-          <span style={{ background: 'var(--neo-yellow)' }} />
-          <span style={{ background: 'var(--neo-pink)' }} />
-        </div>
-
-        <div className="neo-tag neo-tag-yellow uppercase tracking-widest">Loading…</div>
-      </div>
+      <NeoLoaderVisual />
     </div>
   )
 

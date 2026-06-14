@@ -1,7 +1,13 @@
 'use client'
 import { useEffect, useState } from 'react'
-import NeoLoader from './NeoLoader'
+import { NeoLoaderVisual } from './NeoLoader'
 
+/**
+ * Startup loader. Rendered INLINE (not portaled) so it's present in the very
+ * first SSR paint and covers the page immediately — no flash of the homepage
+ * before the loader. It lives directly in <body>, so z-[100000] is enough to
+ * sit above the header. Fades out once the window finishes loading.
+ */
 export default function LoadingScreen() {
   const [isLoading, setIsLoading] = useState(true)
   const [fadeOut, setFadeOut] = useState(false)
@@ -11,7 +17,7 @@ export default function LoadingScreen() {
       handleLoadComplete()
       return
     }
-    const fallbackTimeout = setTimeout(() => handleLoadComplete(), 800)
+    const fallbackTimeout = setTimeout(() => handleLoadComplete(), 1200)
     const handleLoad = () => {
       clearTimeout(fallbackTimeout)
       handleLoadComplete()
@@ -32,11 +38,13 @@ export default function LoadingScreen() {
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] transition-opacity duration-300 ${
+      className={`fixed inset-0 z-[100000] flex items-center justify-center transition-opacity duration-300 ${
         fadeOut ? 'opacity-0' : 'opacity-100'
       }`}
+      style={{ background: 'var(--neo-bg)' }}
+      aria-hidden="true"
     >
-      <NeoLoader />
+      <NeoLoaderVisual />
     </div>
   )
 }

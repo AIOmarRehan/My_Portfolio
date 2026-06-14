@@ -61,12 +61,12 @@ export default function Typewriter({
   return (
     <div className="mb-12 flex justify-center">
       <div
-        className="neo-card inline-block px-6 py-5 -rotate-1"
+        className="neo-card inline-block px-5 sm:px-6 py-5 -rotate-1 max-w-full"
         style={{ background: bgColor, transition: 'background 350ms ease' }}
       >
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold min-h-[3.5rem] flex items-center text-[#111]">
-          <span className="font-mono">{currentText}</span>
-          <span className="inline-block w-3 h-7 ml-1 bg-[#111] align-middle animate-pulse" />
+        <h1 className="text-xl sm:text-3xl md:text-4xl font-extrabold min-h-[3.5rem] text-[#111] leading-snug break-words font-mono">
+          {currentText}
+          <span className="neo-caret" />
         </h1>
       </div>
     </div>

@@ -641,3 +641,14 @@ html.dark-mode .neo-floaty { opacity: 0.6; }
   0%, 100% { transform: translateY(0) rotate(0deg); }
   40%      { transform: translateY(-22px) rotate(45deg); }
 }
+
+/* Typewriter caret — inline so it follows the text across line wraps (mobile) */
+.neo-caret {
+  display: inline-block;
+  width: 0.55ch;
+  height: 1.05em;
+  margin-left: 2px;
+  background: #111;
+  vertical-align: -0.15em;
+  animation: neoBlink 1s steps(2) infinite;
+}

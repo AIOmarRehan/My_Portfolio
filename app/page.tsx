@@ -341,20 +341,26 @@ export default async function Home() {
 
   return (
     <div id="top" className="space-y-20">
-      {/* Preload first batch of images so the browser fetches them during HTML parse */}
-      {safeProjects.slice(0, 6).map((p: any) =>
+      {/* Preload ALL card images so the browser fetches them in parallel during
+          HTML parse — cards appear together, not gradually one-by-one. */}
+      {safeProjects.map((p: any) =>
         p.image ? (
-          <link key={`preload-p-${p.id}`} rel="preload" as="image" href={p.image} />
+          <link key={`preload-p-${p.id}`} rel="preload" as="image" href={p.image} fetchPriority="high" />
         ) : null
       )}
-      {safeFullstackProjects.slice(0, 6).map((p: any) =>
+      {safeFullstackProjects.map((p: any) =>
         p.image ? (
-          <link key={`preload-fp-${p.id}`} rel="preload" as="image" href={p.image} />
+          <link key={`preload-fp-${p.id}`} rel="preload" as="image" href={p.image} fetchPriority="high" />
         ) : null
       )}
-      {safeArticles.slice(0, 3).map((a: any) =>
+      {safeDataAnalytics.map((p: any) =>
+        p.image ? (
+          <link key={`preload-da-${p.id}`} rel="preload" as="image" href={p.image} fetchPriority="high" />
+        ) : null
+      )}
+      {safeArticles.map((a: any) =>
         a.image ? (
-          <link key={`preload-a-${a.id}`} rel="preload" as="image" href={a.image} />
+          <link key={`preload-a-${a.id}`} rel="preload" as="image" href={a.image} fetchPriority="high" />
         ) : null
       )}
       {/* Hero Section */}
