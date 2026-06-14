@@ -326,20 +326,6 @@ select:focus-visible {
   outline-offset: 2px;
 }
 
-.skip-to-content {
-  position: absolute;
-  top: -48px;
-  left: 0;
-  background: var(--neo-yellow);
-  color: #111;
-  padding: 10px 14px;
-  font-weight: 800;
-  border: var(--neo-bw) solid var(--neo-border);
-  z-index: 100;
-  text-decoration: none;
-}
-.skip-to-content:focus { top: 0; }
-
 /* Custom scrollbar */
 ::-webkit-scrollbar { width: 12px; height: 12px; }
 ::-webkit-scrollbar-track { background: var(--neo-bg-alt); }

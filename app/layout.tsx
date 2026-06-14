@@ -139,8 +139,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <head>
-        {/* Skip to content link for accessibility */}
-        <link rel="skip" href="#main-content" />
         {/* Charset meta - must be first */}
         <meta charSet="utf-8" />
 
@@ -251,8 +249,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
       <body className={`${inter.className} antialiased`}>
-        {/* Skip to content link - visible on focus */}
-        <a href="#main-content" className="skip-to-content">Skip to main content</a>
         <LoadingScreen />
         <ScrollProgress />
         <ThemeProvider>
