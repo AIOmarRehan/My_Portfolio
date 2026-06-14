@@ -14,6 +14,7 @@ const socials = [
 const quickLinks = [
   { href: '#projects', label: 'AI Projects' },
   { href: '#fullstack-projects', label: 'Full-Stack Projects' },
+  { href: '#data-analytics-projects', label: 'Data Analytics Projects' },
   { href: '#experience', label: 'Experience' },
   { href: '#certifications', label: 'Certifications' },
   { href: '#articles', label: 'Articles' },
