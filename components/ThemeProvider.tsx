@@ -28,9 +28,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const toggleTheme = () => {
     const newTheme: Theme = theme === 'dark' ? 'light' : 'dark'
+    const root = document.documentElement
+    // Suppress transitions during the flip so colours change in one paint.
+    root.classList.add('theme-switching')
     setTheme(newTheme)
     localStorage.setItem('theme', newTheme)
     applyThemeClass(newTheme)
+    // Re-enable transitions after the paint that applied the new theme.
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => root.classList.remove('theme-switching'))
+    )
   }
 
   // Always provide the context, even during SSR/first render

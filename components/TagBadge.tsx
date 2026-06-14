@@ -1,24 +1,10 @@
 'use client'
 
 import { memo } from 'react'
+import type { IconType } from 'react-icons'
 import { getTagIcon } from '@/lib/techIcons'
+import { iconRegistry } from '@/lib/iconRegistry'
 import SvgIcon from './icons/SvgIcon'
-import * as FaIcons from 'react-icons/fa'
-import * as Fa6Icons from 'react-icons/fa6'
-import * as SiIcons from 'react-icons/si'
-import * as IoIcons from 'react-icons/io5'
-import * as TbIcons from 'react-icons/tb'
-import * as VscIcons from 'react-icons/vsc'
-import * as RiIcons from 'react-icons/ri'
-import * as BiIcons from 'react-icons/bi'
-import * as DiIcons from 'react-icons/di'
-import * as AiIcons from 'react-icons/ai'
-import * as GrIcons from 'react-icons/gr'
-import * as CiIcons from 'react-icons/ci'
-import * as LiaIcons from 'react-icons/lia'
-import * as GiIcons from 'react-icons/gi'
-import * as LuIcons from 'react-icons/lu'
-import * as MdIcons from 'react-icons/md'
 
 interface TagBadgeProps {
   tag: string
@@ -28,107 +14,39 @@ interface TagBadgeProps {
 function TagBadge({ tag, variant = 'blue' }: TagBadgeProps) {
   const iconData = getTagIcon(tag)
 
-  // Define variant styles
-  const variantStyles: Record<string, { bg: string; text: string; border: string; hover: string }> = {
-    blue: {
-      bg: 'bg-blue-500/20',
-      text: 'text-blue-300',
-      border: 'border-blue-500/30',
-      hover: 'hover:bg-blue-500/30'
-    },
-    pink: {
-      bg: 'bg-pink-500/20',
-      text: 'text-pink-300',
-      border: 'border-pink-500/30',
-      hover: 'hover:bg-pink-500/30'
-    },
-    yellow: {
-      bg: 'bg-yellow-500/20',
-      text: 'text-yellow-300',
-      border: 'border-yellow-500/30',
-      hover: 'hover:bg-yellow-500/30'
-    },
-    green: {
-      bg: 'bg-green-500/20',
-      text: 'text-green-300',
-      border: 'border-green-500/30',
-      hover: 'hover:bg-green-500/30'
-    },
-    gray: {
-      bg: 'bg-gray-700',
-      text: 'text-gray-200',
-      border: 'border-gray-700',
-      hover: 'hover:bg-gray-600'
-    }
+  // Map legacy variants onto the neubrutalism flat-block tag colors
+  const variantClass: Record<string, string> = {
+    blue: 'neo-tag-blue',
+    pink: 'neo-tag-pink',
+    yellow: 'neo-tag-yellow',
+    green: 'neo-tag-lime',
+    gray: 'neo-tag-cyan',
   }
 
-  const styles = variantStyles[variant]
+  // Icons render in solid ink for max contrast against the flat block
+  const iconColor = '#111111'
 
-  // Hex color for each variant — used as fallback when an icon has no explicit color
-  const variantHex: Record<string, string> = {
-    blue: '#93c5fd',
-    pink: '#f9a8d4',
-    yellow: '#fde047',
-    green: '#86efac',
-    gray: '#e5e7eb'
-  }
-
-  const iconColor = iconData?.color || variantHex[variant]
-
-  let IconComponent: any = null
+  let IconComponent: IconType | null = null
   let isSvgIcon = false
   let svgIconName = ''
 
-  const iconLibraries: Record<string, Record<string, any>> = {
-    fa: FaIcons,
-    fa6: Fa6Icons,
-    si: SiIcons,
-    io5: IoIcons,
-    tb: TbIcons,
-    vsc: VscIcons,
-    ri: RiIcons,
-    bi: BiIcons,
-    di: DiIcons,
-    ai: AiIcons,
-    gr: GrIcons,
-    ci: CiIcons,
-    lia: LiaIcons,
-    gi: GiIcons,
-    lu: LuIcons,
-    md: MdIcons
-  }
-
   if (iconData) {
     const [iconPackage, iconName] = iconData.icon.split('/')
-    
-    // Check if this is an SVG icon
     if (iconPackage === 'svg') {
       isSvgIcon = true
       svgIconName = iconName
     } else {
-      const library = iconLibraries[iconPackage]
-      if (library) {
-        IconComponent = library[iconName]
-      }
+      IconComponent = iconRegistry[iconData.icon] || null
     }
   }
 
   return (
-    <span
-      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${styles.bg} ${styles.text} text-xs font-medium border ${styles.border} ${styles.hover} transition`}
-    >
+    <span className={`neo-tag ${variantClass[variant]}`}>
       {isSvgIcon && svgIconName && (
-        <SvgIcon
-          name={svgIconName}
-          className="w-4 h-4 flex-shrink-0"
-          style={{ color: iconColor }}
-        />
+        <SvgIcon name={svgIconName} className="w-4 h-4 flex-shrink-0" style={{ color: iconColor }} />
       )}
       {IconComponent && (
-        <IconComponent
-          className="w-4 h-4 flex-shrink-0"
-          style={{ color: iconColor }}
-        />
+        <IconComponent className="w-4 h-4 flex-shrink-0" style={{ color: iconColor }} />
       )}
       {tag}
     </span>

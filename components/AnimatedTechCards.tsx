@@ -315,40 +315,30 @@ function CardShell({
   children: React.ReactNode
 }) {
   return (
-    <div
-      className={`flex flex-col gap-3 rounded-2xl p-4 border transition-colors duration-300 ${
-        isDarkMode
-          ? 'border-gray-700/30'
-          : 'border-gray-200/50'
-      }`}
-    >
+    <div className="neo-card flex flex-col gap-3 p-4 mt-2">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div
-          className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 border transition-colors duration-300 ${
-            isDarkMode
-              ? 'bg-gray-800/60 border-gray-700/50'
-              : 'bg-gray-100 border-gray-200'
-          }`}
-        >
+        <div className="w-9 h-9 flex items-center justify-center shrink-0 neo-panel bg-[color:var(--neo-surface-2)]">
           {icon}
         </div>
         <div className="min-w-0">
-          <p className="text-sm font-semibold leading-tight truncate text-white">
+          <p className="text-sm font-extrabold leading-tight truncate text-[color:var(--neo-ink)]">
             {title}
           </p>
-          <p className="text-[11px] font-mono mt-0.5 text-gray-300">
+          <p className="text-[11px] font-mono mt-0.5 text-[color:var(--neo-muted)]">
             {sub}
           </p>
         </div>
       </div>
 
       {/* Animation zone */}
-      {children}
+      <div className="neo-panel bg-[color:var(--neo-surface-2)] overflow-hidden">
+        {children}
+      </div>
 
       {/* Footer */}
       <div className="flex items-center justify-between">
-        <span className={`text-[10px] font-mono px-2 py-0.5 rounded ${badgeClass}`}>{badge}</span>
+        <span className={`text-[10px] font-extrabold font-mono px-2 py-0.5 border-2 border-neo-border ${badgeClass}`}>{badge}</span>
         <span
           className="w-[7px] h-[7px] rounded-full shrink-0"
           style={{

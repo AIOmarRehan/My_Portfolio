@@ -2,22 +2,9 @@
 
 import { useMemo, useState } from 'react'
 import { techIcons } from '@/lib/techIcons'
+import { iconRegistry } from '@/lib/iconRegistry'
+import { useDebouncedValue } from '@/lib/hooks'
 import SvgIcon from './icons/SvgIcon'
-import * as FaIcons from 'react-icons/fa'
-import * as Fa6Icons from 'react-icons/fa6'
-import * as SiIcons from 'react-icons/si'
-import * as IoIcons from 'react-icons/io5'
-import * as TbIcons from 'react-icons/tb'
-import * as VscIcons from 'react-icons/vsc'
-import * as RiIcons from 'react-icons/ri'
-import * as BiIcons from 'react-icons/bi'
-import * as DiIcons from 'react-icons/di'
-import * as AiIcons from 'react-icons/ai'
-import * as GrIcons from 'react-icons/gr'
-import * as CiIcons from 'react-icons/ci'
-import * as LiaIcons from 'react-icons/lia'
-import * as GiIcons from 'react-icons/gi'
-import * as LuIcons from 'react-icons/lu'
 
 interface TagSearchInputProps {
   value: string
@@ -25,24 +12,6 @@ interface TagSearchInputProps {
   placeholder?: string
   className?: string
   inputId?: string
-}
-
-const iconLibraries: Record<string, Record<string, any>> = {
-  fa: FaIcons,
-  fa6: Fa6Icons,
-  si: SiIcons,
-  io5: IoIcons,
-  tb: TbIcons,
-  vsc: VscIcons,
-  ri: RiIcons,
-  bi: BiIcons,
-  di: DiIcons,
-  ai: AiIcons,
-  gr: GrIcons,
-  ci: CiIcons,
-  lia: LiaIcons,
-  gi: GiIcons,
-  lu: LuIcons
 }
 
 export default function TagSearchInput({
@@ -76,15 +45,17 @@ export default function TagSearchInput({
   const lastCommaIndex = value.lastIndexOf(',')
   const rawToken = lastCommaIndex >= 0 ? value.slice(lastCommaIndex + 1) : value
   const query = rawToken.trim()
+  // Debounce the query so we don't re-filter the full tag list on every keystroke
+  const debouncedQuery = useDebouncedValue(query, 150)
 
   const suggestions = useMemo(() => {
-    if (!query) return []
+    if (!debouncedQuery) return []
 
-    const q = query.toLowerCase()
+    const q = debouncedQuery.toLowerCase()
     return allTags
       .filter((item) => item.label.toLowerCase().includes(q) || item.key.toLowerCase().includes(q))
       .slice(0, 8)
-  }, [allTags, query])
+  }, [allTags, debouncedQuery])
 
   const handleSelect = (label: string) => {
     const prefix = lastCommaIndex >= 0 ? value.slice(0, lastCommaIndex + 1).trimEnd() + ' ' : ''
@@ -94,17 +65,13 @@ export default function TagSearchInput({
 
   const renderIcon = (iconRef: string, color?: string) => {
     const [iconPackage, iconName] = iconRef.split('/')
-    
-    // Handle SVG icons
+
     if (iconPackage === 'svg') {
       return <SvgIcon name={iconName} className="w-4 h-4" style={color ? { color } : undefined} />
     }
-    
-    const library = iconLibraries[iconPackage]
-    const IconComponent = library ? library[iconName] : null
 
+    const IconComponent = iconRegistry[iconRef]
     if (!IconComponent) return null
-
     return <IconComponent className="w-4 h-4" style={color ? { color } : undefined} />
   }
 
@@ -128,14 +95,14 @@ export default function TagSearchInput({
       />
 
       {isOpen && suggestions.length > 0 && (
-        <div className="absolute z-20 mt-2 w-full rounded-lg border border-gray-200 bg-white shadow-lg">
+        <div className="absolute z-20 mt-2 w-full neo-panel shadow-neo overflow-hidden">
           {suggestions.map((item) => (
             <button
               key={item.key}
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => handleSelect(item.label)}
-              className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+              className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-bold hover:bg-neo-yellow transition-colors"
             >
               {renderIcon(item.icon, item.color)}
               <span>{item.label}</span>

@@ -33,6 +33,7 @@
     "@types/node": "25.2.3",
     "@types/nodemailer": "7.0.10",
     "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
     "@types/react-google-recaptcha": "2.1.9",
     "autoprefixer": "*",
     "eslint": "*",

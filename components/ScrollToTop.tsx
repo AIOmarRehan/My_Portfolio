@@ -1,62 +1,41 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
+import { useThrottledCallback } from '@/lib/hooks'
 
-export default function ScrollToTop() {
+function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false)
-  const [isDarkMode, setIsDarkMode] = useState(false)
+
+  const onScroll = useThrottledCallback(() => {
+    setIsVisible(window.scrollY > 300)
+  }, 150)
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsVisible(window.scrollY > 300)
-    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [onScroll])
 
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  useEffect(() => {
-    const updateTheme = () => {
-      setIsDarkMode(document.documentElement.classList.contains('dark-mode'))
-    }
-
-    updateTheme()
-
-    const observer = new MutationObserver(updateTheme)
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    })
-
-    return () => observer.disconnect()
-  }, [])
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
 
   return (
-    <div className={`fixed bottom-8 right-8 z-50 transition-all duration-500 ${isVisible ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+    <div
+      className={`fixed bottom-8 right-8 z-50 transition-all duration-300 ${
+        isVisible
+          ? 'opacity-100 translate-y-0 pointer-events-auto'
+          : 'opacity-0 translate-y-4 pointer-events-none'
+      }`}
+    >
       <button
         onClick={scrollToTop}
-        className="w-12 h-12 rounded-full flex items-center justify-center transition-transform duration-300 ease-out hover:scale-110"
-        style={{
-          background: isDarkMode
-            ? 'linear-gradient(45deg, #93c5fd, #e9d5ff)'
-            : 'linear-gradient(45deg, #00ffff, #ff00ff)',
-          boxShadow: isDarkMode
-            ? '0 0 20px #93c5fd, 0 0 40px #e9d5ff, inset 0 0 20px rgba(147, 197, 253, 0.3)'
-            : '0 0 20px #00ffff, 0 0 40px #ff00ff, inset 0 0 20px rgba(0, 255, 255, 0.3)',
-        }}
+        className="neo-btn neo-btn-yellow w-12 h-12 !p-0 rounded-neo"
         title="Back to top"
+        aria-label="Back to top"
       >
-        <svg
-          className="w-6 h-6 text-gray-900 font-bold"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M7 14l5-5 5 5H7z" />
         </svg>
       </button>
     </div>
   )
 }
+
+export default memo(ScrollToTop)

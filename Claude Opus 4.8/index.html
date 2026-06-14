@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BRUTE — Build Loud. Ship Bold.</title>
+  <meta name="description" content="A neubrutalist studio building loud, bold, unforgettable digital experiences." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+
+  <!-- Progress bar -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- Noise overlay -->
+  <div class="noise"></div>
+
+  <!-- NAV -->
+  <header class="nav" id="nav">
+    <a href="#top" class="logo" data-hover>
+      <span class="logo-mark">▘▝</span> BRUTE<span class="blink">_</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#work" data-hover>Work</a>
+      <a href="#services" data-hover>Services</a>
+      <a href="#stats" data-hover>Numbers</a>
+      <a href="#contact" data-hover>Contact</a>
+    </nav>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" data-hover aria-label="Toggle theme">
+        <span class="toggle-icon">☀</span>
+      </button>
+      <a href="#contact" class="btn btn-pop" data-hover>Start a project →</a>
+    </div>
+    <button class="burger" id="burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <!-- HERO -->
+  <main id="top">
+    <section class="hero">
+      <div class="hero-bg-shapes" id="heroShapes"></div>
+
+      <div class="hero-inner">
+        <div class="badge wobble" data-hover>
+          <span class="dot-pulse"></span> Open for new projects — 2026
+        </div>
+
+        <h1 class="hero-title">
+          <span class="line"><span class="word reveal-word">BUILD</span> <span class="word reveal-word highlight">LOUD.</span></span>
+          <span class="line"><span class="word reveal-word">SHIP</span> <span class="word reveal-word highlight-2">BOLD.</span></span>
+        </h1>
+
+        <p class="hero-sub reveal-up">
+          We design and build brutally beautiful digital products that
+          refuse to be ignored. No gradients of mediocrity. Just raw,
+          confident craft.
+        </p>
+
+        <div class="hero-cta reveal-up">
+          <a href="#work" class="btn btn-big btn-yellow" data-hover>See the work</a>
+          <a href="#contact" class="btn btn-big btn-outline" data-hover>Let's talk</a>
+        </div>
+
+        <div class="hero-tags reveal-up">
+          <span class="tag" data-hover>Design</span>
+          <span class="tag" data-hover>Engineering</span>
+          <span class="tag" data-hover>Motion</span>
+          <span class="tag" data-hover>Brand</span>
+        </div>
+      </div>
+
+      <div class="scroll-hint">
+        <span>SCROLL</span>
+        <div class="scroll-arrow">↓</div>
+      </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>DESIGN ✦ DEVELOP ✦ DISRUPT ✦ DELIVER ✦ DESIGN ✦ DEVELOP ✦ DISRUPT ✦ DELIVER ✦</span>
+        <span>DESIGN ✦ DEVELOP ✦ DISRUPT ✦ DELIVER ✦ DESIGN ✦ DEVELOP ✦ DISRUPT ✦ DELIVER ✦</span>
+      </div>
+    </div>
+
+    <!-- WORK / BENTO -->
+    <section class="section" id="work">
+      <div class="section-head">
+        <h2 class="section-title reveal-up">SELECTED <span class="outline-text">WORK</span></h2>
+        <p class="section-desc reveal-up">A few things we're loud about.</p>
+      </div>
+
+      <div class="bento">
+        <article class="card tilt span-2 c-pink" data-hover>
+          <div class="card-top">
+            <span class="card-num">01</span>
+            <span class="card-cat">Fintech</span>
+          </div>
+          <h3>NEON BANK</h3>
+          <p>A banking app that doesn't look like a spreadsheet had a nightmare.</p>
+          <div class="card-foot">View case →</div>
+        </article>
+
+        <article class="card tilt c-cyan" data-hover>
+          <div class="card-top">
+            <span class="card-num">02</span>
+            <span class="card-cat">SaaS</span>
+          </div>
+          <h3>FLUX OS</h3>
+          <p>Dashboards with a pulse.</p>
+          <div class="card-foot">View case →</div>
+        </article>
+
+        <article class="card tilt c-lime" data-hover>
+          <div class="card-top">
+            <span class="card-num">03</span>
+            <span class="card-cat">Brand</span>
+          </div>
+          <h3>HYPE CO.</h3>
+          <p>Identity that screams.</p>
+          <div class="card-foot">View case →</div>
+        </article>
+
+        <article class="card tilt span-2 c-purple" data-hover>
+          <div class="card-top">
+            <span class="card-num">04</span>
+            <span class="card-cat">E-commerce</span>
+          </div>
+          <h3>DROP MACHINE</h3>
+          <p>A storefront engineered to sell out in seconds, not load in them.</p>
+          <div class="card-foot">View case →</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="section services" id="services">
+      <div class="section-head">
+        <h2 class="section-title reveal-up"><span class="outline-text">WHAT</span> WE DO</h2>
+        <p class="section-desc reveal-up">Full-stack loudness.</p>
+      </div>
+
+      <div class="accordion" id="accordion">
+        <div class="acc-item" data-hover>
+          <button class="acc-head">
+            <span class="acc-index">/01</span>
+            <span class="acc-title">Product Design</span>
+            <span class="acc-plus">+</span>
+          </button>
+          <div class="acc-body">
+            <p>Interface design, design systems, and prototypes that feel alive. We obsess over the pixels so your users don't have to think.</p>
+          </div>
+        </div>
+        <div class="acc-item" data-hover>
+          <button class="acc-head">
+            <span class="acc-index">/02</span>
+            <span class="acc-title">Engineering</span>
+            <span class="acc-plus">+</span>
+          </button>
+          <div class="acc-body">
+            <p>Front-end and full-stack builds with performance baked in. Clean code, buttery animations, zero compromise.</p>
+          </div>
+        </div>
+        <div class="acc-item" data-hover>
+          <button class="acc-head">
+            <span class="acc-index">/03</span>
+            <span class="acc-title">Motion & Interaction</span>
+            <span class="acc-plus">+</span>
+          </button>
+          <div class="acc-body">
+            <p>Micro-interactions, scroll choreography, and motion language that gives your product personality and punch.</p>
+          </div>
+        </div>
+        <div class="acc-item" data-hover>
+          <button class="acc-head">
+            <span class="acc-index">/04</span>
+            <span class="acc-title">Brand Identity</span>
+            <span class="acc-plus">+</span>
+          </button>
+          <div class="acc-body">
+            <p>Logos, type systems, and visual languages that are impossible to ignore and even harder to forget.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="section stats" id="stats">
+      <div class="stat-grid">
+        <div class="stat-box" data-hover>
+          <div class="stat-num" data-count="248">0</div>
+          <div class="stat-label">Projects shipped</div>
+        </div>
+        <div class="stat-box alt" data-hover>
+          <div class="stat-num" data-count="97">0</div>
+          <div class="stat-label">% client repeat rate</div>
+        </div>
+        <div class="stat-box" data-hover>
+          <div class="stat-num" data-count="34">0</div>
+          <div class="stat-label">Awards & nods</div>
+        </div>
+        <div class="stat-box alt" data-hover>
+          <div class="stat-num" data-count="12">0</div>
+          <div class="stat-label">Years of loud</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA / CONTACT -->
+    <section class="section contact" id="contact">
+      <div class="contact-card" data-hover>
+        <h2 class="contact-title">GOT A WILD<br/>IDEA?</h2>
+        <p>Let's make it impossible to ignore. Drop your details and we'll be in touch within 24 hours.</p>
+        <form class="contact-form" id="contactForm">
+          <div class="field">
+            <input type="text" id="name" required placeholder=" " />
+            <label for="name">Your name</label>
+          </div>
+          <div class="field">
+            <input type="email" id="email" required placeholder=" " />
+            <label for="email">Email</label>
+          </div>
+          <div class="field full">
+            <textarea id="msg" rows="3" required placeholder=" "></textarea>
+            <label for="msg">Tell us about the project</label>
+          </div>
+          <button type="submit" class="btn btn-big btn-yellow full" data-hover>Send it loud →</button>
+        </form>
+        <div class="form-success" id="formSuccess">🎉 Sent! We'll hit you back soon.</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-marquee" aria-hidden="true">
+      <div class="footer-track"><span>LET'S BUILD SOMETHING LOUD —&nbsp;</span><span>LET'S BUILD SOMETHING LOUD —&nbsp;</span></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 BRUTE STUDIO</span>
+      <div class="footer-links">
+        <a href="#" data-hover>Twitter</a>
+        <a href="#" data-hover>Dribbble</a>
+        <a href="#" data-hover>GitHub</a>
+      </div>
+      <span>Made loud, not quiet.</span>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

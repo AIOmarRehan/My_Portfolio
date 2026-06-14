@@ -1,48 +1,25 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { memo } from 'react'
 
 interface HeroTitleProps {
   description: string
 }
 
-export default function HeroTitle({ description }: HeroTitleProps) {
-  const [isDarkMode, setIsDarkMode] = useState(false)
-
-  useEffect(() => {
-    const updateTheme = () => {
-      setIsDarkMode(document.documentElement.classList.contains('dark-mode'))
-    }
-
-    updateTheme()
-
-    const observer = new MutationObserver(updateTheme)
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    })
-
-    return () => observer.disconnect()
-  }, [])
-
+function HeroTitle({ description }: HeroTitleProps) {
   return (
     <>
-      <h1
-        className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent"
-        style={{
-          backgroundImage: isDarkMode
-            ? 'linear-gradient(to right, #93c5fd, #e9d5ff, #c084fc)'
-            : 'linear-gradient(to right, #0891b2, #7c3aed, #db2777)',
-          textShadow: isDarkMode
-            ? '0 0 20px rgba(147, 197, 253, 0.4), 0 0 40px rgba(233, 213, 255, 0.3)'
-            : 'none',
-          transition: 'text-shadow 450ms ease',
-        }}
-      >
-        Welcome to my Portfolio
+      <span className="neo-tag neo-tag-pink mb-4 w-fit">AI &amp; FULL-STACK ENGINEER</span>
+      <h1 className="text-4xl md:text-5xl font-extrabold mb-4 leading-[1.05]">
+        Welcome to my{' '}
+        <span className="bg-neo-yellow px-2 border-neo border-neo-border shadow-neo-sm inline-block -rotate-1">
+          Portfolio
+        </span>
       </h1>
-      <p className="text-lg text-gray-300 light:text-gray-800 mb-8">
+      <p className="text-base md:text-lg text-[color:var(--neo-ink-soft)] font-medium mb-8">
         {description}
       </p>
     </>
   )
 }
+
+export default memo(HeroTitle)

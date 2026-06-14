@@ -7,12 +7,14 @@ export const metadata: Metadata = {
 
 export default function CVPage() {
   return (
-    <div className="w-full h-screen bg-gray-900">
-      <iframe
-        src="/cv/Omar_Rehan_CV.pdf"
-        className="w-full h-full border-none"
-        title="Omar Rehan's CV"
-      />
+    <div className="w-full min-h-[85vh] p-4" style={{ background: 'var(--neo-bg)' }}>
+      <div className="neo-card w-full h-[85vh] overflow-hidden p-0">
+        <iframe
+          src="/cv/Omar_Rehan_CV.pdf"
+          className="w-full h-full border-none"
+          title="Omar Rehan's CV"
+        />
+      </div>
     </div>
   )
 }

@@ -1,71 +1,46 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { memo, useCallback } from 'react'
 
 interface CVDownloadButtonProps {
   buttonSize?: 'lg' | 'sm'
   cvUrl?: string
 }
 
-export default function CVDownloadButton({ buttonSize = 'lg', cvUrl }: CVDownloadButtonProps) {
-  const [isDarkMode, setIsDarkMode] = useState(false)
-
-  useEffect(() => {
-    const updateTheme = () => {
-      setIsDarkMode(document.documentElement.classList.contains('dark-mode'))
-    }
-
-    updateTheme()
-
-    const observer = new MutationObserver(updateTheme)
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    })
-
-    return () => observer.disconnect()
-  }, [])
-
-  const handleDownloadCV = () => {
+function CVDownloadButton({ buttonSize = 'lg', cvUrl }: CVDownloadButtonProps) {
+  const handleDownloadCV = useCallback(() => {
     const url = cvUrl || '/cv/Omar_Rehan_CV.pdf'
-    // Open PDF in a new tab
     window.open(url, '_blank', 'noopener,noreferrer')
-    // Also trigger a download
     const a = document.createElement('a')
     a.href = url
     a.download = url.split('/').pop() || 'CV.pdf'
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
-  }
+  }, [cvUrl])
 
-  const sizeClasses = buttonSize === 'lg' 
-    ? 'px-6 py-3 w-full' 
-    : 'px-4 py-2 w-full'
-  
-  const textSize = buttonSize === 'lg'
-    ? ''
-    : 'text-sm'
+  const sizeClasses =
+    buttonSize === 'lg' ? 'w-full py-3.5 text-base' : 'w-full py-2.5 text-sm'
 
   return (
     <button
       onClick={handleDownloadCV}
-      className={`${sizeClasses} font-semibold ${textSize} rounded-lg flex items-center justify-center gap-2 transition-transform duration-300 ease-out hover:scale-105`}
-      style={{
-        background: isDarkMode
-          ? 'linear-gradient(45deg, #93c5fd, #e9d5ff)'
-          : 'linear-gradient(45deg, #0284c7, #7c3aed)',
-        color: isDarkMode ? '#000000' : '#ffffff',
-        boxShadow: isDarkMode
-          ? '0 0 20px #93c5fd, 0 0 40px #e9d5ff, inset 0 0 20px rgba(147, 197, 253, 0.3)'
-          : '0 0 20px #0284c7, 0 0 40px #7c3aed, inset 0 0 20px rgba(2, 132, 199, 0.2)',
-      }}
+      className={`neo-btn neo-btn-yellow ${sizeClasses} uppercase tracking-wide`}
       aria-label="Download CV"
     >
-      <svg className={buttonSize === 'lg' ? 'w-5 h-5' : 'w-4 h-4'} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+      <svg
+        className={buttonSize === 'lg' ? 'w-5 h-5' : 'w-4 h-4'}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2.5}
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
       </svg>
       Download CV
     </button>
   )
 }
+
+export default memo(CVDownloadButton)

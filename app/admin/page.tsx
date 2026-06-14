@@ -35,6 +35,7 @@ export default async function AdminPage() {
   // Fetch data
   let projects = []
   let fullstackProjects = []
+  let dataAnalyticsProjects = []
   let articles = []
   let experiences = []
   let certificates = []
@@ -62,6 +63,19 @@ export default async function AdminPage() {
     }
   } catch (err) {
     console.log('Failed to fetch fullstack projects')
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('data_analytics_projects')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (!error && data) {
+      dataAnalyticsProjects = data
+    }
+  } catch (err) {
+    console.log('Failed to fetch data analytics projects')
   }
 
   try {
@@ -113,46 +127,41 @@ export default async function AdminPage() {
 
   return (
     <section>
-      <h1 className="text-2xl font-semibold">Admin Dashboard</h1>
-      <p className="mt-4 text-gray-400">
+      <h1 className="text-3xl font-extrabold inline-block bg-neo-yellow border-neo border-neo-border px-4 py-2 shadow-neo -rotate-1">Admin Dashboard</h1>
+      <p className="mt-6 font-semibold text-[color:var(--neo-ink-soft)]">
         Welcome! Use the navigation above to manage your portfolio content.
       </p>
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="p-6 bg-gray-800 rounded-lg shadow-sm border border-gray-700">
-          <h3 className="font-semibold text-lg mb-2 text-white">AI Projects</h3>
-          <p className="text-gray-400 text-sm mb-4">{projects.length} projects</p>
-          <a href="/admin/projects" className="text-blue-400 hover:text-blue-300">
-            Manage →
-          </a>
+        <div className="neo-card neo-interactive p-6">
+          <h3 className="font-extrabold text-lg mb-2">AI Projects</h3>
+          <p className="text-sm mb-4 text-[color:var(--neo-ink-soft)]">{projects.length} projects</p>
+          <a href="/admin/projects" className="neo-btn neo-btn-blue text-sm py-2">Manage →</a>
         </div>
-        <div className="p-6 bg-gray-800 rounded-lg shadow-sm border border-gray-700">
-          <h3 className="font-semibold text-lg mb-2 text-white">Full-Stack Projects</h3>
-          <p className="text-gray-400 text-sm mb-4">{fullstackProjects.length} projects</p>
-          <a href="/admin/fullstack-projects" className="text-cyan-400 hover:text-cyan-300">
-            Manage →
-          </a>
+        <div className="neo-card neo-interactive p-6">
+          <h3 className="font-extrabold text-lg mb-2">Full-Stack Projects</h3>
+          <p className="text-sm mb-4 text-[color:var(--neo-ink-soft)]">{fullstackProjects.length} projects</p>
+          <a href="/admin/fullstack-projects" className="neo-btn neo-btn-cyan text-sm py-2">Manage →</a>
         </div>
-        <div className="p-6 bg-gray-800 rounded-lg shadow-sm border border-gray-700">
-          <h3 className="font-semibold text-lg mb-2 text-white">Experience</h3>
-          <p className="text-gray-400 text-sm mb-4">{experiences.length} positions</p>
-          <a href="/admin/experience" className="text-green-400 hover:text-green-300">
-            Manage →
-          </a>
+        <div className="neo-card neo-interactive p-6">
+          <h3 className="font-extrabold text-lg mb-2">Data Analytics Projects</h3>
+          <p className="text-sm mb-4 text-[color:var(--neo-ink-soft)]">{dataAnalyticsProjects.length} projects</p>
+          <a href="/admin/data-analytics-projects" className="neo-btn neo-btn-orange text-sm py-2">Manage →</a>
         </div>
-        <div className="p-6 bg-gray-800 rounded-lg shadow-sm border border-gray-700">
-          <h3 className="font-semibold text-lg mb-2 text-white">Articles</h3>
-          <p className="text-gray-400 text-sm mb-4">{articles.length} articles</p>
-          <a href="/admin/articles" className="text-pink-400 hover:text-pink-300">
-            Manage →
-          </a>
+        <div className="neo-card neo-interactive p-6">
+          <h3 className="font-extrabold text-lg mb-2">Experience</h3>
+          <p className="text-sm mb-4 text-[color:var(--neo-ink-soft)]">{experiences.length} positions</p>
+          <a href="/admin/experience" className="neo-btn neo-btn-lime text-sm py-2">Manage →</a>
         </div>
-        <div className="p-6 bg-gray-800 rounded-lg shadow-sm border border-gray-700">
-          <h3 className="font-semibold text-lg mb-2 text-white">Certificates</h3>
-          <p className="text-gray-400 text-sm mb-4">{certificates.length} certificates</p>
-          <a href="/admin/certificates" className="text-yellow-400 hover:text-yellow-300">
-            Manage →
-          </a>
+        <div className="neo-card neo-interactive p-6">
+          <h3 className="font-extrabold text-lg mb-2">Articles</h3>
+          <p className="text-sm mb-4 text-[color:var(--neo-ink-soft)]">{articles.length} articles</p>
+          <a href="/admin/articles" className="neo-btn neo-btn-pink text-sm py-2">Manage →</a>
+        </div>
+        <div className="neo-card neo-interactive p-6">
+          <h3 className="font-extrabold text-lg mb-2">Certificates</h3>
+          <p className="text-sm mb-4 text-[color:var(--neo-ink-soft)]">{certificates.length} certificates</p>
+          <a href="/admin/certificates" className="neo-btn neo-btn-yellow text-sm py-2">Manage →</a>
         </div>
       </div>
     </section>

@@ -1,11 +1,11 @@
 "use client"
 import { signIn } from 'next-auth/react'
 
-export default function SignInButton(){
+export default function SignInButton() {
   return (
     <button
       onClick={() => signIn('google')}
-      className="mt-4 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded"
+      className="neo-btn neo-btn-blue mt-4 px-5 py-3 uppercase tracking-wide"
     >
       Sign in with Google
     </button>

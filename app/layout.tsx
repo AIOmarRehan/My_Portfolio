@@ -6,6 +6,7 @@ import Footer from '@/components/Footer'
 import AppSessionProvider from '@/components/SessionProvider'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import DynamicInteractiveBackground from '@/components/DynamicInteractiveBackground'
+import CardInteractions from '@/components/CardInteractions'
 import ScrollToTop from '@/components/ScrollToTop'
 import ScrollProgress from '@/components/ScrollProgress'
 import LoadingScreen from '@/components/LoadingScreen'
@@ -62,7 +63,7 @@ export const metadata: Metadata = {
     siteName: 'Omar Rehan Portfolio',
     images: [
       {
-        url: '/favicon-512x512.png',
+        url: '/web-app-manifest-512x512.png',
         width: 512,
         height: 512,
         alt: 'Omar Rehan Portfolio',
@@ -76,7 +77,7 @@ export const metadata: Metadata = {
     title: 'Omar Rehan | AI & Full-Stack Engineer',
     description:
       'AI and Full-Stack Engineer specializing in Machine Learning, Deep Learning, and end-to-end AI solutions.',
-    images: ['/favicon-512x512.png'],
+    images: ['/web-app-manifest-512x512.png'],
     creator: '@omar_rehan',
   },
 
@@ -103,22 +104,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-
-  // Icons
-  icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/favicon-48x48.png', sizes: '48x48', type: 'image/png' },
-    ],
-    apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
-  },
-
-  // Manifest for PWA
-  manifest: '/manifest.json',
 
   // iOS settings
   appleWebApp: {
@@ -158,7 +143,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link rel="skip" href="#main-content" />
         {/* Charset meta - must be first */}
         <meta charSet="utf-8" />
-        
+
+        {/* Favicons — full cross-platform set (RealFaviconGenerator).
+            ?v=2 busts the browser's aggressive favicon cache. */}
+        <link rel="icon" type="image/png" href="/favicon-96x96.png?v=2" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+        <link rel="shortcut icon" href="/favicon.ico?v=2" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2" />
+        <link rel="manifest" href="/site.webmanifest?v=2" />
+
         {/* Theme initialization - prevent flash */}
         <script src="/theme-init.js" />
         
@@ -168,6 +161,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           name="apple-mobile-web-app-status-bar-style"
           content="black-translucent"
         />
+        {/* Windows tiles */}
+        <meta name="msapplication-config" content="/browserconfig.xml" />
+        <meta name="msapplication-TileColor" content="#fdf3e3" />
 
         {/* Preconnect to external services - DNS prefetch only */}
         <link rel="dns-prefetch" href="https://accounts.google.com" />
@@ -199,7 +195,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               },
               email: 'ai.omar.rehan@gmail.com',
               telephone: '+971509669311',
-              image: 'https://omar-rehan.vercel.app/favicon-512x512.png',
+              image: 'https://omar-rehan.vercel.app/web-app-manifest-512x512.png',
               workLocation: {
                 '@type': 'Place',
                 name: 'Remote',
@@ -218,7 +214,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               '@type': 'Organization',
               name: 'Omar Rehan Portfolio',
               url: 'https://omar-rehan.vercel.app',
-              logo: 'https://omar-rehan.vercel.app/favicon-512x512.png',
+              logo: 'https://omar-rehan.vercel.app/web-app-manifest-512x512.png',
               sameAs: [
                 'https://github.com/AIOmarRehan',
                 'https://linkedin.com/in/omar-rehan-47b98636a',
@@ -254,7 +250,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           }}
         />
       </head>
-      <body className={`${inter.className} bg-gray-950 light:bg-gray-50 text-gray-100 light:text-gray-900 transition-colors duration-300`}>
+      <body className={`${inter.className} antialiased`}>
         {/* Skip to content link - visible on focus */}
         <a href="#main-content" className="skip-to-content">Skip to main content</a>
         <LoadingScreen />
@@ -262,6 +258,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <ThemeProvider>
         <AppSessionProvider>
           <DynamicInteractiveBackground />
+          <CardInteractions />
           <Header />
           <ScrollToTop />
           <main id="main-content" className="relative z-10 pt-20 pb-0 min-h-screen" role="main" aria-label="Main content">

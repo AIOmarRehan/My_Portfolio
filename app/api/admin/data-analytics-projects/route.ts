@@ -1,0 +1,90 @@
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { getToken } from 'next-auth/jwt'
+import { supabase } from '../../../../lib/supabaseServer'
+import { revalidateSite } from '../../../../lib/revalidate'
+
+const SECRET = process.env.NEXTAUTH_SECRET || ''
+
+export async function POST(req: NextRequest) {
+  try {
+    const token = await getToken({ req, secret: SECRET })
+    if (!token || token?.email !== process.env.ADMIN_EMAIL) return new Response('Not Found', { status: 404 })
+    const body = await req.json()
+    if (!body?.title) return new Response('Bad Request', { status: 400 })
+
+    if (!body?.github_url && !body?.tableau_url) {
+      return new Response('At least one URL is required', { status: 400 })
+    }
+
+    const payload = {
+      title: body.title,
+      description: body.description || '',
+      github_url: body.github_url || null,
+      tableau_url: body.tableau_url || null,
+      tags: body.tags || [],
+      image: body.image || null,
+      demo_video: body.demo_video || null,
+    }
+
+    const { data, error } = await supabase.from('data_analytics_projects').insert([payload]).select().single()
+    if (error) {
+      console.error('Supabase insert error', error)
+      return new Response('Bad Gateway', { status: 502 })
+    }
+    await revalidateSite()
+    return NextResponse.json(data)
+  } catch (err) {
+    console.error('POST /api/admin/data-analytics-projects error', err)
+    return new Response('Internal Server Error', { status: 500 })
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  try {
+    const token = await getToken({ req, secret: SECRET })
+    if (!token || token?.email !== process.env.ADMIN_EMAIL) return new Response('Not Found', { status: 404 })
+    const body = await req.json()
+    if (!body?.id) return new Response('Bad Request', { status: 400 })
+
+    const updates: any = body.updates || {}
+    if (body.image !== undefined) updates.image = body.image
+    if (body.demo_video !== undefined) updates.demo_video = body.demo_video
+
+    if (updates.github_url !== undefined || updates.tableau_url !== undefined) {
+      const hasGithub = updates.github_url || body.existing?.github_url
+      const hasTableau = updates.tableau_url || body.existing?.tableau_url
+      if (!hasGithub && !hasTableau) {
+        return new Response('At least one URL is required', { status: 400 })
+      }
+    }
+
+    const { data, error } = await supabase.from('data_analytics_projects').update(updates).eq('id', body.id).select().single()
+    if (error) {
+      if ((error as any).code === 'PGRST116') return new Response('Not Found', { status: 404 })
+      console.error('Supabase update error', error)
+      return new Response('Bad Gateway', { status: 502 })
+    }
+    await revalidateSite()
+    return NextResponse.json(data)
+  } catch (err) {
+    console.error('PUT /api/admin/data-analytics-projects error', err)
+    return new Response('Internal Server Error', { status: 500 })
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  const token = await getToken({ req, secret: SECRET })
+  if (!token || token?.email !== process.env.ADMIN_EMAIL) return new Response('Not Found', { status: 404 })
+  const { searchParams } = new URL(req.url)
+  const id = searchParams.get('id')
+  if (!id) return new Response('Bad Request', { status: 400 })
+
+  const { error } = await supabase.from('data_analytics_projects').delete().eq('id', id)
+  if (error) {
+    console.error('Supabase delete error', error)
+    return new Response('Bad Gateway', { status: 502 })
+  }
+  await revalidateSite()
+  return new Response(null, { status: 204 })
+}

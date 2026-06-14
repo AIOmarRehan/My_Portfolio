@@ -77,9 +77,9 @@ export default function LazyVideo({ src, alt, className = '', posterSrc }: LazyV
       
       {/* Loading placeholder */}
       {!isLoaded && (
-        <div className="absolute inset-0 bg-gray-800 animate-pulse flex items-center justify-center">
+        <div className="neo-skeleton absolute inset-0 flex items-center justify-center">
           <svg
-            className="w-12 h-12 text-gray-600"
+            className="w-12 h-12 text-[color:var(--neo-ink)]"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

@@ -9,45 +9,46 @@ interface TypewriterProps {
   pauseDuration?: number
 }
 
-export default function Typewriter({ 
-  sentences, 
-  typingSpeed = 100, 
-  deletingSpeed = 50, 
-  pauseDuration = 2000 
+// The 6 section colors
+const SECTION_COLORS = [
+  'var(--neo-blue)',
+  'var(--neo-cyan)',
+  'var(--neo-orange)',
+  'var(--neo-lime)',
+  'var(--neo-yellow)',
+  'var(--neo-pink)',
+]
+
+export default function Typewriter({
+  sentences,
+  typingSpeed = 100,
+  deletingSpeed = 50,
+  pauseDuration = 2000,
 }: TypewriterProps) {
   const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0)
   const [currentText, setCurrentText] = useState('')
   const [isDeleting, setIsDeleting] = useState(false)
-  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [bgColor, setBgColor] = useState(SECTION_COLORS[0])
 
+  // Pick a random section color whenever the sentence changes
   useEffect(() => {
-    const updateTheme = () => {
-      setIsDarkMode(document.documentElement.classList.contains('dark-mode'))
-    }
-    updateTheme()
-    const observer = new MutationObserver(updateTheme)
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
-    return () => observer.disconnect()
-  }, [])
+    setBgColor(SECTION_COLORS[Math.floor(Math.random() * SECTION_COLORS.length)])
+  }, [currentSentenceIndex])
 
   useEffect(() => {
     const currentSentence = sentences[currentSentenceIndex]
-    
+
     const timeout = setTimeout(() => {
       if (!isDeleting) {
-        // Typing
         if (currentText.length < currentSentence.length) {
           setCurrentText(currentSentence.substring(0, currentText.length + 1))
         } else {
-          // Finished typing, wait before deleting
           setTimeout(() => setIsDeleting(true), pauseDuration)
         }
       } else {
-        // Deleting
         if (currentText.length > 0) {
           setCurrentText(currentSentence.substring(0, currentText.length - 1))
         } else {
-          // Finished deleting, move to next sentence
           setIsDeleting(false)
           setCurrentSentenceIndex((prev) => (prev + 1) % sentences.length)
         }
@@ -58,17 +59,16 @@ export default function Typewriter({
   }, [currentText, isDeleting, currentSentenceIndex, sentences, typingSpeed, deletingSpeed, pauseDuration])
 
   return (
-    <div className="mb-16 text-center">
-      <h1 className={`text-3xl sm:text-4xl md:text-5xl font-bold min-h-[5rem] py-4 ${
-        isDarkMode 
-          ? 'bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400' 
-          : 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600'
-      } bg-clip-text text-transparent`}>
-        {currentText}
-        <span className={`inline-block w-1 h-10 ml-1 ${
-          isDarkMode ? 'bg-blue-400' : 'bg-blue-600'
-        } animate-pulse align-middle`}></span>
-      </h1>
+    <div className="mb-12 flex justify-center">
+      <div
+        className="neo-card inline-block px-6 py-5 -rotate-1"
+        style={{ background: bgColor, transition: 'background 350ms ease' }}
+      >
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold min-h-[3.5rem] flex items-center text-[#111]">
+          <span className="font-mono">{currentText}</span>
+          <span className="inline-block w-3 h-7 ml-1 bg-[#111] align-middle animate-pulse" />
+        </h1>
+      </div>
     </div>
   )
 }

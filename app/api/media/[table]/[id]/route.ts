@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabaseServer'
 
-const ALLOWED_TABLES = ['projects', 'fullstack_projects', 'articles'] as const
+const ALLOWED_TABLES = ['projects', 'fullstack_projects', 'data_analytics_projects', 'articles'] as const
 type AllowedTable = (typeof ALLOWED_TABLES)[number]
 
 export async function GET(
