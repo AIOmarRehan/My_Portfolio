@@ -2,6 +2,12 @@
 node_modules/
 jspm_packages/
 
+# Local database data (e.g. MongoDB) — must never be committed
+data/
+*.wt
+mongod.lock
+WiredTiger*
+
 # Build outputs
 .next/
 out/
