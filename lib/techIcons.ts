@@ -39,6 +39,8 @@ export const techIcons: Record<string, IconData> = {
   flask: { icon: 'si/SiFlask', color: '#000000', label: 'Flask' },
   fastapi: { icon: 'si/SiFastapi', color: '#0D9B8E', label: 'FastAPI' },
   chartjs: { icon: 'si/SiChartdotjs', color: '#FF6384', label: 'Chart.js' },
+  tableau: { icon: 'io5/IoLogoTableau', color: '#E97627', label: 'Tableau' },
+  powerbi: { icon: 'svg/powerbi', color: '#F2C811', label: 'Power BI' },
 
   // AI/ML Libraries
   tensorflow: { icon: 'si/SiTensorflow', color: '#ff6f00', label: 'TensorFlow' },
@@ -206,6 +208,9 @@ const normalizeTag = (tagName: string): string => {
     'data preprocessing':'datapre',
     'audio denoise': 'audiodenoise',
     'audio cleaning': 'audioclean',
+    'tableau public': 'tableau',
+    'power bi': 'powerbi',
+    'power-bi': 'powerbi',
   }
 
   if (aliasMap[normalized]) {

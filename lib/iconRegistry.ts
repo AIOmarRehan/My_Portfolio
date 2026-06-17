@@ -23,7 +23,7 @@ import {
   SiFirebase, SiElasticsearch, SiMysql, SiN8N, SiMacos, SiHuggingface,
   SiArduino, SiRaspberrypi, SiNvidia,
 } from 'react-icons/si'
-import { IoLogoJavascript, IoLogoVercel } from 'react-icons/io5'
+import { IoLogoJavascript, IoLogoVercel, IoLogoTableau } from 'react-icons/io5'
 import { TbBrandCpp, TbBrandCSharp, TbSql, TbBrandVite, TbBrandZapier } from 'react-icons/tb'
 import { VscTerminalPowershell, VscAzure } from 'react-icons/vsc'
 import { RiNextjsFill, RiSupabaseFill } from 'react-icons/ri'
@@ -96,6 +96,7 @@ export const iconRegistry: Record<string, IconType> = {
   'si/SiNvidia': SiNvidia,
   'io5/IoLogoJavascript': IoLogoJavascript,
   'io5/IoLogoVercel': IoLogoVercel,
+  'io5/IoLogoTableau': IoLogoTableau,
   'tb/TbBrandCpp': TbBrandCpp,
   'tb/TbBrandCSharp': TbBrandCSharp,
   'tb/TbSql': TbSql,

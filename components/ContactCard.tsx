@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { FaEnvelope, FaGithub, FaLinkedin, FaMapMarkerAlt, FaPhoneAlt, FaCog, FaTimes, FaPlus, FaTrash, FaSave } from 'react-icons/fa'
 import { SiHuggingface, SiKaggle, SiMedium } from 'react-icons/si'
+import { IoLogoTableau } from 'react-icons/io5'
 import CVDownloadButton from './CVDownloadButton'
 
 interface ProfileLink {
@@ -22,6 +23,7 @@ const iconMap: Record<string, React.ReactNode> = {
   kaggle: <SiKaggle />,
   huggingface: <SiHuggingface />,
   medium: <SiMedium />,
+  tableau: <IoLogoTableau />,
 }
 
 const defaultLinks: ProfileLink[] = [
