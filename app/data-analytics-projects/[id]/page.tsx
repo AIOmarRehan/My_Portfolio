@@ -26,17 +26,28 @@ export default function DataAnalyticsDetailsPage() {
 
   const [project, setProject] = useState<IProject | null>(null)
   const [allProjects, setAllProjects] = useState<IProject[]>([])
+  const [aiProjects, setAiProjects] = useState<CarouselItem[]>([])
+  const [fullstackProjects, setFullstackProjects] = useState<CarouselItem[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     let active = true
     const fetchData = async () => {
       try {
-        const res = await fetch('/api/data-analytics-projects')
-        const data: IProject[] = await res.json()
+        const [daRes, aiRes, fsRes] = await Promise.all([
+          fetch('/api/data-analytics-projects'),
+          fetch('/api/projects'),
+          fetch('/api/fullstack-projects'),
+        ])
+        const data: IProject[] = await daRes.json()
+        const aiData: CarouselItem[] = await aiRes.json()
+        const fsData: CarouselItem[] = await fsRes.json()
         if (!active) return
         setProject(data.find((p) => p.id === parseInt(projectId)) || null)
         setAllProjects(data)
+        setAiProjects(aiData)
+        setFullstackProjects(fsData)
+        window.scrollTo(0, 0)
       } catch (err) {
         console.error('Failed to fetch project data', err)
       } finally {
@@ -123,6 +134,8 @@ export default function DataAnalyticsDetailsPage() {
         )}
 
         <ProjectCarousel title="More Data Analytics Projects" items={others as CarouselItem[]} hrefBase="/data-analytics-projects" accent="orange" />
+        <ProjectCarousel title="AI Projects" items={aiProjects} hrefBase="/projects" accent="blue" />
+        <ProjectCarousel title="Full-Stack Projects" items={fullstackProjects} hrefBase="/fullstack-projects" accent="cyan" />
       </div>
     </main>
   )
