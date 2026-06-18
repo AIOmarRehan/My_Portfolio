@@ -382,7 +382,7 @@ export default async function Home() {
         <div className="grid gap-6 sm:gap-8 lg:grid-cols-2 items-stretch w-full overflow-visible">
           <div className="neo-card w-full">
             <div className="relative z-10 h-full p-6 sm:p-8 md:p-10 flex flex-col">
-              <HeroTitle description="I'm an AI and Full-Stack Engineer focused on building intelligent systems using machine learning and deep learning. I specialize in developing end-to-end AI solutions, from data preprocessing to model optimization and deployment, and I'm passionate about solving real-world problems with data-driven approaches." />
+              <HeroTitle description="I am an AI, Full-Stack, and Data Analyst professional focused on building smart, data-driven solutions. I work with machine learning, software development, and data analytics to turn data into useful insights and practical applications. I enjoy solving real-world problems and building end-to-end solutions from data processing to deployment and visualization." />
               <div className="flex flex-wrap gap-3">
                 <a href="#projects" className="neo-btn neo-btn-blue min-h-[44px]" aria-label="Navigate to AI projects section">
                   AI Projects

@@ -240,6 +240,7 @@ section[id] {
 .neo-tag-lime   { background: var(--neo-lime); }
 .neo-tag-purple { background: var(--neo-purple); }
 .neo-tag-blue   { background: var(--neo-blue); }
+.neo-tag-orange { background: var(--neo-orange); }
 
 /* --- Section heading rule --- */
 .neo-rule {

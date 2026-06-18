@@ -1,11 +1,12 @@
 import { FaGithub, FaLinkedin, FaEnvelope, FaPhoneAlt } from 'react-icons/fa'
-import { SiKaggle, SiMedium, SiHuggingface } from 'react-icons/si'
+import { SiKaggle, SiMedium, SiHuggingface, SiTableau } from 'react-icons/si'
 
 const socials = [
   { href: 'https://github.com/AIOmarRehan', label: 'GitHub', Icon: FaGithub, cls: 'neo-tag-yellow' },
   { href: 'https://kaggle.com/aiomarrehan', label: 'Kaggle', Icon: SiKaggle, cls: 'neo-tag-cyan' },
   { href: 'https://medium.com/@ai.omar.rehan', label: 'Medium', Icon: SiMedium, cls: 'neo-tag-lime' },
   { href: 'https://huggingface.co/AIOmarRehan', label: 'HuggingFace', Icon: SiHuggingface, cls: 'neo-tag-pink' },
+  { href: 'https://public.tableau.com/app/profile/omar.rehan', label: 'Tableau Public', Icon: SiTableau, cls: 'neo-tag-orange' },
   { href: 'https://linkedin.com/in/omar-rehan-47b98636a', label: 'LinkedIn', Icon: FaLinkedin, cls: 'neo-tag-blue' },
   { href: 'mailto:ai.omar.rehan@gmail.com', label: 'Email', Icon: FaEnvelope, cls: 'neo-tag-purple' },
   { href: 'tel:+971509669311', label: 'Phone', Icon: FaPhoneAlt, cls: 'neo-tag-yellow' },
@@ -32,7 +33,7 @@ export default function Footer() {
           <div className="text-center md:text-left">
             <h3 className="inline-block bg-neo-yellow border-2 border-neo-border px-2 py-1 font-extrabold mb-3 text-sm uppercase">About</h3>
             <p className="text-sm leading-relaxed font-medium text-[color:var(--neo-ink-soft)]">
-              AI Engineer focused on building intelligent machine learning and deep learning solutions for real-world problems.
+              AI Engineer with skills in Full Stack Development and Data Analysis, focused on building machine learning and deep learning solutions for real-world problems.
             </p>
           </div>
 
