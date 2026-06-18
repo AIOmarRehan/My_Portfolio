@@ -105,6 +105,39 @@ section[id] {
 }
 
 /* ============================================================
+   TEXT SELECTION — per-section color + purple fallback
+   ============================================================ */
+::selection {
+  background: var(--neo-purple);
+  color: var(--neo-ink);
+}
+::-moz-selection {
+  background: var(--neo-purple);
+  color: var(--neo-ink);
+}
+
+#hero ::selection,
+#hero ::-moz-selection            { background: var(--neo-pink); }
+
+#projects ::selection,
+#projects ::-moz-selection        { background: var(--neo-blue); }
+
+#fullstack-projects ::selection,
+#fullstack-projects ::-moz-selection { background: var(--neo-cyan); }
+
+#data-analytics-projects ::selection,
+#data-analytics-projects ::-moz-selection { background: var(--neo-orange); }
+
+#experience ::selection,
+#experience ::-moz-selection      { background: var(--neo-lime); }
+
+#certifications ::selection,
+#certifications ::-moz-selection  { background: var(--neo-yellow); }
+
+#articles ::selection,
+#articles ::-moz-selection        { background: var(--neo-pink); }
+
+/* ============================================================
    NEO UTILITY CLASSES
    ============================================================ */
 
