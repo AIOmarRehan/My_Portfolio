@@ -5,7 +5,8 @@ import Typewriter from '../components/Typewriter'
 import ContactCard from '../components/ContactCard'
 import Link from 'next/link'
 import { FaExternalLinkAlt } from 'react-icons/fa'
-import { SiHuggingface, SiTableau } from 'react-icons/si'
+import { SiHuggingface } from 'react-icons/si'
+import SvgIcon from '@/components/icons/SvgIcon'
 import { supabase } from '@/lib/supabaseServer'
 
 // Revalidate page every hour
@@ -641,22 +642,10 @@ export default async function Home() {
                   </div>
                 )}
 
-                <div className="flex flex-wrap gap-3 mt-auto items-center">
-                  <Link href={`/data-analytics-projects/${p.id}`} prefetch className="neo-btn neo-btn-orange text-sm py-1.5 px-3">
+                <div className="flex flex-nowrap gap-2.5 mt-auto items-center">
+                  <Link href={`/data-analytics-projects/${p.id}`} prefetch className="neo-btn neo-btn-orange text-xs py-1 px-2.5">
                     Details →
                   </Link>
-                  {p.tableau_url && (
-                    <a
-                      href={p.tableau_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 font-bold text-sm hover:bg-neo-yellow px-1 transition-colors"
-                      aria-label={`View ${p.title} dashboard on Tableau Public`}
-                    >
-                      <SiTableau className="w-4 h-4" />
-                      Dashboard
-                    </a>
-                  )}
                   {p.github_url && (
                     <a
                       href={p.github_url}
@@ -669,6 +658,18 @@ export default async function Home() {
                         <path d="M12 0.5C5.5 0.5 0.5 5.5 0.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.2-1.6-1.2-1.6-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1 1.6.8 1.6.8.9 1.5 2.4 1.1 3 .8.1-.7.4-1.1.7-1.4-2.5-.3-5.1-1.2-5.1-5.3 0-1.2.4-2.1 1.1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .9-.3 2.9 1.1.8-.2 1.7-.4 2.6-.4s1.8.1 2.6.4c2-1.4 2.9-1.1 2.9-1.1.6 1.5.2 2.6.1 2.9.7.7 1.1 1.6 1.1 2.8 0 4-2.6 5-5.1 5.3.4.4.8 1 .8 2v3c0 .3.2.7.8.6C20.7 21.4 24 17.1 24 12c0-6.5-5-11.5-12-11.5z" />
                       </svg>
                       Repo
+                    </a>
+                  )}
+                  {p.tableau_url && (
+                    <a
+                      href={p.tableau_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 font-bold text-sm hover:opacity-70 px-1 transition-opacity"
+                      aria-label={`View ${p.title} dashboard on Tableau Public`}
+                    >
+                      <SvgIcon name="tableau" className="w-4 h-4" />
+                      <span style={{ background: 'linear-gradient(90deg, #C8283E, #E8782E, #1D76BC)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Dashboard</span>
                     </a>
                   )}
                 </div>
