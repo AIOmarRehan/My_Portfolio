@@ -691,54 +691,89 @@ export default async function Home() {
         </div>
         
         {experiences.length > 0 ? (
-          <div className="space-y-6" role="list">
-            {experiences.map((exp: any, idx: number) => (
-              <div
-                key={String(exp.id)}
-                className="neo-card neo-tilt acc-lime p-6"
-                role="listitem"
-              >
-                <div className="card-top">
-                  <span className="card-num">{String(idx + 1).padStart(2, '0')}</span>
-                  <span className="card-cat">Experience</span>
-                </div>
-                <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-3">
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-semibold text-white">{exp.title}</h3>
-                    <p className="text-green-400 font-semibold text-lg">{exp.organization}</p>
-                    {exp.location && <p className="text-gray-400 text-sm">{exp.location}</p>}
+          <div className="relative" role="list">
+            {/* Vertical lime line — centered behind the dot column */}
+            <div
+              className="absolute top-0 bottom-0 w-[3px] rounded-full z-0"
+              style={{ left: 'calc(14px - 1.5px)', background: 'var(--neo-lime)' }}
+              aria-hidden="true"
+            />
+
+            {experiences.map((exp: any, idx: number) => {
+              const isCurrent = exp.end_date === 'Present'
+              return (
+                <div key={String(exp.id)} className="flex gap-5 mb-6 last:mb-0" role="listitem">
+                  {/* Dot column */}
+                  <div className="relative w-7 flex-shrink-0 flex flex-col items-center">
+                    {/* Spacer above dot */}
+                    <div className="flex-1 min-h-[12px]" />
+                    {/* Dot with background halo that breaks the line */}
+                    <div
+                      className={`relative z-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        isCurrent ? 'w-6 h-6' : 'w-5 h-5'
+                      }`}
+                      style={{ background: 'var(--neo-bg)' }}
+                      aria-hidden="true"
+                    >
+                      <div
+                        className={`rounded-full border-neo border-neo-border ${
+                          isCurrent ? 'w-4 h-4' : 'w-3 h-3'
+                        }`}
+                        style={{
+                          background: 'var(--neo-lime)',
+                          animation: isCurrent ? 'neoTimelinePulse 2.4s ease-in-out infinite' : 'none',
+                        }}
+                      />
+                    </div>
+                    {/* Spacer below dot */}
+                    <div className="flex-1 min-h-[12px]" />
                   </div>
-                  <p className="text-sm text-gray-400 whitespace-nowrap">
-                    {new Date(exp.start_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-                    {' - '}
-                    {exp.end_date === 'Present' ? 'Present' : new Date(exp.end_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-                  </p>
-                </div>
 
-                {exp.description && (
-                  <p className="text-gray-300 text-sm leading-relaxed mb-4">{exp.description}</p>
-                )}
+                  {/* Experience Card */}
+                  <div className="flex-1 neo-card neo-tilt acc-lime p-6">
+                    <div className="card-top">
+                      <span className="card-num">{String(idx + 1).padStart(2, '0')}</span>
+                      <span className="card-cat">Experience</span>
+                    </div>
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-3">
+                      <div className="flex-1">
+                        <h3 className="text-2xl font-semibold text-white">{exp.title}</h3>
+                        <p className="text-green-400 font-semibold text-lg">{exp.organization}</p>
+                        {exp.location && <p className="text-gray-400 text-sm">{exp.location}</p>}
+                      </div>
+                      <p className="text-sm text-gray-400 whitespace-nowrap">
+                        {new Date(exp.start_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                        {' - '}
+                        {exp.end_date === 'Present' ? 'Present' : new Date(exp.end_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                      </p>
+                    </div>
 
-                {exp.highlights && exp.highlights.length > 0 && (
-                  <ul className="space-y-2 mb-4">
-                    {exp.highlights.map((highlight: string, hIdx: number) => (
-                      <li key={hIdx} className="text-gray-400 text-sm flex items-start gap-3">
-                        <span className="text-green-400 font-bold mt-0.5">•</span>
-                        <span>{highlight}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                    {exp.description && (
+                      <p className="text-gray-300 text-sm leading-relaxed mb-4">{exp.description}</p>
+                    )}
 
-                {exp.tags && exp.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-700">
-                    {exp.tags.map((tag: string, tIdx: number) => (
-                      <TagBadge key={tIdx} tag={tag} variant="green" />
-                    ))}
+                    {exp.highlights && exp.highlights.length > 0 && (
+                      <ul className="space-y-2 mb-4">
+                        {exp.highlights.map((highlight: string, hIdx: number) => (
+                          <li key={hIdx} className="text-gray-400 text-sm flex items-start gap-3">
+                            <span className="text-green-400 font-bold mt-0.5">•</span>
+                            <span>{highlight}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    {exp.tags && exp.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-700">
+                        {exp.tags.map((tag: string, tIdx: number) => (
+                          <TagBadge key={tIdx} tag={tag} variant="green" />
+                        ))}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            ))}
+                </div>
+              )
+            })}
           </div>
         ) : (
           <div className="neo-empty">

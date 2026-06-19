@@ -638,6 +638,12 @@ html.dark-mode .neo-floaty { opacity: 0.6; }
 /* ============================================================
    LOADING ANIMATION — bouncing neo blocks (6 section colors)
    ============================================================ */
+
+/* Experience timeline pulse for active node — clean scale breathing, no shadow ring */
+@keyframes neoTimelinePulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.35); }
+}
 .neo-loader {
   display: flex;
   gap: 8px;
