@@ -163,7 +163,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <meta name="msapplication-config" content="/browserconfig.xml" />
         <meta name="msapplication-TileColor" content="#fdf3e3" />
 
-        {/* Preconnect to external services - DNS prefetch only */}
+        {/* Preconnect to external services */}
+        <link rel="preconnect" href={process.env.SUPABASE_URL || ''} crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://accounts.google.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
 
