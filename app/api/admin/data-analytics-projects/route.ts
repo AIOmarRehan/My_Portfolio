@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     if (!body?.title) return new Response('Bad Request', { status: 400 })
 
-    if (!body?.github_url && !body?.tableau_url) {
+    if (!body?.github_url && !body?.tableau_url && !body?.powerbi_url) {
       return new Response('At least one URL is required', { status: 400 })
     }
 
@@ -22,6 +22,7 @@ export async function POST(req: NextRequest) {
       description: body.description || '',
       github_url: body.github_url || null,
       tableau_url: body.tableau_url || null,
+      powerbi_url: body.powerbi_url || null,
       tags: body.tags || [],
       image: body.image || null,
       demo_video: body.demo_video || null,
@@ -51,10 +52,11 @@ export async function PUT(req: NextRequest) {
     if (body.image !== undefined) updates.image = body.image
     if (body.demo_video !== undefined) updates.demo_video = body.demo_video
 
-    if (updates.github_url !== undefined || updates.tableau_url !== undefined) {
+    if (updates.github_url !== undefined || updates.tableau_url !== undefined || updates.powerbi_url !== undefined) {
       const hasGithub = updates.github_url || body.existing?.github_url
       const hasTableau = updates.tableau_url || body.existing?.tableau_url
-      if (!hasGithub && !hasTableau) {
+      const hasPowerBi = updates.powerbi_url || body.existing?.powerbi_url
+      if (!hasGithub && !hasTableau && !hasPowerBi) {
         return new Response('At least one URL is required', { status: 400 })
       }
     }

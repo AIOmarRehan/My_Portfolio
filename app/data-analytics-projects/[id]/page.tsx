@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { SiTableau } from 'react-icons/si'
+import SvgIcon from '@/components/icons/SvgIcon'
 import LazyVideo from '@/components/LazyVideo'
 import TagBadge from '@/components/TagBadge'
 import ProjectCarousel, { type CarouselItem } from '@/components/ProjectCarousel'
@@ -15,6 +16,7 @@ interface IProject {
   description?: string
   github_url?: string
   tableau_url?: string
+  powerbi_url?: string
   tags?: string[]
   image?: string
   demo_video?: string
@@ -92,12 +94,18 @@ export default function DataAnalyticsDetailsPage() {
             <p className="text-lg mb-8 leading-relaxed text-[color:var(--neo-ink-soft)] font-medium">{project.description}</p>
           )}
 
-          {(project.github_url || project.tableau_url) && (
+          {(project.github_url || project.tableau_url || project.powerbi_url) && (
             <div className="flex flex-wrap gap-4 mb-8">
               {project.tableau_url && (
                 <a href={project.tableau_url} target="_blank" rel="noopener noreferrer" className="neo-btn neo-btn-orange">
                   <SiTableau className="w-5 h-5" />
                   <span>View Dashboard</span>
+                </a>
+              )}
+              {project.powerbi_url && (
+                <a href={project.powerbi_url} target="_blank" rel="noopener noreferrer" className="neo-btn" style={{ background: 'linear-gradient(135deg, #F2C811, #E6AD10, #C97D0E)', color: '#000' }}>
+                  <SvgIcon name="powerbi" className="w-5 h-5" />
+                  <span>View Report</span>
                 </a>
               )}
               {project.github_url && (

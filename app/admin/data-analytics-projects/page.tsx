@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { SiTableau } from 'react-icons/si'
+import SvgIcon from '@/components/icons/SvgIcon'
 import TagSearchInput from '@/components/TagSearchInput'
 
 interface IProject {
@@ -9,12 +10,13 @@ interface IProject {
   description?: string
   github_url?: string
   tableau_url?: string
+  powerbi_url?: string
   tags?: string[]
   image?: string
   demo_video?: string
 }
 
-const empty = { title: '', description: '', github_url: '', tableau_url: '', tags: '', image: '', demo_video: '' }
+const empty = { title: '', description: '', github_url: '', tableau_url: '', powerbi_url: '', tags: '', image: '', demo_video: '' }
 
 export default function AdminDataAnalyticsPage() {
   const [projects, setProjects] = useState<IProject[]>([])
@@ -47,8 +49,8 @@ export default function AdminDataAnalyticsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!formData.github_url?.trim() && !formData.tableau_url?.trim()) {
-      alert('At least one URL (GitHub or Tableau Public) is required')
+    if (!formData.github_url?.trim() && !formData.tableau_url?.trim() && !formData.powerbi_url?.trim()) {
+      alert('At least one URL (GitHub, Tableau Public, or Power BI) is required')
       return
     }
     setLoading(true)
@@ -57,6 +59,7 @@ export default function AdminDataAnalyticsPage() {
       description: formData.description,
       github_url: formData.github_url,
       tableau_url: formData.tableau_url,
+      powerbi_url: formData.powerbi_url,
       tags: formData.tags.split(',').map((t) => t.trim()).filter(Boolean),
       image: formData.image || '',
       demo_video: formData.demo_video || '',
@@ -111,6 +114,7 @@ export default function AdminDataAnalyticsPage() {
       description: proj.description || '',
       github_url: proj.github_url || '',
       tableau_url: proj.tableau_url || '',
+      powerbi_url: proj.powerbi_url || '',
       tags: (proj.tags || []).join(', '),
       image: imageValue,
       demo_video: proj.demo_video || '',
@@ -178,7 +182,11 @@ export default function AdminDataAnalyticsPage() {
         <div>
           <label className="block mb-1">Tableau Public URL (Optional)</label>
           <input type="url" value={formData.tableau_url} onChange={(e) => setFormData({ ...formData, tableau_url: e.target.value })} placeholder="https://public.tableau.com/app/profile/.../viz/..." className="w-full px-3 py-2" />
-          <p className="text-xs mt-1 opacity-70">At least one URL is required (GitHub repo and/or Tableau Public dashboard).</p>
+        </div>
+        <div>
+          <label className="block mb-1">Power BI URL (Optional)</label>
+          <input type="url" value={formData.powerbi_url} onChange={(e) => setFormData({ ...formData, powerbi_url: e.target.value })} placeholder="https://app.powerbi.com/reports/..." className="w-full px-3 py-2" />
+          <p className="text-xs mt-1 opacity-70">At least one URL is required (GitHub repo, Tableau Public dashboard, and/or Power BI report).</p>
         </div>
         <div>
           <label className="block mb-1">Tags (comma separated)</label>
@@ -253,6 +261,11 @@ export default function AdminDataAnalyticsPage() {
                   {proj.tableau_url && (
                     <a href={proj.tableau_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-bold hover:underline">
                       <SiTableau className="w-4 h-4" /> Dashboard
+                    </a>
+                  )}
+                  {proj.powerbi_url && (
+                    <a href={proj.powerbi_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-bold hover:underline">
+                      <SvgIcon name="powerbi" className="w-4 h-4" /> Power BI
                     </a>
                   )}
                   {proj.github_url && (

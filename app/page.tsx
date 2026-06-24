@@ -672,6 +672,18 @@ export default async function Home() {
                       <span style={{ background: 'linear-gradient(90deg, #C8283E, #E8782E, #1D76BC)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Dashboard</span>
                     </a>
                   )}
+                  {p.powerbi_url && (
+                    <a
+                      href={p.powerbi_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 font-bold text-sm hover:opacity-70 px-1 transition-opacity"
+                      aria-label={`View ${p.title} report on Power BI`}
+                    >
+                      <SvgIcon name="powerbi" className="w-4 h-4" />
+                      <span style={{ background: 'linear-gradient(90deg, #F2C811, #E6AD10, #C97D0E)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Power BI</span>
+                    </a>
+                  )}
                 </div>
               </div>
             ))}
