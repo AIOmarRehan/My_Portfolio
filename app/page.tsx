@@ -302,23 +302,8 @@ export default async function Home() {
       getSiteCards(),
     ])
 
-  // Replace base64 images with API URLs to prevent oversized ISR pages
-  // URL-based images (from Supabase Storage) are kept as-is since they're tiny strings
-  const replaceBase64Images = <T extends { id: number; image?: string }>(
-    items: T[],
-    table: string
-  ): T[] =>
-    items.map(item => {
-      if (typeof item.image === 'string' && item.image.startsWith('data:')) {
-        return { ...item, image: `/api/media/${table}/${item.id}` }
-      }
-      return item
-    })
-
-  const safeProjects = replaceBase64Images(projects as any[], 'projects') as typeof projects
-  const safeFullstackProjects = replaceBase64Images(fullstackProjects as any[], 'fullstack_projects') as typeof fullstackProjects
-  const safeDataAnalytics = replaceBase64Images(dataAnalyticsProjects as any[], 'data_analytics_projects') as typeof dataAnalyticsProjects
-  const safeArticles = replaceBase64Images(articles as any[], 'articles') as typeof articles
+  // Images are kept as base64 inline in the HTML so they render instantly
+  // on first visit — no separate API round-trip per image needed.
 
   // Parse contact and QR card data from the database
   const contactRow = siteCards.find((c: { section: string }) => c.section === 'contact')
@@ -330,40 +315,14 @@ export default async function Home() {
   const qrCards = qrRows.length > 0
     ? qrRows.map((r: { card_data: Record<string, unknown> }) => {
         const card = r.card_data as { label: string; imageSrc: string; borderColor: string; textColor: string; buttonType: 'cv' | 'whatsapp'; linkUrl: string }
-        // Strip base64 data URLs to prevent oversized ISR pages
-        if (card.imageSrc?.startsWith('data:')) {
-          card.imageSrc = card.buttonType === 'cv'
-            ? '/qr_code/CV.svg'
-            : '/qr_code/WhatsApp.svg'
-        }
         return card
       })
     : undefined
 
   return (
     <div id="top" className="space-y-20">
-      {/* Preload ALL card images so the browser fetches them in parallel during
-          HTML parse — cards appear together, not gradually one-by-one. */}
-      {safeProjects.map((p: any) =>
-        p.image ? (
-          <link key={`preload-p-${p.id}`} rel="preload" as="image" href={p.image} fetchPriority="high" />
-        ) : null
-      )}
-      {safeFullstackProjects.map((p: any) =>
-        p.image ? (
-          <link key={`preload-fp-${p.id}`} rel="preload" as="image" href={p.image} fetchPriority="high" />
-        ) : null
-      )}
-      {safeDataAnalytics.map((p: any) =>
-        p.image ? (
-          <link key={`preload-da-${p.id}`} rel="preload" as="image" href={p.image} fetchPriority="high" />
-        ) : null
-      )}
-      {safeArticles.map((a: any) =>
-        a.image ? (
-          <link key={`preload-a-${a.id}`} rel="preload" as="image" href={a.image} fetchPriority="high" />
-        ) : null
-      )}
+      {/* Images are embedded as base64 directly in the HTML below,
+          so they render instantly without any network requests. */}
       {/* Hero Section */}
       <section id="hero" className="py-20 fade-in overflow-visible" aria-label="Welcome section">
         <Typewriter 
@@ -417,9 +376,9 @@ export default async function Home() {
           <div className="neo-rule"></div>
         </div>
         
-        {safeProjects.length > 0 ? (
+        {projects.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full overflow-visible" role="list">
-            {safeProjects.map((p: any, idx: number) => (
+            {projects.map((p: any, idx: number) => (
               <div
                 key={String(p.id)}
                 className="group neo-card neo-tilt acc-blue p-5 sm:p-6 flex flex-col w-full"
@@ -513,9 +472,9 @@ export default async function Home() {
           <div className="neo-rule"></div>
         </div>
         
-        {safeFullstackProjects.length > 0 ? (
+        {fullstackProjects.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full overflow-visible" role="list">
-            {safeFullstackProjects.map((p: any, idx: number) => (
+            {fullstackProjects.map((p: any, idx: number) => (
               <div
                 key={String(p.id)}
                 className="group neo-card neo-tilt acc-cyan p-5 sm:p-6 flex flex-col w-full"
@@ -607,9 +566,9 @@ export default async function Home() {
           <div className="neo-rule"></div>
         </div>
 
-        {safeDataAnalytics.length > 0 ? (
+        {dataAnalyticsProjects.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full overflow-visible" role="list">
-            {safeDataAnalytics.map((p: any, idx: number) => (
+            {dataAnalyticsProjects.map((p: any, idx: number) => (
               <div
                 key={String(p.id)}
                 className="group neo-card neo-tilt acc-orange p-5 sm:p-6 flex flex-col w-full"
@@ -872,9 +831,9 @@ export default async function Home() {
           <div className="neo-rule"></div>
         </div>
         
-        {safeArticles.length > 0 ? (
+        {articles.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-visible" role="list">
-            {safeArticles.map((article: any, idx: number) => (
+            {articles.map((article: any, idx: number) => (
               <div
                 key={String(article.id)}
                 className="group neo-card neo-tilt acc-pink p-6 flex flex-col"
