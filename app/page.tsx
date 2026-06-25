@@ -433,8 +433,8 @@ export default async function Home() {
                 </div>
                 {/* Project Image - No autoplay */}
                 {p.image ? (
-                  <div className="mb-4 rounded-neo overflow-hidden h-40 sm:h-48 border-neo border-neo-border bg-[color:var(--neo-surface-2)] flex items-center justify-center">
-                    <img src={p.image} alt={`Screenshot of ${p.title} project`} className="w-full h-full object-cover" decoding="async" fetchPriority="high" />
+                  <div className="mb-4 rounded-neo overflow-hidden h-40 sm:h-48 border-neo border-neo-border neo-skeleton flex items-center justify-center">
+                    <img src={p.image} alt={`Screenshot of ${p.title} project`} className="w-full h-full object-cover" decoding="async" fetchPriority="high" style={{ position: 'relative', zIndex: 1 }} />
                   </div>
                 ) : p.demo_video ? (
                   <div className="mb-4 rounded-neo overflow-hidden h-40 sm:h-48 border-neo border-neo-border bg-[color:var(--neo-surface-2)] flex items-center justify-center">
@@ -529,8 +529,8 @@ export default async function Home() {
                 </div>
                 {/* Project Image */}
                 {p.image ? (
-                  <div className="mb-4 rounded-neo overflow-hidden h-40 sm:h-48 border-neo border-neo-border bg-[color:var(--neo-surface-2)] flex items-center justify-center">
-                    <img src={p.image} alt={`Screenshot of ${p.title} project`} className="w-full h-full object-cover" decoding="async" fetchPriority="high" />
+                  <div className="mb-4 rounded-neo overflow-hidden h-40 sm:h-48 border-neo border-neo-border neo-skeleton flex items-center justify-center">
+                    <img src={p.image} alt={`Screenshot of ${p.title} project`} className="w-full h-full object-cover" decoding="async" fetchPriority="high" style={{ position: 'relative', zIndex: 1 }} />
                   </div>
                 ) : p.demo_video ? (
                   <div className="mb-4 rounded-neo overflow-hidden h-40 sm:h-48 border-neo border-neo-border bg-[color:var(--neo-surface-2)] flex items-center justify-center">
@@ -622,8 +622,8 @@ export default async function Home() {
                   <span className="card-cat">Analytics</span>
                 </div>
                 {p.image ? (
-                  <div className="mb-4 rounded-neo overflow-hidden h-40 sm:h-48 border-neo border-neo-border bg-[color:var(--neo-surface-2)] flex items-center justify-center">
-                    <img src={p.image} alt={`Screenshot of ${p.title} dashboard`} className="w-full h-full object-cover" decoding="async" fetchPriority="high" />
+                  <div className="mb-4 rounded-neo overflow-hidden h-40 sm:h-48 border-neo border-neo-border neo-skeleton flex items-center justify-center">
+                    <img src={p.image} alt={`Screenshot of ${p.title} dashboard`} className="w-full h-full object-cover" decoding="async" fetchPriority="high" style={{ position: 'relative', zIndex: 1 }} />
                   </div>
                 ) : (
                   <div className="mb-4 rounded-neo overflow-hidden h-40 sm:h-48 bg-neo-orange border-neo border-neo-border flex items-center justify-center">
@@ -887,8 +887,8 @@ export default async function Home() {
                   <span className="card-cat">Article</span>
                 </div>
                 {article.image && (
-                  <div className="mb-4 rounded-neo overflow-hidden h-48 border-neo border-neo-border">
-                    <img src={article.image} alt={`Featured image for ${article.title} article`} className="w-full h-full object-cover" decoding="async" fetchPriority="high" />
+                  <div className="mb-4 rounded-neo overflow-hidden h-48 border-neo border-neo-border neo-skeleton">
+                    <img src={article.image} alt={`Featured image for ${article.title} article`} className="w-full h-full object-cover" decoding="async" fetchPriority="high" style={{ position: 'relative', zIndex: 1 }} />
                   </div>
                 )}
                 
