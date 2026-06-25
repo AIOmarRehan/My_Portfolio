@@ -48,7 +48,7 @@ export async function GET(
   return new Response(buffer, {
     headers: {
       'Content-Type': contentType,
-      'Cache-Control': 'public, max-age=86400, s-maxage=86400, immutable',
+      'Cache-Control': 'public, max-age=31536000, s-maxage=31536000, immutable',
     },
   })
 }

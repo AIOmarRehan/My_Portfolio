@@ -621,7 +621,7 @@ export default async function Home() {
                 </div>
                 {p.image ? (
                   <div className="mb-4 rounded-neo overflow-hidden h-40 sm:h-48 border-neo border-neo-border bg-[color:var(--neo-surface-2)] flex items-center justify-center">
-                    <img src={p.image} alt={`Screenshot of ${p.title} dashboard`} className="w-full h-full object-cover" decoding="async" />
+                    <img src={p.image} alt={`Screenshot of ${p.title} dashboard`} className="w-full h-full object-cover" decoding="async" fetchPriority="high" />
                   </div>
                 ) : (
                   <div className="mb-4 rounded-neo overflow-hidden h-40 sm:h-48 bg-neo-orange border-neo border-neo-border flex items-center justify-center">
