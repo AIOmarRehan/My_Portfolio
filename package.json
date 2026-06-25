@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "postbuild": "next-sitemap",
-    "clean": "rm -rf .next"
+    "clean": "rm -rf .next",
+    "migrate-images": "node scripts/migrate-base64-to-storage.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.95.3",
