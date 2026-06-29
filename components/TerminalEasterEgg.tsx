@@ -103,22 +103,12 @@ const BLOCKS: CmdBlock[] = [
 export default function TerminalEasterEgg() {
   const [blockIndex, setBlockIndex] = useState(0)
   const [typedLines, setTypedLines] = useState(0)
-  const [showCursor, setShowCursor] = useState(true)
 
   const current = BLOCKS[blockIndex % BLOCKS.length]
-
-  const advanceLine = useCallback(() => {
-    setTypedLines((prev) => {
-      if (prev >= current.lines.length + 1) return prev
-      return prev + 1
-    })
-  }, [current.lines.length])
 
   const runCommand = useCallback(() => {
     setBlockIndex((prev) => prev + 1)
     setTypedLines(0)
-    setShowCursor(false)
-    setTimeout(() => setShowCursor(true), 100)
     let i = 0
     const total = current.lines.length + 1
     const tick = () => {
@@ -138,13 +128,13 @@ export default function TerminalEasterEgg() {
         <span className="w-3 h-3 rounded-full border-[2px] border-[color:var(--neo-border)]" style={{ background: '#ff5a5f' }} />
         <span className="w-3 h-3 rounded-full border-[2px] border-[color:var(--neo-border)]" style={{ background: '#ffd23f' }} />
         <span className="w-3 h-3 rounded-full border-[2px] border-[color:var(--neo-border)]" style={{ background: '#9ae66e' }} />
-        <span className="ml-2 text-xs font-extrabold tracking-wider opacity-70">dev console</span>
-        <span className="ml-auto text-[10px] font-bold opacity-50 group-hover:opacity-100 transition-opacity uppercase tracking-widest">
+        <span className="ml-2 text-xs font-extrabold tracking-wider opacity-70" style={{ color: 'var(--neo-ink)' }}>dev console</span>
+        <span className="ml-auto text-[10px] font-bold opacity-50 group-hover:opacity-100 transition-opacity uppercase tracking-widest" style={{ color: 'var(--neo-ink-soft)' }}>
           click to run
         </span>
       </div>
-      <div className="px-3 py-2.5 sm:px-4 sm:py-3 font-mono text-xs leading-relaxed min-h-[120px]" style={{ background: '#0d0d1a', color: '#c8d6e5' }}>
-        <div className="max-h-[180px] sm:max-h-[200px] min-h-[100px] overflow-y-auto">
+      <div className="px-3 py-2.5 sm:px-4 sm:py-3 font-mono text-xs leading-relaxed min-h-[120px]" style={{ background: '#0d0d1a' }}>
+        <div className="max-h-[180px] sm:max-h-[200px] min-h-[100px] overflow-y-auto" style={{ color: '#c8d6e5' }}>
           <div className="flex items-start gap-2 mb-2">
             <span style={{ color: '#4cd4e8' }}>$</span>
             <span style={{ color: '#ffd23f' }}>{current.cmd}</span>
@@ -159,47 +149,41 @@ export default function TerminalEasterEgg() {
           )}
         </div>
 
-        {blockIndex > 0 && blockIndex < BLOCKS.length - 1 && (
-          <div className="mt-2 pt-2 border-t border-white/10">
+        <div className="mt-2 pt-2 border-t border-white/10" style={{ color: 'var(--neo-ink)' }}>
+          {blockIndex === 0 && (
+            <button
+              onClick={runCommand}
+              className="w-full text-[10px] font-extrabold uppercase tracking-widest py-1 border-2 border-[color:var(--neo-border)] transition-colors hover:opacity-80 cursor-pointer"
+              style={{ background: 'var(--neo-surface-2)', color: 'var(--neo-ink)' }}
+            >
+              click to start
+            </button>
+          )}
+          {blockIndex > 0 && blockIndex < BLOCKS.length - 1 && (
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#4cd4e8' }}>→ next command</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#4cd4e8' }}>next command</span>
               <button
                 onClick={runCommand}
-                className="ml-auto text-[10px] font-extrabold uppercase tracking-widest px-2 py-0.5 border-2 border-[color:var(--neo-border)] transition-colors hover:opacity-80"
-                style={{ background: 'var(--neo-surface-2)' }}
+                className="ml-auto text-[10px] font-extrabold uppercase tracking-widest px-2 py-0.5 border-2 border-[color:var(--neo-border)] transition-colors hover:opacity-80 cursor-pointer"
+                style={{ background: 'var(--neo-surface-2)', color: 'var(--neo-ink)' }}
               >
                 run
               </button>
             </div>
-          </div>
-        )}
-
-        {blockIndex === 0 && (
-          <div className="mt-2 pt-2 border-t border-white/10">
-            <button
-              onClick={runCommand}
-              className="w-full text-[10px] font-extrabold uppercase tracking-widest py-1 border-2 border-[color:var(--neo-border)] transition-colors hover:opacity-80"
-              style={{ background: 'var(--neo-surface-2)' }}
-            >
-              click to start
-            </button>
-          </div>
-        )}
-
-        {blockIndex >= BLOCKS.length - 1 && (
-          <div className="mt-2 pt-2 border-t border-white/10">
+          )}
+          {blockIndex >= BLOCKS.length - 1 && (
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#9ae66e' }}>all commands executed</span>
               <button
                 onClick={() => { setBlockIndex(0); setTypedLines(0) }}
-                className="text-[10px] font-extrabold uppercase tracking-widest px-2 py-0.5 border-2 border-[color:var(--neo-border)] transition-colors hover:opacity-80"
-                style={{ background: 'var(--neo-surface-2)' }}
+                className="text-[10px] font-extrabold uppercase tracking-widest px-2 py-0.5 border-2 border-[color:var(--neo-border)] transition-colors hover:opacity-80 cursor-pointer"
+                style={{ background: 'var(--neo-surface-2)', color: 'var(--neo-ink)' }}
               >
                 restart
               </button>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   )
