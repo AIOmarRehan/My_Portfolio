@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import { SiHuggingface } from 'react-icons/si'
 import SvgIcon from '@/components/icons/SvgIcon'
+import TerminalEasterEgg from '@/components/TerminalEasterEgg'
 import { supabase } from '@/lib/supabaseServer'
 
 // Revalidate page every hour
@@ -404,6 +405,9 @@ export default async function Home() {
                 <a href="#certifications" className="neo-btn neo-btn-yellow min-h-[44px]" aria-label="Navigate to certifications section">
                   Certifications
                 </a>
+              </div>
+              <div className="mt-auto pt-4">
+                <TerminalEasterEgg />
               </div>
             </div>
           </div>

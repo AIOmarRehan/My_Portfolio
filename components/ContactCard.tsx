@@ -181,6 +181,37 @@ export default function ContactCard({ initialLinks, initialCvPath }: ContactCard
             <div className="mt-8 pt-6" style={{ borderTop: 'var(--neo-bw) solid var(--neo-border)' }}>
               <CVDownloadButton buttonSize="lg" cvUrl={cvPath} />
             </div>
+
+            <div className="mt-6 pt-6" style={{ borderTop: 'var(--neo-bw) solid var(--neo-border)' }}>
+              <div className="flex flex-col items-center gap-3">
+                <span className="inline-block bg-neo-purple border-neo border-neo-border px-4 py-2 font-extrabold text-sm sm:text-base shadow-neo-sm -rotate-1">
+                  Book a Call &amp; Save My Contact Card
+                </span>
+                <div className="flex items-center justify-center gap-3 mt-1">
+                  <a href="https://omar-rehan.framer.ai/" target="_blank" rel="noopener noreferrer" className="neo-btn neo-btn-lime !p-2.5 !min-h-0 text-lg font-extrabold shadow-neo-sm animate-bounce no-underline" style={{ animationDuration: '0.7s' }}>→</a>
+                  <a
+                    href="https://omar-rehan.framer.ai/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="neo-card inline-block p-1.5 rotate-1 hover:rotate-0 transition-transform duration-300"
+                  >
+                    <img
+                      src="/qr_code/hovercode.svg"
+                      alt="Book a Call & Save My Contact Card"
+                      className="w-28 h-28 sm:w-32 sm:h-32 block"
+                    />
+                  </a>
+                </div>
+                <a
+                  href="https://omar-rehan.framer.ai/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-extrabold text-[color:var(--neo-purple)] hover:underline"
+                >
+                  omar-rehan.framer.ai ↗
+                </a>
+              </div>
+            </div>
           </>
         )}
       </div>
