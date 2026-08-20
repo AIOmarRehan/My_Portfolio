@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
       description: body.description || '',
       github_url: body.github_url || null,
       huggingface_url: body.huggingface_url || null,
+      article_url: body.article_url || null,
       tags: body.tags || [],
       image: body.image || null,
       demo_video: body.demo_video || null,

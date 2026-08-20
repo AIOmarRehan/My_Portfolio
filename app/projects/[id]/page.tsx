@@ -86,7 +86,7 @@ export default function ProjectDetailsPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-3">
         {/* Header */}
         <div className="mb-12">
-          <Link href="/" className="neo-btn neo-btn-cyan mb-6 text-sm">← Back to Home Page</Link>
+          <Link href="/" className="neo-btn neo-btn-blue mb-6 text-sm">← Back to Home Page</Link>
 
           <h1 className="text-4xl md:text-5xl font-extrabold mb-4 break-words mt-6">{project.title}</h1>
 

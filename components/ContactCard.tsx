@@ -15,7 +15,7 @@ interface ProfileLink {
 }
 
 const iconMap: Record<string, React.ReactNode> = {
-  location: <FaMapMarkerAlt className="text-blue-300 light:text-blue-600" />,
+  location: <FaMapMarkerAlt style={{ color: 'var(--neo-ink)' }} />,
   phone: <FaPhoneAlt />,
   email: <FaEnvelope />,
   github: <FaGithub />,
@@ -35,6 +35,7 @@ const defaultLinks: ProfileLink[] = [
   { label: 'Kaggle', href: 'https://kaggle.com/aiomarrehan', icon: 'kaggle', displayText: 'kaggle.com/aiomarrehan' },
   { label: 'HuggingFace', href: 'https://huggingface.co/AIOmarRehan', icon: 'huggingface', displayText: 'huggingface.co/AIOmarRehan' },
   { label: 'Medium', href: 'https://medium.com/@ai.omar.rehan', icon: 'medium', displayText: 'medium.com/@ai.omar.rehan' },
+  { label: 'Tableau Public', href: 'https://public.tableau.com/app/profile/omar.rehan', icon: 'tableau', displayText: 'public.tableau.com/app/profile/omar.rehan' },
 ]
 
 interface ContactCardProps {

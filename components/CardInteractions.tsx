@@ -4,14 +4,19 @@ import { useEffect } from 'react'
 /**
  * Smooth 3D tilt for every .neo-tilt card (desktop only).
  *
- * This component lives in the persistent layout, so after client navigation the
- * old card nodes are replaced. Rather than depend on fragile mount timing, we
- * use a MutationObserver that binds ANY .neo-tilt card the moment it appears in
- * the DOM (and only once, tracked via a data flag). This survives every
- * navigation: back button, "Details" link, logo click, etc.
+ * This lives in the persistent layout, so after client navigation the old card
+ * nodes are replaced. A MutationObserver binds any .neo-tilt card the moment it
+ * enters the DOM, which survives every navigation (back button, detail links,
+ * logo click) without depending on mount timing.
  *
- * Per-card mousemove + mouseleave (mouseleave does NOT fire on internal child
- * moves => no flicker). Disabled on touch / narrow screens / reduced-motion.
+ * Bound cards are tracked in a WeakSet rather than a `data-tilt` attribute:
+ * writing an attribute here ran before React hydrated these nodes, so the
+ * client DOM carried an attribute the server HTML didn't and React reported a
+ * hydration mismatch. A WeakSet keeps the bookkeeping entirely out of the DOM.
+ *
+ * Per-card mousemove + mouseleave (mouseleave does NOT fire when moving between
+ * a card's own children, so there's no flicker). Disabled on touch, narrow
+ * screens and reduced-motion.
  */
 export default function CardInteractions() {
   useEffect(() => {
@@ -21,6 +26,7 @@ export default function CardInteractions() {
     if (!ok) return
 
     const rafByCard = new WeakMap<HTMLElement, number>()
+    const bound = new WeakSet<HTMLElement>()
 
     const onMove = (e: MouseEvent) => {
       const card = e.currentTarget as HTMLElement
@@ -36,6 +42,7 @@ export default function CardInteractions() {
       })
       rafByCard.set(card, id)
     }
+
     const onLeave = (e: MouseEvent) => {
       const card = e.currentTarget as HTMLElement
       const prev = rafByCard.get(card)
@@ -43,19 +50,32 @@ export default function CardInteractions() {
       card.style.transform = ''
     }
 
+    let scheduled = 0
     const bindAll = () => {
-      document.querySelectorAll<HTMLElement>('.neo-tilt:not([data-tilt])').forEach((card) => {
-        card.dataset.tilt = '1'
+      scheduled = 0
+      document.querySelectorAll<HTMLElement>('.neo-tilt').forEach((card) => {
+        if (bound.has(card)) return
+        bound.add(card)
         card.addEventListener('mousemove', onMove)
         card.addEventListener('mouseleave', onLeave)
       })
     }
 
-    bindAll()
-    const mo = new MutationObserver(() => bindAll())
+    // Coalesce bursts of DOM mutations (hydration, modal open/close, "Show
+    // All") into a single pass per frame instead of one querySelectorAll each.
+    const schedule = () => {
+      if (scheduled) return
+      scheduled = requestAnimationFrame(bindAll)
+    }
+
+    schedule()
+    const mo = new MutationObserver(schedule)
     mo.observe(document.body, { childList: true, subtree: true })
 
-    return () => mo.disconnect()
+    return () => {
+      mo.disconnect()
+      if (scheduled) cancelAnimationFrame(scheduled)
+    }
   }, [])
 
   return null

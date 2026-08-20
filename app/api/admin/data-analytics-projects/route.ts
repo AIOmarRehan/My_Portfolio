@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
       github_url: body.github_url || null,
       tableau_url: body.tableau_url || null,
       powerbi_url: body.powerbi_url || null,
+      article_url: body.article_url || null,
       tags: body.tags || [],
       image: body.image || null,
       demo_video: body.demo_video || null,

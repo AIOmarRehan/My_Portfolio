@@ -1,12 +1,10 @@
-import TagBadge from '../components/TagBadge'
 import HomeContactQR from '../components/HomeContactQR'
 import HeroTitle from '../components/HeroSection'
 import Typewriter from '../components/Typewriter'
 import ContactCard from '../components/ContactCard'
-import Link from 'next/link'
-import { FaExternalLinkAlt } from 'react-icons/fa'
-import { SiHuggingface } from 'react-icons/si'
-import SvgIcon from '@/components/icons/SvgIcon'
+import CardSection from '@/components/CardSection'
+import ExperienceTimeline from '@/components/ExperienceTimeline'
+import CertificatesGrid from '@/components/CertificatesGrid'
 import TerminalEasterEgg from '@/components/TerminalEasterEgg'
 import { supabase } from '@/lib/supabaseServer'
 
@@ -345,24 +343,25 @@ export default async function Home() {
 
   return (
     <div id="top" className="space-y-20">
-      {/* Preload ALL card images so the browser fetches them in parallel during
-          HTML parse — cards appear together, not gradually one-by-one. */}
-      {safeProjects.map((p: any) =>
+      {/* Preload only the cards visible on first paint (3 per section). The
+          remaining cards mount when "Show All" is pressed and load their own
+          images then, so we no longer flood the connection up front. */}
+      {safeProjects.slice(0, 3).map((p: any) =>
         p.image ? (
           <link key={`preload-p-${p.id}`} rel="preload" as="image" href={p.image} fetchPriority="high" />
         ) : null
       )}
-      {safeFullstackProjects.map((p: any) =>
+      {safeFullstackProjects.slice(0, 3).map((p: any) =>
         p.image ? (
           <link key={`preload-fp-${p.id}`} rel="preload" as="image" href={p.image} fetchPriority="high" />
         ) : null
       )}
-      {safeDataAnalytics.map((p: any) =>
+      {safeDataAnalytics.slice(0, 3).map((p: any) =>
         p.image ? (
           <link key={`preload-da-${p.id}`} rel="preload" as="image" href={p.image} fetchPriority="high" />
         ) : null
       )}
-      {safeArticles.map((a: any) =>
+      {safeArticles.slice(0, 3).map((a: any) =>
         a.image ? (
           <link key={`preload-a-${a.id}`} rel="preload" as="image" href={a.image} fetchPriority="high" />
         ) : null
@@ -423,93 +422,16 @@ export default async function Home() {
           <div className="neo-rule"></div>
         </div>
         
-        {safeProjects.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full overflow-visible" role="list">
-            {safeProjects.map((p: any, idx: number) => (
-              <div
-                key={String(p.id)}
-                className="group neo-card neo-tilt acc-blue p-5 sm:p-6 flex flex-col w-full"
-                role="listitem"
-              >
-                <div className="card-top">
-                  <span className="card-num">{String(idx + 1).padStart(2, '0')}</span>
-                  <span className="card-cat">AI / ML</span>
-                </div>
-                {/* Project Image - No autoplay */}
-                {p.image ? (
-                  <div className="mb-4 rounded-neo overflow-hidden h-40 sm:h-48 border-neo border-neo-border neo-skeleton flex items-center justify-center">
-                    <img src={p.image} alt={`Screenshot of ${p.title} project`} className="w-full h-full object-cover" decoding="async" fetchPriority="high" style={{ position: 'relative', zIndex: 1 }} />
-                  </div>
-                ) : p.demo_video ? (
-                  <div className="mb-4 rounded-neo overflow-hidden h-40 sm:h-48 border-neo border-neo-border bg-[color:var(--neo-surface-2)] flex items-center justify-center">
-                    <svg className="w-16 h-16 text-[color:var(--neo-ink)]" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                    </svg>
-                  </div>
-                ) : (
-                  <div className="mb-4 rounded-neo overflow-hidden h-40 sm:h-48 bg-neo-blue border-neo border-neo-border flex items-center justify-center">
-                    <span className="text-center px-4 font-extrabold">{p.title}</span>
-                  </div>
-                )}
-                
-              <div className="mb-4">
-                <h3 className="text-xl font-extrabold group-hover:text-[color:var(--neo-blue)] transition duration-200 break-words" id={`project-${p.id}`}>
-                  {p.title}
-                </h3>
-              </div>
-                {p.description && (
-                  <p className="text-gray-400 text-sm mb-4">{p.description}</p>
-                )}
-                
-                {p.tags && p.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {p.tags.map((tag: string, tIdx: number) => (
-                      <TagBadge key={tIdx} tag={tag} variant="blue" />
-                    ))}
-                  </div>
-                )}
-                
-                <div className="flex flex-wrap gap-3 mt-auto items-center">
-                  {/* Details Link */}
-                  <Link href={`/projects/${p.id}`} prefetch className="neo-btn neo-btn-blue text-sm py-1.5 px-3">
-                    Details →
-                  </Link>
-                  
-                  {p.github_url && (
-                    <a
-                      href={p.github_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 font-bold text-sm hover:bg-neo-yellow px-1 transition-colors"
-                      aria-label={`View ${p.title} repository`}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 0.5C5.5 0.5 0.5 5.5 0.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.2-1.6-1.2-1.6-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1 1.6.8 1.6.8.9 1.5 2.4 1.1 3 .8.1-.7.4-1.1.7-1.4-2.5-.3-5.1-1.2-5.1-5.3 0-1.2.4-2.1 1.1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .9-.3 2.9 1.1.8-.2 1.7-.4 2.6-.4s1.8.1 2.6.4c2-1.4 2.9-1.1 2.9-1.1.6 1.5.2 2.6.1 2.9.7.7 1.1 1.6 1.1 2.8 0 4-2.6 5-5.1 5.3.4.4.8 1 .8 2v3c0 .3.2.7.8.6C20.7 21.4 24 17.1 24 12c0-6.5-5-11.5-12-11.5z" />
-                      </svg>
-                      <span>Repo</span>
-                    </a>
-                  )}
-                  {p.huggingface_url && (
-                    <a
-                      href={p.huggingface_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-amber-400 hover:text-amber-300 transition duration-300 text-sm font-semibold"
-                      aria-label={`View ${p.title} live project`}
-                    >
-                      <SiHuggingface className="w-4 h-4" />
-                      <span>Live Project</span>
-                    </a>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="neo-empty">
-            <p>No projects yet. Check back soon!</p>
-          </div>
-        )}
+        <CardSection
+          items={safeProjects as any}
+          accent="blue"
+          categoryLabel="AI / ML"
+          tagVariant="blue"
+          hrefBase="/projects"
+          initialCount={3}
+          itemNoun="AI Projects"
+          emptyMessage="No projects yet. Check back soon!"
+        />
       </section>
 
       {/* Full-Stack Projects Section */}
@@ -519,91 +441,15 @@ export default async function Home() {
           <div className="neo-rule"></div>
         </div>
         
-        {safeFullstackProjects.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full overflow-visible" role="list">
-            {safeFullstackProjects.map((p: any, idx: number) => (
-              <div
-                key={String(p.id)}
-                className="group neo-card neo-tilt acc-cyan p-5 sm:p-6 flex flex-col w-full"
-                role="listitem"
-              >
-                <div className="card-top">
-                  <span className="card-num">{String(idx + 1).padStart(2, '0')}</span>
-                  <span className="card-cat">Full Stack</span>
-                </div>
-                {/* Project Image */}
-                {p.image ? (
-                  <div className="mb-4 rounded-neo overflow-hidden h-40 sm:h-48 border-neo border-neo-border neo-skeleton flex items-center justify-center">
-                    <img src={p.image} alt={`Screenshot of ${p.title} project`} className="w-full h-full object-cover" decoding="async" fetchPriority="high" style={{ position: 'relative', zIndex: 1 }} />
-                  </div>
-                ) : p.demo_video ? (
-                  <div className="mb-4 rounded-neo overflow-hidden h-40 sm:h-48 border-neo border-neo-border bg-[color:var(--neo-surface-2)] flex items-center justify-center">
-                    <svg className="w-16 h-16 text-[color:var(--neo-ink)]" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                    </svg>
-                  </div>
-                ) : (
-                  <div className="mb-4 rounded-neo overflow-hidden h-40 sm:h-48 bg-neo-cyan border-neo border-neo-border flex items-center justify-center">
-                    <span className="text-center px-4 font-extrabold">{p.title}</span>
-                  </div>
-                )}
-                
-                <div className="mb-4">
-                  <h3 className="text-xl font-extrabold group-hover:text-[color:var(--neo-cyan)] transition duration-200 break-words">
-                    {p.title}
-                  </h3>
-                </div>
-                {p.description && (
-                  <p className="text-gray-400 text-sm mb-4">{p.description}</p>
-                )}
-                
-                {p.tags && p.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {p.tags.map((tag: string, tIdx: number) => (
-                      <TagBadge key={tIdx} tag={tag} variant="gray" />
-                    ))}
-                  </div>
-                )}
-                
-                <div className="flex flex-wrap gap-3 mt-auto items-center">
-                  {/* Details Link */}
-                  <Link href={`/fullstack-projects/${p.id}`} prefetch className="neo-btn neo-btn-cyan text-sm py-1.5 px-3">
-                    Details →
-                  </Link>
-                  
-                  {p.github_url && (
-                    <a
-                      href={p.github_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 font-bold text-sm hover:bg-neo-yellow px-1 transition-colors"
-                      aria-label={`View ${p.title} repository on GitHub`}
-                    >
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-                      <span>Repo</span>
-                    </a>
-                  )}
-                  {p.live_project_link && (
-                    <a
-                      href={p.live_project_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 transition duration-300 text-sm font-semibold"
-                      aria-label={`View ${p.title} live`}
-                    >
-                      <FaExternalLinkAlt className="w-3.5 h-3.5" />
-                      <span>Live Project</span>
-                    </a>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="neo-empty">
-            <p>No full-stack projects yet. Check back soon!</p>
-          </div>
-        )}
+        <CardSection
+          items={safeFullstackProjects as any}
+          accent="cyan"
+          categoryLabel="Full Stack"
+          tagVariant="gray"
+          hrefBase="/fullstack-projects"
+          gridClassName="grid-cols-1 md:grid-cols-3"
+          emptyMessage="No full-stack projects yet. Check back soon!"
+        />
       </section>
 
       {/* Data Analytics Projects Section */}
@@ -613,92 +459,15 @@ export default async function Home() {
           <div className="neo-rule"></div>
         </div>
 
-        {safeDataAnalytics.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full overflow-visible" role="list">
-            {safeDataAnalytics.map((p: any, idx: number) => (
-              <div
-                key={String(p.id)}
-                className="group neo-card neo-tilt acc-orange p-5 sm:p-6 flex flex-col w-full"
-                role="listitem"
-              >
-                <div className="card-top">
-                  <span className="card-num">{String(idx + 1).padStart(2, '0')}</span>
-                  <span className="card-cat">Analytics</span>
-                </div>
-                {p.image ? (
-                  <div className="mb-4 rounded-neo overflow-hidden h-40 sm:h-48 border-neo border-neo-border neo-skeleton flex items-center justify-center">
-                    <img src={p.image} alt={`Screenshot of ${p.title} dashboard`} className="w-full h-full object-cover" decoding="async" fetchPriority="high" style={{ position: 'relative', zIndex: 1 }} />
-                  </div>
-                ) : (
-                  <div className="mb-4 rounded-neo overflow-hidden h-40 sm:h-48 bg-neo-orange border-neo border-neo-border flex items-center justify-center">
-                    <span className="text-center px-4 font-extrabold">{p.title}</span>
-                  </div>
-                )}
-
-                <div className="mb-4">
-                  <h3 className="text-xl font-extrabold group-hover:text-[color:var(--neo-orange)] transition duration-200 break-words">{p.title}</h3>
-                </div>
-                {p.description && <p className="text-gray-400 text-sm mb-4">{p.description}</p>}
-
-                {p.tags && p.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {p.tags.map((tag: string, tIdx: number) => (
-                      <TagBadge key={tIdx} tag={tag} variant="yellow" />
-                    ))}
-                  </div>
-                )}
-
-                <div className="flex flex-nowrap gap-2.5 mt-auto items-center">
-                  <Link href={`/data-analytics-projects/${p.id}`} prefetch className="neo-btn neo-btn-orange text-xs py-1 px-2.5">
-                    Details →
-                  </Link>
-                  {p.github_url && (
-                    <a
-                      href={p.github_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 font-bold text-sm hover:bg-neo-yellow px-1 transition-colors"
-                      aria-label={`View ${p.title} repository`}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 0.5C5.5 0.5 0.5 5.5 0.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.2-1.6-1.2-1.6-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1 1.6.8 1.6.8.9 1.5 2.4 1.1 3 .8.1-.7.4-1.1.7-1.4-2.5-.3-5.1-1.2-5.1-5.3 0-1.2.4-2.1 1.1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .9-.3 2.9 1.1.8-.2 1.7-.4 2.6-.4s1.8.1 2.6.4c2-1.4 2.9-1.1 2.9-1.1.6 1.5.2 2.6.1 2.9.7.7 1.1 1.6 1.1 2.8 0 4-2.6 5-5.1 5.3.4.4.8 1 .8 2v3c0 .3.2.7.8.6C20.7 21.4 24 17.1 24 12c0-6.5-5-11.5-12-11.5z" />
-                      </svg>
-                      Repo
-                    </a>
-                  )}
-                  {p.tableau_url && (
-                    <a
-                      href={p.tableau_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 font-bold text-sm hover:opacity-70 px-1 transition-opacity"
-                      aria-label={`View ${p.title} dashboard on Tableau Public`}
-                    >
-                      <SvgIcon name="tableau" className="w-4 h-4" />
-                      <span style={{ background: 'linear-gradient(90deg, #C8283E, #E8782E, #1D76BC)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Dashboard</span>
-                    </a>
-                  )}
-                  {p.powerbi_url && (
-                    <a
-                      href={p.powerbi_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 font-bold text-sm hover:opacity-70 px-1 transition-opacity"
-                      aria-label={`View ${p.title} report on Power BI`}
-                    >
-                      <SvgIcon name="powerbi" className="w-4 h-4" />
-                      <span style={{ background: 'linear-gradient(90deg, #F2C811, #E6AD10, #C97D0E)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Power BI</span>
-                    </a>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="neo-empty">
-            <p>No data analytics projects yet. Check back soon!</p>
-          </div>
-        )}
+        <CardSection
+          items={safeDataAnalytics as any}
+          accent="orange"
+          categoryLabel="Analytics"
+          tagVariant="yellow"
+          hrefBase="/data-analytics-projects"
+          gridClassName="grid-cols-1 md:grid-cols-3"
+          emptyMessage="No data analytics projects yet. Check back soon!"
+        />
       </section>
 
       {/* Experience Section */}
@@ -708,96 +477,7 @@ export default async function Home() {
           <div className="neo-rule"></div>
         </div>
         
-        {experiences.length > 0 ? (
-          <div className="relative" role="list">
-            {/* Vertical lime line — centered behind the dot column */}
-            <div
-              className="absolute top-0 bottom-0 w-[3px] rounded-full z-0"
-              style={{ left: 'calc(14px - 1.5px)', background: 'var(--neo-lime)' }}
-              aria-hidden="true"
-            />
-
-            {experiences.map((exp: any, idx: number) => {
-              const isCurrent = exp.end_date === 'Present'
-              return (
-                <div key={String(exp.id)} className="flex gap-5 mb-6 last:mb-0" role="listitem">
-                  {/* Dot column */}
-                  <div className="relative w-7 flex-shrink-0 flex flex-col items-center">
-                    {/* Spacer above dot */}
-                    <div className="flex-1 min-h-[12px]" />
-                    {/* Dot with background halo that breaks the line */}
-                    <div
-                      className={`relative z-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        isCurrent ? 'w-6 h-6' : 'w-5 h-5'
-                      }`}
-                      style={{ background: 'var(--neo-bg)' }}
-                      aria-hidden="true"
-                    >
-                      <div
-                        className={`rounded-full border-neo border-neo-border ${
-                          isCurrent ? 'w-4 h-4' : 'w-3 h-3'
-                        }`}
-                        style={{
-                          background: 'var(--neo-lime)',
-                          animation: isCurrent ? 'neoTimelinePulse 2.4s ease-in-out infinite' : 'none',
-                        }}
-                      />
-                    </div>
-                    {/* Spacer below dot */}
-                    <div className="flex-1 min-h-[12px]" />
-                  </div>
-
-                  {/* Experience Card */}
-                  <div className="flex-1 neo-card neo-tilt acc-lime p-6">
-                    <div className="card-top">
-                      <span className="card-num">{String(idx + 1).padStart(2, '0')}</span>
-                      <span className="card-cat">Experience</span>
-                    </div>
-                    <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-3">
-                      <div className="flex-1">
-                        <h3 className="text-2xl font-semibold text-white">{exp.title}</h3>
-                        <p className="text-green-400 font-semibold text-lg">{exp.organization}</p>
-                        {exp.location && <p className="text-gray-400 text-sm">{exp.location}</p>}
-                      </div>
-                      <p className="text-sm text-gray-400 whitespace-nowrap">
-                        {new Date(exp.start_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-                        {' - '}
-                        {exp.end_date === 'Present' ? 'Present' : new Date(exp.end_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-                      </p>
-                    </div>
-
-                    {exp.description && (
-                      <p className="text-gray-300 text-sm leading-relaxed mb-4">{exp.description}</p>
-                    )}
-
-                    {exp.highlights && exp.highlights.length > 0 && (
-                      <ul className="space-y-2 mb-4">
-                        {exp.highlights.map((highlight: string, hIdx: number) => (
-                          <li key={hIdx} className="text-gray-400 text-sm flex items-start gap-3">
-                            <span className="text-green-400 font-bold mt-0.5">•</span>
-                            <span>{highlight}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-
-                    {exp.tags && exp.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-700">
-                        {exp.tags.map((tag: string, tIdx: number) => (
-                          <TagBadge key={tIdx} tag={tag} variant="green" />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        ) : (
-          <div className="neo-empty">
-            <p>No experience yet.</p>
-          </div>
-        )}
+        <ExperienceTimeline experiences={experiences as any} />
       </section>
 
       {/* Certifications Section */}
@@ -807,68 +487,7 @@ export default async function Home() {
           <div className="neo-rule"></div>
         </div>
         
-        {certificates.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-visible" role="list">
-            {certificates.map((cert: any, idx: number) => (
-              <div
-                key={String(cert.id)}
-                className="group neo-card neo-tilt acc-yellow p-6"
-                role="listitem"
-              >
-                <div className="card-top">
-                  <span className="card-num">{String(idx + 1).padStart(2, '0')}</span>
-                  <span className="card-cat">Credential</span>
-                </div>
-                <div className="flex items-start gap-3 mb-3">
-                  <h3 className="text-lg font-semibold group-hover:text-yellow-400 transition duration-300 flex-1">
-                    {cert.title}
-                  </h3>
-                </div>
-                
-                {cert.issuer && (
-                  <p className="text-yellow-400 font-semibold text-sm mb-2">{cert.issuer}</p>
-                )}
-                {cert.description && (
-                  <p className="text-gray-400 text-sm mb-4">{cert.description}</p>
-                )}
-
-                {cert.tags && cert.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {cert.tags.map((tag: string, tIdx: number) => (
-                      <TagBadge key={tIdx} tag={tag} variant="yellow" />
-                    ))}
-                  </div>
-                )}
-                
-                {cert.issue_date && (
-                  <p className="text-gray-500 text-xs mb-3">
-                    {new Date(cert.issue_date).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                  </p>
-                )}
-                
-                {cert.credential_url && (
-                  <a
-                    href={cert.credential_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center text-yellow-400 hover:text-yellow-300 transition duration-300 text-sm font-semibold"
-                    aria-label={`View ${cert.title} certification credential`}
-                  >
-                    View Certificate →
-                  </a>
-                )}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="neo-empty">
-            <p>No certifications yet.</p>
-          </div>
-        )}
+        <CertificatesGrid certificates={certificates as any} />
       </section>
 
       {/* Articles Section */}
@@ -878,66 +497,15 @@ export default async function Home() {
           <div className="neo-rule"></div>
         </div>
         
-        {safeArticles.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-visible" role="list">
-            {safeArticles.map((article: any, idx: number) => (
-              <div
-                key={String(article.id)}
-                className="group neo-card neo-tilt acc-pink p-6 flex flex-col"
-                role="listitem"
-              >
-                <div className="card-top">
-                  <span className="card-num">{String(idx + 1).padStart(2, '0')}</span>
-                  <span className="card-cat">Article</span>
-                </div>
-                {article.image && (
-                  <div className="mb-4 rounded-neo overflow-hidden h-48 border-neo border-neo-border neo-skeleton">
-                    <img src={article.image} alt={`Featured image for ${article.title} article`} className="w-full h-full object-cover" decoding="async" fetchPriority="high" style={{ position: 'relative', zIndex: 1 }} />
-                  </div>
-                )}
-                
-                <div className="mb-4">
-                  <h3 className="text-xl font-semibold group-hover:text-pink-400 transition duration-300">
-                    {article.title}
-                  </h3>
-                </div>
-                
-                {article.description && (
-                  <p className="text-gray-400 text-sm mb-4">{article.description}</p>
-                )}
-                
-                {article.tags && article.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {article.tags.map((tag: string, tIdx: number) => (
-                      <TagBadge key={tIdx} tag={tag} variant="pink" />
-                    ))}
-                  </div>
-                )}
-                
-                {article.url && (
-                  <a
-                    href={article.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-pink-400 hover:text-pink-300 transition duration-300 text-sm font-semibold mt-auto"
-                    aria-label={`Read ${article.title} article`}
-                  >
-                    {article.url.includes('medium') ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M9.025 8c0 2.485-2.02 4.5-4.513 4.5A4.506 4.506 0 0 1 0 8c0-2.486 2.02-4.5 4.512-4.5A4.506 4.506 0 0 1 9.025 8m4.95 0c0 2.34-1.01 4.236-2.256 4.236S9.463 10.339 9.463 8c0-2.34 1.01-4.236 2.256-4.236S13.975 5.661 13.975 8M16 8c0 2.096-.355 3.795-.794 3.795-.438 0-.793-1.7-.793-3.795 0-2.096.355-3.795.794-3.795.438 0 .793 1.699.793 3.795" />
-                      </svg>
-                    ) : null}
-                    <span>Read Article</span>
-                  </a>
-                )}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="neo-empty">
-            <p>No articles yet. Stay tuned!</p>
-          </div>
-        )}
+        <CardSection
+          items={safeArticles as any}
+          accent="pink"
+          categoryLabel="Article"
+          tagVariant="pink"
+          initialCount={3}
+          itemNoun="Articles"
+          emptyMessage="No articles yet. Stay tuned!"
+        />
       </section>
 
       {/* Bottom Section Grid - Contact & QR Codes Side by Side (lazy-mounted) */}

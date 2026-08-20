@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: true,
+
   
   // Image config
   images: {
@@ -20,6 +21,12 @@ module.exports = {
     serverActions: {
       bodySizeLimit: '10mb'
     },
+    // middleware.ts matches /api/admin/:path*, so uploads pass through it and
+    // middleware buffers the body with a 10MB default cap. A ~50MB video was
+    // truncated at 10MB, which destroyed the multipart closing boundary and made
+    // formData() throw "expected boundary after body". Raised above the route's
+    // own 50MB limit so the full payload reaches the handler.
+    proxyClientMaxBodySize: '60mb',
     // Optimize package imports
     optimizePackageImports: [
       'react-icons',

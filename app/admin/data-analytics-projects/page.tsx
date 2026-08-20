@@ -11,12 +11,13 @@ interface IProject {
   github_url?: string
   tableau_url?: string
   powerbi_url?: string
+  article_url?: string
   tags?: string[]
   image?: string
   demo_video?: string
 }
 
-const empty = { title: '', description: '', github_url: '', tableau_url: '', powerbi_url: '', tags: '', image: '', demo_video: '' }
+const empty = { title: '', description: '', github_url: '', tableau_url: '', powerbi_url: '', article_url: '', tags: '', image: '', demo_video: '' }
 
 export default function AdminDataAnalyticsPage() {
   const [projects, setProjects] = useState<IProject[]>([])
@@ -60,6 +61,7 @@ export default function AdminDataAnalyticsPage() {
       github_url: formData.github_url,
       tableau_url: formData.tableau_url,
       powerbi_url: formData.powerbi_url,
+      article_url: formData.article_url || null,
       tags: formData.tags.split(',').map((t) => t.trim()).filter(Boolean),
       image: formData.image || '',
       demo_video: formData.demo_video || '',
@@ -115,6 +117,7 @@ export default function AdminDataAnalyticsPage() {
       github_url: proj.github_url || '',
       tableau_url: proj.tableau_url || '',
       powerbi_url: proj.powerbi_url || '',
+      article_url: proj.article_url || '',
       tags: (proj.tags || []).join(', '),
       image: imageValue,
       demo_video: proj.demo_video || '',
@@ -151,7 +154,12 @@ export default function AdminDataAnalyticsPage() {
       const fd = new FormData()
       fd.append('video', file)
       const res = await fetch('/api/admin/upload-video', { method: 'POST', credentials: 'include', body: fd })
-      if (!res.ok) { alert('Failed to upload video.'); e.target.value = ''; return }
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        alert(`Failed to upload video: ${err.error || err.details || res.status}`)
+        e.target.value = ''
+        return
+      }
       const data = await res.json()
       setFormData((prev) => ({ ...prev, demo_video: data.path }))
     } catch {
@@ -187,6 +195,11 @@ export default function AdminDataAnalyticsPage() {
           <label className="block mb-1">Power BI URL (Optional)</label>
           <input type="url" value={formData.powerbi_url} onChange={(e) => setFormData({ ...formData, powerbi_url: e.target.value })} placeholder="https://app.powerbi.com/reports/..." className="w-full px-3 py-2" />
           <p className="text-xs mt-1 opacity-70">At least one URL is required (GitHub repo, Tableau Public dashboard, and/or Power BI report).</p>
+        </div>
+        <div>
+          <label className="block mb-1">Read Article URL (Optional)</label>
+          <input type="url" value={formData.article_url} onChange={(e) => setFormData({ ...formData, article_url: e.target.value })} placeholder="https://medium.com/@username/article-slug" className="w-full px-3 py-2" />
+          <p className="text-xs mt-1 opacity-70">Optional. When set, a &quot;Read Article&quot; button appears at the end of this card.</p>
         </div>
         <div>
           <label className="block mb-1">Tags (comma separated)</label>

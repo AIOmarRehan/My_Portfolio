@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
       description: body.description || '',
       github_url: body.github_url || null,
       live_project_link: body.live_project_link || null,
+      article_url: body.article_url || null,
       tags: body.tags || [],
       image: body.image || null,
       demo_video: body.demo_video || null,

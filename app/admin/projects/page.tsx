@@ -9,6 +9,7 @@ interface IProject {
   description?: string
   github_url?: string
   huggingface_url?: string
+  article_url?: string
   tags?: string[]
   image?: string
   demo_video?: string
@@ -18,7 +19,7 @@ export default function AdminProjectsPage() {
   const [projects, setProjects] = useState<IProject[]>([])
   const [loading, setLoading] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [formData, setFormData] = useState({ title: '', description: '', github_url: '', huggingface_url: '', tags: '', image: '', demo_video: '' })
+  const [formData, setFormData] = useState({ title: '', description: '', github_url: '', huggingface_url: '', article_url: '', tags: '', image: '', demo_video: '' })
   const [imageInputMethod, setImageInputMethod] = useState<'upload' | 'url'>('upload')
   const [uploadingVideo, setUploadingVideo] = useState(false)
   const [uploadingImage, setUploadingImage] = useState(false)
@@ -80,6 +81,7 @@ export default function AdminProjectsPage() {
       description: formData.description,
       github_url: formData.github_url,
       huggingface_url: formData.huggingface_url,
+      article_url: formData.article_url || null,
       tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
       image: formData.image || '',
       demo_video: formData.demo_video || ''
@@ -95,7 +97,7 @@ export default function AdminProjectsPage() {
         })
         if (res.ok) {
           setEditingId(null)
-          setFormData({ title: '', description: '', github_url: '', huggingface_url: '', tags: '', image: '', demo_video: '' })
+          setFormData({ title: '', description: '', github_url: '', huggingface_url: '', article_url: '', tags: '', image: '', demo_video: '' })
           setImageInputMethod('upload')
           fetchProjects()
           setStatusMsg({ type: 'success', text: 'Project updated successfully!' })
@@ -112,7 +114,7 @@ export default function AdminProjectsPage() {
           body: JSON.stringify(body)
         })
         if (res.ok) {
-          setFormData({ title: '', description: '', github_url: '', huggingface_url: '', tags: '', image: '', demo_video: '' })
+          setFormData({ title: '', description: '', github_url: '', huggingface_url: '', article_url: '', tags: '', image: '', demo_video: '' })
           setImageInputMethod('upload')
           fetchProjects()
           setStatusMsg({ type: 'success', text: 'Project created successfully!' })
@@ -158,6 +160,7 @@ export default function AdminProjectsPage() {
       description: proj.description || '',
       github_url: proj.github_url || '',
       huggingface_url: proj.huggingface_url || '',
+      article_url: proj.article_url || '',
       tags: (proj.tags || []).join(', '),
       image: imageValue,
       demo_video: proj.demo_video || ''
@@ -216,8 +219,8 @@ export default function AdminProjectsPage() {
       })
 
       if (!res.ok) {
-        const error = await res.json()
-        alert(`Failed to upload video: ${error.error || 'Unknown error'}`)
+        const error = await res.json().catch(() => ({}))
+        alert(`Failed to upload video: ${error.error || error.details || `HTTP ${res.status}`}`)
         e.target.value = ''
         return
       }
@@ -277,6 +280,17 @@ export default function AdminProjectsPage() {
             className={`w-full px-3 py-2 border rounded ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
           />
           <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>At least one URL is required. Use GitHub for repositories and Hugging Face for live demos.</p>
+        </div>
+        <div>
+          <label className={`block font-medium mb-1 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>Read Article URL (Optional)</label>
+          <input
+            type="url"
+            value={formData.article_url}
+            onChange={(e) => setFormData({ ...formData, article_url: e.target.value })}
+            placeholder="https://medium.com/@username/article-slug"
+            className={`w-full px-3 py-2 border rounded ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
+          />
+          <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Optional. When set, a &quot;Read Article&quot; button appears at the end of this card.</p>
         </div>
         <div>
           <label className={`block font-medium mb-1 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>Tags (comma separated)</label>
@@ -414,7 +428,7 @@ export default function AdminProjectsPage() {
               type="button"
               onClick={() => {
                 setEditingId(null)
-                setFormData({ title: '', description: '', github_url: '', huggingface_url: '', tags: '', image: '', demo_video: '' })
+                setFormData({ title: '', description: '', github_url: '', huggingface_url: '', article_url: '', tags: '', image: '', demo_video: '' })
                 setImageInputMethod('upload')
               }}
               className={`px-4 py-2 rounded transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-gray-600 text-white hover:bg-gray-500' : 'bg-gray-400 text-white hover:bg-gray-500'}`}
