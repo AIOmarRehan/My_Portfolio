@@ -370,18 +370,6 @@ export default function ItemDetailModal({
                   </span>
                 </a>
               )}
-              {item.url && (
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="neo-btn neo-btn-pink text-sm py-1.5 px-3"
-                  aria-label={`Read ${item.title} article`}
-                >
-                  {item.url.includes('medium') ? <MediumMark /> : null}
-                  <span>Read Article</span>
-                </a>
-              )}
               {item.article_url && (
                 <a
                   href={item.article_url}
@@ -391,6 +379,18 @@ export default function ItemDetailModal({
                   aria-label={`Read the article about ${item.title}`}
                 >
                   {item.article_url.includes('medium') ? <MediumMark /> : null}
+                  <span>Read Article</span>
+                </a>
+              )}
+              {item.url && !item.article_url && (
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="neo-btn neo-btn-pink text-sm py-1.5 px-3"
+                  aria-label={`Read ${item.title} article`}
+                >
+                  {item.url.includes('medium') ? <MediumMark /> : null}
                   <span>Read Article</span>
                 </a>
               )}
