@@ -7,6 +7,13 @@ const ADMIN_PATH = '/admin'
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
+  // Rewrite /favicon.ico to official 404 page
+  if (pathname === '/favicon.ico') {
+    const url = req.nextUrl.clone()
+    url.pathname = '/not-found'
+    return NextResponse.rewrite(url)
+  }
+
   const isProduction = process.env.NODE_ENV === 'production'
 
   // Block all admin UI routes in production — return 404
@@ -38,5 +45,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/admin/:path*']
+  matcher: ['/favicon.ico', '/admin/:path*', '/api/admin/:path*']
 }
