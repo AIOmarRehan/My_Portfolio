@@ -64,13 +64,18 @@ async function githubHeatmap(): Promise<{ weeks: (number | null)[][]; total: num
 
 /* GitHub: public_repos / followers from the user endpoint; total stars summed
    from the owner's repo list (first 100 repos); last activity from the most
-   recent push; plus the top starred non-fork repos for the repos view. */
-async function githubData(): Promise<{ stats: StatsMap | null; top: { name: string; url: string; stars: number; language: string | null }[] }> {
+   recent push; the top starred non-fork repos; and a real language breakdown
+   derived from GitHub's per-repo detected primary language (no extra calls). */
+async function githubData(): Promise<{
+  stats: StatsMap | null
+  top: { name: string; url: string; stars: number; language: string | null }[]
+  languages: { name: string; repos: number; percent: number }[]
+}> {
   const [user, repos] = await Promise.all([
     fetchJson(`https://api.github.com/users/${GITHUB_USER}`),
     fetchJson(`https://api.github.com/users/${GITHUB_USER}/repos?per_page=100&type=owner&sort=pushed`),
   ])
-  if (!user) return { stats: null, top: [] }
+  if (!user) return { stats: null, top: [], languages: [] }
 
   const stats: StatsMap = {}
   if (typeof user.public_repos === 'number') stats.repos = user.public_repos
@@ -85,20 +90,35 @@ async function githubData(): Promise<{ stats: StatsMap | null; top: { name: stri
     if (pushed) stats.lastActive = new Date(pushed).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
   }
 
-  const top = Array.isArray(repos)
-    ? repos
-        .filter((r: any) => !r?.fork)
-        .sort((a: any, b: any) => (b?.stargazers_count || 0) - (a?.stargazers_count || 0))
-        .slice(0, 10)
-        .map((r: any) => ({
-          name: r.name as string,
-          url: r.html_url as string,
-          stars: (r.stargazers_count || 0) as number,
-          language: r.language ?? null,
-        }))
-    : []
+  const own = Array.isArray(repos) ? repos.filter((r: any) => !r?.fork) : []
 
-  return { stats: Object.keys(stats).length ? stats : null, top }
+  const top = [...own]
+    .sort((a: any, b: any) => (b?.stargazers_count || 0) - (a?.stargazers_count || 0))
+    .slice(0, 10)
+    .map((r: any) => ({
+      name: r.name as string,
+      url: r.html_url as string,
+      stars: (r.stargazers_count || 0) as number,
+      language: r.language ?? null,
+    }))
+
+  // Tally GitHub's detected primary language across owned, non-fork repos.
+  const tally: Record<string, number> = {}
+  for (const r of own) {
+    const lang = (r as any)?.language
+    if (typeof lang === 'string' && lang) tally[lang] = (tally[lang] || 0) + 1
+  }
+  const langTotal = Object.values(tally).reduce((s, n) => s + n, 0)
+  const languages = Object.entries(tally)
+    .map(([name, count]) => ({
+      name,
+      repos: count,
+      percent: langTotal ? Math.round((count / langTotal) * 100) : 0,
+    }))
+    .sort((a, b) => b.repos - a.repos)
+    .slice(0, 12)
+
+  return { stats: Object.keys(stats).length ? stats : null, top, languages }
 }
 
 /* Hugging Face: official profile-scoped list endpoints. Counts are array
@@ -158,6 +178,7 @@ export async function GET() {
   return NextResponse.json({
     github: gh.stats,
     githubRepos: gh.top,
+    languages: gh.languages,
     githubHeat,
     huggingface,
     medium,

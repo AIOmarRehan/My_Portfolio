@@ -47,45 +47,6 @@ const PROFILE = {
   location: 'Ajman, UAE',
 } as const
 
-/* Groups mirror the technologies already registered in lib/techIcons.ts
-   and used across the portfolio's projects. Bar lengths are decorative
-   only — no proficiency numbers are implied or displayed. */
-const STACK: { group: string; items: { name: string; bar: number }[] }[] = [
-  {
-    group: 'languages',
-    items: [
-      { name: 'Python', bar: 20 },
-      { name: 'TypeScript', bar: 16 },
-      { name: 'JavaScript', bar: 15 },
-      { name: 'SQL', bar: 14 },
-    ],
-  },
-  {
-    group: 'ai / ml',
-    items: [
-      { name: 'PyTorch', bar: 18 },
-      { name: 'TensorFlow', bar: 16 },
-      { name: 'Keras', bar: 14 },
-      { name: 'Transformers', bar: 15 },
-      { name: 'OpenCV', bar: 13 },
-      { name: 'Scikit-learn', bar: 13 },
-      { name: 'Pandas', bar: 14 },
-    ],
-  },
-  {
-    group: 'engineering',
-    items: [
-      { name: 'Next.js', bar: 16 },
-      { name: 'React', bar: 16 },
-      { name: 'FastAPI', bar: 14 },
-      { name: 'Docker', bar: 13 },
-      { name: 'PostgreSQL', bar: 13 },
-      { name: 'Supabase', bar: 13 },
-      { name: 'Tailwind CSS', bar: 15 },
-    ],
-  },
-]
-
 /* The original easter-egg blocks — preserved, now reachable via `demo`. */
 interface CmdBlock {
   cmd: string
@@ -160,7 +121,6 @@ const COMMANDS = [
 /*  Small helpers                                                      */
 /* ------------------------------------------------------------------ */
 const num = (v: unknown) => (typeof v === 'number' ? v.toLocaleString() : undefined)
-const bar = (n: number) => '█'.repeat(n)
 
 const cmdLine = (input: string): Line => ({
   text: `$ ${input}`,
@@ -223,7 +183,7 @@ export default function TerminalEasterEgg() {
   const helpLines = (): Line[] => [
     heading('COMMANDS'),
     { text: '  about       Who I am', color: C.grey },
-    { text: '  stack       Technologies I work with', color: C.grey },
+    { text: '  stack       Languages I work with (from GitHub)', color: C.grey },
     { text: '  projects    Selected engineering work', color: C.grey },
     { text: '  github      Live GitHub activity', color: C.grey },
     { text: '  models      AI/ML models & experiments', color: C.grey },
@@ -249,19 +209,25 @@ export default function TerminalEasterEgg() {
     dim(`${PROFILE.location} · ${PROFILE.email}`),
   ]
 
-  const stackLines = (): Line[] => {
-    const out: Line[] = [heading('STACK')]
-    STACK.forEach((section) => {
-      out.push(gap(), { text: section.group.toUpperCase(), color: C.yellow, bold: true, indent: 1 })
-      section.items.forEach((it) => {
-        out.push({
-          text: `  ${it.name.padEnd(14, ' ')} ${bar(it.bar)}`,
-          color: C.grey,
-          indent: 1,
-        })
+  const stackLines = (d: any): Line[] => {
+    const langs: { name: string; repos: number; percent: number }[] = d?.languages || []
+    if (!langs.length) {
+      return [heading('STACK'), dim('no language data returned by GitHub yet.')]
+    }
+    const total = langs.reduce((s, l) => s + l.repos, 0)
+    const out: Line[] = [
+      heading('STACK'),
+      dim(`languages detected across ${total} GitHub repository${total === 1 ? '' : 'ies'}`),
+      gap(),
+    ]
+    langs.forEach((l) => {
+      out.push({
+        text: `${l.name.padEnd(18, ' ')} ${String(l.repos).padStart(2, ' ')} repos   ${String(l.percent).padStart(2, ' ')}%`,
+        color: C.grey,
+        indent: 1,
       })
     })
-    out.push(gap(), dim('// bars are decorative spacing, not proficiency metrics', 0))
+    out.push(gap(), dim(`source: ${PROFILE.githubUrl.replace('https://', '')} · GitHub Linguist`))
     return out
   }
 
@@ -460,9 +426,22 @@ export default function TerminalEasterEgg() {
       }
       if (cmd === 'help') return push(helpLines())
       if (cmd === 'about') return push(aboutLines())
-      if (cmd === 'stack') return push(stackLines())
       if (cmd === 'contact') return push(contactLines())
       if (cmd === 'demo') return runDemo()
+
+      if (cmd === 'stack' || cmd === 'github' || cmd === 'models') {
+        setBusy(true)
+        const source = cmd === 'stack' || cmd === 'github' ? 'github api' : 'hugging face hub api'
+        push([dim(`fetching live data from ${source}…`)])
+        try {
+          const d = await getStats()
+          return push(cmd === 'stack' ? stackLines(d) : cmd === 'github' ? githubLines(d) : modelsLines(d))
+        } catch {
+          return push([{ text: 'stats service unreachable. try again shortly.', color: C.red }])
+        } finally {
+          setBusy(false)
+        }
+      }
 
       if (cmd === 'projects') {
         setBusy(true)
@@ -488,19 +467,6 @@ export default function TerminalEasterEgg() {
           return push(experienceLines(await getExperience()))
         } catch {
           return push([{ text: 'could not load experience right now.', color: C.red }])
-        } finally {
-          setBusy(false)
-        }
-      }
-
-      if (cmd === 'github' || cmd === 'models') {
-        setBusy(true)
-        push([dim(`fetching live data from ${cmd === 'github' ? 'github api' : 'hugging face hub api'}…`)])
-        try {
-          const d = await getStats()
-          return push(cmd === 'github' ? githubLines(d) : modelsLines(d))
-        } catch {
-          return push([{ text: 'stats service unreachable. try again shortly.', color: C.red }])
         } finally {
           setBusy(false)
         }
