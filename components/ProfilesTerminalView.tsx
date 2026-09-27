@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { FaGithub, FaKaggle, FaLinkedin } from 'react-icons/fa'
 import { SiHuggingface } from 'react-icons/si'
+import SvgIcon from './icons/SvgIcon'
 
 /**
  * Terminal-native view of the profile stats. Rendered INSIDE the dev-console
@@ -273,6 +274,12 @@ export default function ProfilesTerminalView({
       )}
 
       {/* Link-only platforms (no anonymous stats API exists) */}
+      <PlatformHeader
+        icon={<SvgIcon name="tableau" className="w-3.5 h-3.5" />}
+        name="tableau public"
+        href="https://public.tableau.com/app/profile/omar.rehan"
+        color={C.orange}
+      />
       <PlatformHeader
         icon={<FaKaggle className="w-3.5 h-3.5" />}
         name="kaggle"
