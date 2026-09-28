@@ -148,7 +148,7 @@ interface ProjectRow {
 
 export default function TerminalEasterEgg() {
   const [lines, setLines] = useState<Line[]>(() => [
-    { text: 'omar-rehan — dev console', color: C.cyan, bold: true },
+    { text: 'omar-rehan - dev console', color: C.cyan, bold: true },
     dim("type 'help' for commands, or 'show my profiles' below."),
     gap(),
   ])
