@@ -87,10 +87,10 @@ const BLOCKS: CmdBlock[] = [
     cmd: 'curl -s https://api.quote.engineer',
     lines: [
       { text: '"The best way to predict the future', color: C.green },
-      { text: ' is to build it."  — Alan Kay', color: C.yellow },
+      { text: ' is to build it."  - Alan Kay', color: C.yellow },
       { text: '', color: undefined },
       { text: '"Any sufficiently advanced technology', color: C.cyan },
-      { text: ' is indistinguishable from magic."  — Arthur C. Clarke', color: C.yellow },
+      { text: ' is indistinguishable from magic."  - Arthur C. Clarke', color: C.yellow },
     ],
   },
   {
@@ -306,10 +306,10 @@ export default function TerminalEasterEgg() {
     const gh = d?.github || {}
     const heat = d?.githubHeat
     out.push(
-      { text: `  Repositories    ${num(gh.repos) ?? '—'}`, color: C.grey },
-      { text: `  Stars           ${num(gh.stars) ?? '—'}`, color: C.grey },
-      { text: `  Followers       ${num(gh.followers) ?? '—'}`, color: C.grey },
-      { text: `  Contributions   ${heat ? num(heat.total) : '—'}`, color: C.grey },
+      { text: `  Repositories    ${num(gh.repos) ?? '-'}`, color: C.grey },
+      { text: `  Stars           ${num(gh.stars) ?? '-'}`, color: C.grey },
+      { text: `  Followers       ${num(gh.followers) ?? '-'}`, color: C.grey },
+      { text: `  Contributions   ${heat ? num(heat.total) : '-'}`, color: C.grey },
       gap(),
       { text: 'Contribution graph · last year', color: C.yellow, bold: true },
       // The green squares, as one fluid full-width block (no scrollbar).
@@ -335,11 +335,11 @@ export default function TerminalEasterEgg() {
     const hf = d?.huggingface || {}
     return [
       heading('HUGGING FACE'),
-      { text: `  Models      ${num(hf.models) ?? '—'}`, color: C.grey },
-      { text: `  Datasets    ${num(hf.datasets) ?? '—'}`, color: C.grey },
-      { text: `  Spaces      ${num(hf.spaces) ?? '—'}`, color: C.grey },
-      { text: `  Downloads   ${num(hf.downloads) ?? '—'}`, color: C.grey },
-      { text: `  Likes       ${num(hf.likes) ?? '—'}`, color: C.grey },
+      { text: `  Models      ${num(hf.models) ?? '-'}`, color: C.grey },
+      { text: `  Datasets    ${num(hf.datasets) ?? '-'}`, color: C.grey },
+      { text: `  Spaces      ${num(hf.spaces) ?? '-'}`, color: C.grey },
+      { text: `  Downloads   ${num(hf.downloads) ?? '-'}`, color: C.grey },
+      { text: `  Likes       ${num(hf.likes) ?? '-'}`, color: C.grey },
       gap(),
       { text: `→ ${PROFILE.hfUrl.replace('https://', '')}`, color: C.cyan, href: PROFILE.hfUrl },
     ]
