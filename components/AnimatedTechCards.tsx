@@ -4,12 +4,24 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 
 const cards = [NeuralNetCard, TypingCard, SignalBarsCard] as const
 
+interface CardProps {
+  isDarkMode: boolean
+  /** False while the card is off-screen or the tab is hidden: every loop pauses. */
+  active: boolean
+  /** prefers-reduced-motion: show one static frame instead of animating. */
+  reducedMotion: boolean
+}
+
 export default function AnimatedTechCards() {
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [cardIndex, setCardIndex] = useState<number | null>(null)
+  const [active, setActive] = useState(false)
+  const [reducedMotion, setReducedMotion] = useState(false)
+  const rootRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setCardIndex(Math.floor(Math.random() * cards.length))
+    setReducedMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches)
     const update = () => setIsDarkMode(document.documentElement.classList.contains('dark-mode'))
     update()
     const obs = new MutationObserver(update)
@@ -17,21 +29,44 @@ export default function AnimatedTechCards() {
     return () => obs.disconnect()
   }, [])
 
+  // Animate only while the card is near the viewport and the tab is visible.
+  useEffect(() => {
+    const el = rootRef.current
+    if (!el) return
+    let inView = false
+    const sync = () => setActive(inView && !document.hidden)
+    const io = new IntersectionObserver(
+      (entries) => {
+        inView = entries[entries.length - 1].isIntersecting
+        sync()
+      },
+      { rootMargin: '200px 0px' }
+    )
+    io.observe(el)
+    document.addEventListener('visibilitychange', sync)
+    return () => {
+      io.disconnect()
+      document.removeEventListener('visibilitychange', sync)
+    }
+  }, [cardIndex])
+
   if (cardIndex === null) return null
 
   const Card = cards[cardIndex]
 
   return (
-    <div className="mt-6">
-      <Card isDarkMode={isDarkMode} />
+    <div ref={rootRef} className={active ? 'mt-6' : 'mt-6 atc-paused'}>
+      <Card isDarkMode={isDarkMode} active={active} reducedMotion={reducedMotion} />
     </div>
   )
 }
 
 /* ─── Card 1: Neural net canvas ─── */
-function NeuralNetCard({ isDarkMode }: { isDarkMode: boolean }) {
+function NeuralNetCard({ isDarkMode, active, reducedMotion }: CardProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const zoneRef = useRef<HTMLDivElement>(null)
+  // Animation time lives in a ref so a pause resumes from the same frame.
+  const tRef = useRef(0)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -40,8 +75,8 @@ function NeuralNetCard({ isDarkMode }: { isDarkMode: boolean }) {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    let animId: number
-    let t = 0
+    let animId = 0
+    const animate = active && !reducedMotion
     const layers = [3, 4, 4, 2]
 
     function resize() {
@@ -51,7 +86,12 @@ function NeuralNetCard({ isDarkMode }: { isDarkMode: boolean }) {
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0)
     }
     resize()
-    window.addEventListener('resize', resize)
+    // Resizing clears the canvas; repaint the still when no loop is running to do it.
+    const onResize = () => {
+      resize()
+      if (!animate) draw()
+    }
+    window.addEventListener('resize', onResize)
 
     const W = () => zone!.offsetWidth
     const H = () => zone!.offsetHeight
@@ -74,7 +114,8 @@ function NeuralNetCard({ isDarkMode }: { isDarkMode: boolean }) {
       const w = W(), h = H()
       ctx!.clearRect(0, 0, w, h)
       const nodes = getNodes()
-      t += 0.025
+      if (animate) tRef.current += 0.025
+      const t = tRef.current
 
       const eR = isDarkMode ? 147 : 99, eG = isDarkMode ? 130 : 80, eB = isDarkMode ? 234 : 199
       const dR = isDarkMode ? 167 : 109, dG = isDarkMode ? 139 : 40, dB = isDarkMode ? 250 : 217
@@ -116,15 +157,16 @@ function NeuralNetCard({ isDarkMode }: { isDarkMode: boolean }) {
         ctx!.fill()
       }
 
-      animId = requestAnimationFrame(draw)
+      // Paused or reduced motion: the frame above stays on the canvas as a still.
+      if (animate) animId = requestAnimationFrame(draw)
     }
     draw()
 
     return () => {
       cancelAnimationFrame(animId)
-      window.removeEventListener('resize', resize)
+      window.removeEventListener('resize', onResize)
     }
-  }, [isDarkMode])
+  }, [isDarkMode, active, reducedMotion])
 
   const scanColor = isDarkMode ? 'rgba(167,139,250,0.5)' : 'rgba(124,58,237,0.4)'
 
@@ -167,55 +209,62 @@ function NeuralNetCard({ isDarkMode }: { isDarkMode: boolean }) {
 }
 
 /* ─── Card 2: Typing code ─── */
-function TypingCard({ isDarkMode }: { isDarkMode: boolean }) {
+const TYPING_LINES = [
+  'POST /api/inference',
+  '> status: 200 OK',
+  '> latency: 42ms',
+  '> model: gpt-4o',
+  '> tokens: 512',
+  'GET /api/projects',
+  '> count: 8 items',
+  '> cache: HIT',
+  'WS /stream/events',
+  '> event: data_chunk',
+  '> seq: 1041',
+]
+const TYPING_MAX_LINES = 5
+
+function TypingCard({ isDarkMode, active, reducedMotion }: CardProps) {
   const boxRef = useRef<HTMLDivElement>(null)
+  // Typing progress survives pauses, so the terminal resumes where it stopped.
+  const progress = useRef({ lineIdx: 0, charIdx: 0, displayed: [] as string[] })
 
   useEffect(() => {
     const box = boxRef.current
     if (!box) return
 
-    const lines = [
-      'POST /api/inference',
-      '> status: 200 OK',
-      '> latency: 42ms',
-      '> model: gpt-4o',
-      '> tokens: 512',
-      'GET /api/projects',
-      '> count: 8 items',
-      '> cache: HIT',
-      'WS /stream/events',
-      '> event: data_chunk',
-      '> seq: 1041',
-    ]
+    if (reducedMotion) {
+      box.innerHTML = TYPING_LINES.slice(0, TYPING_MAX_LINES).join('\n') + '<span class="cursor-blink"></span>'
+      return
+    }
+    // Paused: leave whatever is on screen and schedule nothing.
+    if (!active) return
 
-    let lineIdx = 0
-    let charIdx = 0
-    let displayed: string[] = []
-    const MAX_LINES = 5
+    const p = progress.current
     let timerId: ReturnType<typeof setTimeout>
 
     function typeNext() {
       if (!box) return
-      const line = lines[lineIdx % lines.length]
-      if (charIdx <= line.length) {
-        const partial = line.slice(0, charIdx)
-        const showing = [...displayed, partial]
-        if (showing.length > MAX_LINES) showing.shift()
+      const line = TYPING_LINES[p.lineIdx % TYPING_LINES.length]
+      if (p.charIdx <= line.length) {
+        const partial = line.slice(0, p.charIdx)
+        const showing = [...p.displayed, partial]
+        if (showing.length > TYPING_MAX_LINES) showing.shift()
         box.innerHTML = showing.join('\n') + '<span class="cursor-blink"></span>'
-        charIdx++
+        p.charIdx++
         timerId = setTimeout(typeNext, 38 + Math.random() * 30)
       } else {
-        displayed.push(line)
-        if (displayed.length > MAX_LINES) displayed.shift()
-        lineIdx++
-        charIdx = 0
+        p.displayed.push(line)
+        if (p.displayed.length > TYPING_MAX_LINES) p.displayed.shift()
+        p.lineIdx++
+        p.charIdx = 0
         timerId = setTimeout(typeNext, 420)
       }
     }
     typeNext()
 
     return () => clearTimeout(timerId)
-  }, [])
+  }, [active, reducedMotion])
 
   const textColor = isDarkMode ? '#c4b5fd' : '#6d28d9'
 
@@ -247,7 +296,8 @@ function TypingCard({ isDarkMode }: { isDarkMode: boolean }) {
 }
 
 /* ─── Card 3: Signal bars ─── */
-function SignalBarsCard({ isDarkMode }: { isDarkMode: boolean }) {
+// Pure CSS animation: pausing is handled by the parent's .atc-paused class.
+function SignalBarsCard({ isDarkMode }: CardProps) {
   const wrapRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -374,6 +424,9 @@ function CardShell({
           margin-left: 1px;
         }
         @keyframes blink { 50% { opacity: 0; } }
+        /* Off-screen or hidden tab: freeze every CSS animation in the card.
+           !important beats the inline animation shorthands. */
+        .atc-paused, .atc-paused * { animation-play-state: paused !important; }
       `}</style>
     </div>
   )

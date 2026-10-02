@@ -167,6 +167,22 @@ module.exports = {
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
         ],
       },
+      // /view-cv frames the CV PDF from this origin. For the same header key the last
+      // matching entry wins, so /cv/* gets SAMEORIGIN while every other path keeps DENY.
+      {
+        source: '/cv/:path*',
+        headers: [
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+        ],
+      },
+      // API responses are data, not pages: keep them out of search results. robots.ts
+      // still lets crawlers fetch the public read endpoints the detail pages render from.
+      {
+        source: '/api/:path*',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex' },
+        ],
+      },
     ]
   },
 };

@@ -39,6 +39,8 @@ export interface PortfolioItem {
   issuer?: string
   issue_date?: string
   credential_url?: string
+  /** Optional admin-set image URL shown instead of the issuer letters. */
+  icon?: string
   // experience
   organization?: string
   location?: string
@@ -48,14 +50,23 @@ export interface PortfolioItem {
   created_at?: string
 }
 
-export const ACCENT: Record<Accent, { color: string; btn: string }> = {
-  blue: { color: 'var(--neo-blue)', btn: 'neo-btn-blue' },
-  cyan: { color: 'var(--neo-cyan)', btn: 'neo-btn-cyan' },
-  orange: { color: 'var(--neo-orange)', btn: 'neo-btn-orange' },
-  lime: { color: 'var(--neo-lime)', btn: 'neo-btn-lime' },
-  yellow: { color: 'var(--neo-yellow)', btn: 'neo-btn-yellow' },
-  pink: { color: 'var(--neo-pink)', btn: 'neo-btn-pink' },
+/**
+ * `color` fills the category pill; `text` colours accent text (organization, issuer,
+ * highlight bullets). Lime and yellow use a darker light-mode shade for contrast on
+ * white (--neo-lime-text / --neo-yellow-text in globals.css); dark mode keeps the bright accent.
+ */
+export const ACCENT: Record<Accent, { color: string; text: string; btn: string }> = {
+  blue: { color: 'var(--neo-blue)', text: 'var(--neo-blue)', btn: 'neo-btn-blue' },
+  cyan: { color: 'var(--neo-cyan)', text: 'var(--neo-cyan)', btn: 'neo-btn-cyan' },
+  orange: { color: 'var(--neo-orange)', text: 'var(--neo-orange)', btn: 'neo-btn-orange' },
+  lime: { color: 'var(--neo-lime)', text: 'var(--neo-lime-text)', btn: 'neo-btn-lime' },
+  yellow: { color: 'var(--neo-yellow)', text: 'var(--neo-yellow-text)', btn: 'neo-btn-yellow' },
+  pink: { color: 'var(--neo-pink)', text: 'var(--neo-pink)', btn: 'neo-btn-pink' },
 }
+
+/** Everything Tab can land on inside the dialog (used by the focus trap). */
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), video[controls], [tabindex]:not([tabindex="-1"])'
 
 export const GitHubMark = ({ className = 'w-4 h-4' }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
@@ -69,11 +80,12 @@ export const MediumMark = () => (
   </svg>
 )
 
+// Stored dates are date-only strings (UTC midnight); format in UTC so the day and month never shift.
 const formatLongDate = (value: string) =>
-  new Date(value).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  new Date(value).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })
 
 const formatMonthYear = (value: string) =>
-  new Date(value).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+  new Date(value).toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })
 
 interface ItemDetailModalProps {
   item: PortfolioItem
@@ -107,10 +119,34 @@ export default function ItemDetailModal({
 
   useEffect(() => setMounted(true), [])
 
-  // Esc to close
+  // Esc to close; Tab / Shift+Tab cycle within the dialog (focus trap)
   const onKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') {
+        onClose()
+        return
+      }
+      if (e.key !== 'Tab') return
+      const panel = panelRef.current
+      if (!panel) return
+      const items = Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
+        (el) => el.getClientRects().length > 0
+      )
+      if (items.length === 0) {
+        e.preventDefault()
+        panel.focus()
+        return
+      }
+      const first = items[0]
+      const last = items[items.length - 1]
+      const active = document.activeElement
+      if (e.shiftKey && (active === first || active === panel || !panel.contains(active))) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && (active === last || !panel.contains(active))) {
+        e.preventDefault()
+        first.focus()
+      }
     },
     [onClose]
   )
@@ -195,12 +231,12 @@ export default function ItemDetailModal({
           {(item.organization || item.issuer || dateRange || item.issue_date) && (
             <div className="mb-4 pb-4" style={{ borderBottom: '2px dashed var(--neo-border)' }}>
               {item.organization && (
-                <p className="font-extrabold text-lg" style={{ color: accentCfg.color }}>
+                <p className="font-extrabold text-lg" style={{ color: accentCfg.text }}>
                   {item.organization}
                 </p>
               )}
               {item.issuer && (
-                <p className="font-extrabold text-sm" style={{ color: accentCfg.color }}>
+                <p className="font-extrabold text-sm" style={{ color: accentCfg.text }}>
                   {item.issuer}
                 </p>
               )}
@@ -260,7 +296,7 @@ export default function ItemDetailModal({
             <ul className="space-y-2 mb-4">
               {item.highlights.map((highlight, hIdx) => (
                 <li key={hIdx} className="text-sm flex items-start gap-3 text-[color:var(--neo-ink-soft)]">
-                  <span className="font-extrabold mt-0.5" style={{ color: accentCfg.color }}>
+                  <span className="font-extrabold mt-0.5" style={{ color: accentCfg.text }}>
                     •
                   </span>
                   <span>{highlight}</span>

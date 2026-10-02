@@ -83,7 +83,7 @@ export default function DataAnalyticsDetailsPage() {
   }
 
   return (
-    <main className="min-h-screen pb-12 overflow-x-clip">
+    <div className="min-h-screen pb-12 overflow-x-clip">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-3">
         <div className="mb-12">
           <Link href="/" className="neo-btn neo-btn-orange mb-6 text-sm">← Back to Home Page</Link>
@@ -145,6 +145,6 @@ export default function DataAnalyticsDetailsPage() {
         <ProjectCarousel title="AI Projects" items={aiProjects} hrefBase="/projects" accent="blue" />
         <ProjectCarousel title="Full-Stack Projects" items={fullstackProjects} hrefBase="/fullstack-projects" accent="cyan" />
       </div>
-    </main>
+    </div>
   )
 }

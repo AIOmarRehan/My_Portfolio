@@ -21,7 +21,7 @@ import {
   SiFastapi, SiChartdotjs, SiTensorflow, SiPytorch, SiKeras, SiPandas,
   SiNumpy, SiOpencv, SiOllama, SiGooglecloud, SiGooglecolab, SiPostgresql,
   SiFirebase, SiElasticsearch, SiMysql, SiN8N, SiMacos, SiHuggingface,
-  SiArduino, SiRaspberrypi, SiNvidia,
+  SiArduino, SiRaspberrypi, SiNvidia, SiCisco,
 } from 'react-icons/si'
 import { IoLogoJavascript, IoLogoVercel, IoLogoTableau } from 'react-icons/io5'
 import { TbBrandCpp, TbBrandCSharp, TbSql, TbBrandVite, TbBrandZapier } from 'react-icons/tb'
@@ -94,6 +94,7 @@ export const iconRegistry: Record<string, IconType> = {
   'si/SiArduino': SiArduino,
   'si/SiRaspberrypi': SiRaspberrypi,
   'si/SiNvidia': SiNvidia,
+  'si/SiCisco': SiCisco,
   'io5/IoLogoJavascript': IoLogoJavascript,
   'io5/IoLogoVercel': IoLogoVercel,
   'io5/IoLogoTableau': IoLogoTableau,

@@ -62,6 +62,7 @@ export const techIcons: Record<string, IconData> = {
   netlify: { icon: 'bi/BiLogoNetlify', color: '#00c7b7', label: 'Netlify' },
   heroku: { icon: 'di/DiHeroku', color: '#430098', label: 'Heroku' },
   colab: { icon: 'si/SiGooglecolab', color: '#f9ab00', label: 'Google Colab' },
+  cisco: { icon: 'si/SiCisco', color: '#000000', label: 'Cisco' },
 
   // Databases & Backend
   sql: { icon: 'tb/TbSql', color: '#336791', label: 'SQL' },

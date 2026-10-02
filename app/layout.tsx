@@ -81,15 +81,8 @@ export const metadata: Metadata = {
     creator: '@omar_rehan',
   },
 
-  // Search Console verification
-  verification: {
-    google: 'your-google-verification-code',
-  },
-
-  // Canonical
-  alternates: {
-    canonical: 'https://omar-rehan.vercel.app',
-  },
+  // No site-wide canonical: each page sets its own (homepage '/', detail pages their own URL),
+  // resolved against metadataBase. Add metadata.verification here once a real token exists.
 
   // SEO robots
   robots: {

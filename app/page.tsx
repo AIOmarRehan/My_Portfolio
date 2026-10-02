@@ -7,9 +7,15 @@ import ExperienceTimeline from '@/components/ExperienceTimeline'
 import CertificatesGrid from '@/components/CertificatesGrid'
 import TerminalEasterEgg from '@/components/TerminalEasterEgg'
 import { supabase } from '@/lib/supabaseServer'
+import type { Metadata } from 'next'
 
 // Revalidate page every hour
 export const revalidate = 3600
+
+// Canonical lives here rather than in the root layout, so detail pages don't inherit '/'.
+export const metadata: Metadata = {
+  alternates: { canonical: '/' },
+}
 
 // Fetch data from Supabase
 async function getProjects() {
@@ -192,7 +198,7 @@ const mockExperiences = [
     highlights: [
       "Developed and deployed 5+ machine learning models in production",
       "Optimized data pipelines reducing processing time by 60%",
-      "Led a team of 3 junior engineers on computer vision projects",
+      "Led a team of 3 senior engineers on computer vision projects",
       "Implemented real-time inference system handling 10K+ requests/sec"
     ],
     tags: ["Python", "TensorFlow", "PyTorch", "AWS", "Kubernetes"]
@@ -215,7 +221,7 @@ const mockExperiences = [
   },
   {
     id: 3,
-    title: "Junior Data Scientist",
+    title: "Senior Data Scientist",
     organization: "Analytics Hub",
     location: "Abu Dhabi, UAE",
     start_date: "2022-01-10",
@@ -343,29 +349,6 @@ export default async function Home() {
 
   return (
     <div id="top" className="space-y-20">
-      {/* Preload only the cards visible on first paint (3 per section). The
-          remaining cards mount when "Show All" is pressed and load their own
-          images then, so we no longer flood the connection up front. */}
-      {safeProjects.slice(0, 3).map((p: any) =>
-        p.image ? (
-          <link key={`preload-p-${p.id}`} rel="preload" as="image" href={p.image} fetchPriority="high" />
-        ) : null
-      )}
-      {safeFullstackProjects.slice(0, 3).map((p: any) =>
-        p.image ? (
-          <link key={`preload-fp-${p.id}`} rel="preload" as="image" href={p.image} fetchPriority="high" />
-        ) : null
-      )}
-      {safeDataAnalytics.slice(0, 3).map((p: any) =>
-        p.image ? (
-          <link key={`preload-da-${p.id}`} rel="preload" as="image" href={p.image} fetchPriority="high" />
-        ) : null
-      )}
-      {safeArticles.slice(0, 3).map((a: any) =>
-        a.image ? (
-          <link key={`preload-a-${a.id}`} rel="preload" as="image" href={a.image} fetchPriority="high" />
-        ) : null
-      )}
       {/* Hero Section */}
       <section id="hero" className="py-20 fade-in overflow-visible" aria-label="Welcome section">
         <Typewriter 
@@ -405,7 +388,8 @@ export default async function Home() {
                   Certifications
                 </a>
               </div>
-              <div className="mt-auto pt-4">
+              {/* At lg the cards sit side by side; the terminal fills any spare height. */}
+              <div className="mt-auto pt-4 lg:grow lg:flex lg:flex-col">
                 <TerminalEasterEgg />
               </div>
             </div>

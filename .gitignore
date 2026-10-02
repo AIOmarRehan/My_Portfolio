@@ -71,3 +71,6 @@ Thumbs.db
 
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Workflow task notes (plans, reviews, reports). Also keeps Tailwind from scanning them.
+.agents/

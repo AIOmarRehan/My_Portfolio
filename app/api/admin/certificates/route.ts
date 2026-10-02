@@ -19,7 +19,9 @@ export async function POST(req: NextRequest) {
       issue_date: body.issue_date,
       credential_url: body.credential_url || null,
       description: body.description || '',
-      tags: body.tags || []
+      tags: body.tags || [],
+      // Only sent when set, so inserts keep working before the optional `icon` column exists.
+      ...(typeof body.icon === 'string' && body.icon.trim() ? { icon: body.icon.trim() } : {})
     }
 
     const { data, error } = await supabase.from('certificates').insert([payload]).select().single()

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 import { supabase } from '../../../../lib/supabaseServer'
+import { IMAGE_EXTENSION_BY_MIME, imageUploadError } from '../../../../lib/uploadValidation'
 
 const SECRET = process.env.NEXTAUTH_SECRET || ''
 const BUCKET = 'images'
@@ -12,19 +13,23 @@ export async function POST(req: NextRequest) {
     return new Response('Not Found', { status: 404 })
 
   const formData = await req.formData()
-  const file = formData.get('file') as File | null
-  const folder = (formData.get('folder') as string) || 'misc'
+  const file = formData.get('file')
+  const rawFolder = formData.get('folder')
+  // The folder becomes part of the object path, so keep it to one safe segment.
+  const folder = (typeof rawFolder === 'string' ? rawFolder.replace(/[^A-Za-z0-9_-]/g, '') : '') || 'misc'
 
-  if (!file) {
+  if (!file || typeof file === 'string') {
     return NextResponse.json({ error: 'No file provided' }, { status: 400 })
   }
 
-  // 5MB limit
-  if (file.size > 5 * 1024 * 1024) {
-    return NextResponse.json({ error: 'File too large (max 5MB)' }, { status: 400 })
+  // Image MIME allowlist + 5MB limit
+  const invalid = imageUploadError(file)
+  if (invalid) {
+    return NextResponse.json({ error: invalid }, { status: 400 })
   }
 
-  const ext = file.name.split('.').pop() || 'png'
+  // The extension comes from the validated MIME type, never from the client's file name.
+  const ext = IMAGE_EXTENSION_BY_MIME[file.type]
   const fileName = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
 
   const buffer = Buffer.from(await file.arrayBuffer())

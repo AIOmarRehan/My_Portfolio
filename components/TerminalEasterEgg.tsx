@@ -166,7 +166,8 @@ export default function TerminalEasterEgg() {
   const cache = useRef<Record<string, unknown>>({})
 
   // Keep the output pinned to the newest line. The scroll box has a FIXED
-  // height, so output never grows the terminal card.
+  // height (at lg it also fills the hero card's spare height), so output
+  // never grows the terminal card.
   useEffect(() => {
     const el = outRef.current
     if (el) el.scrollTop = el.scrollHeight
@@ -235,13 +236,14 @@ export default function TerminalEasterEgg() {
     if (!rows.length) return [heading('EXPERIENCE'), dim('no entries returned by the API.')]
     const out: Line[] = [heading('EXPERIENCE'), gap()]
     rows.forEach((e, i) => {
+      // Date-only strings parse as UTC midnight, so format in UTC to keep the month exact.
       const start = e.start_date
-        ? new Date(e.start_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+        ? new Date(e.start_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })
         : ''
       const end =
         !e.end_date || e.end_date === 'Present'
           ? 'Present'
-          : new Date(e.end_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+          : new Date(e.end_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })
       out.push({ text: `[${String(i + 1).padStart(2, '0')}] ${e.title}`, color: C.grey, bold: true })
       out.push({ text: `     ${e.organization} · ${start} – ${end}`, color: C.green, indent: 0 })
       if (e.location) out.push({ text: `     ${e.location}`, color: C.dim, indent: 0 })
@@ -524,7 +526,7 @@ export default function TerminalEasterEgg() {
 
   return (
     <div
-      className="w-full neo-card !p-0 !shadow-neo-sm overflow-hidden group focus-within:border-[color:var(--neo-blue)]"
+      className="w-full neo-card !p-0 !shadow-neo-sm overflow-hidden group focus-within:border-[color:var(--neo-blue)] lg:grow lg:flex lg:flex-col"
       tabIndex={0}
       onClick={() => inputRef.current?.focus()}
     >
@@ -541,9 +543,10 @@ export default function TerminalEasterEgg() {
         </span>
       </div>
 
-      <div className="px-3 py-2.5 sm:px-4 sm:py-3 font-mono text-xs leading-relaxed" style={{ background: '#0d0d1a' }}>
-        {/* fixed-height output: never grows the card */}
-        <div ref={outRef} className="h-[118px] overflow-y-auto" style={{ color: C.grey }}>
+      <div className="px-3 py-2.5 sm:px-4 sm:py-3 font-mono text-xs leading-relaxed lg:grow lg:flex lg:flex-col" style={{ background: '#0d0d1a' }}>
+        {/* fixed-height output: never grows the card. At lg a zero flex-basis lets it
+            fill the space the hero card gives it, still never sized by its content. */}
+        <div ref={outRef} className="h-[118px] lg:h-auto lg:min-h-[118px] lg:grow lg:basis-0 overflow-y-auto" style={{ color: C.grey }}>
           {mode === 'profiles' ? (
             <ProfilesTerminalView active view={profilesTab} />
           ) : (

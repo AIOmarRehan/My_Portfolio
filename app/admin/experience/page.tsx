@@ -328,9 +328,9 @@ export default function AdminExperiencePage() {
                   <p className={`font-semibold ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>{exp.organization}</p>
                   {exp.location && <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{exp.location}</p>}
                   <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
-                    {new Date(exp.start_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                    {new Date(exp.start_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })}
                     {' - '}
-                    {exp.end_date === 'Present' ? 'Present' : new Date(exp.end_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                    {exp.end_date === 'Present' ? 'Present' : new Date(exp.end_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })}
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 flex-shrink-0">

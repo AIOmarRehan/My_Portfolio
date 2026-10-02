@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import TagSearchInput from '@/components/TagSearchInput'
 
 interface ICertificate {
@@ -10,6 +10,8 @@ interface ICertificate {
   credential_url?: string
   description?: string
   tags?: string[]
+  /** Optional image URL shown instead of the issuer letters on the public card. */
+  icon?: string | null
 }
 
 export default function AdminCertificatesPage() {
@@ -22,8 +24,14 @@ export default function AdminCertificatesPage() {
     issue_date: '',
     credential_url: '',
     description: '',
-    tags: ''
+    tags: '',
+    icon: ''
   })
+  // Icon loaded for editing; updates only send `icon` when it changed, so editing
+  // keeps working before the `icon` column has been added.
+  const [initialIcon, setInitialIcon] = useState('')
+  const [uploadingIcon, setUploadingIcon] = useState(false)
+  const iconInputRef = useRef<HTMLInputElement>(null)
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
@@ -83,18 +91,21 @@ export default function AdminCertificatesPage() {
       description: formData.description || '',
       tags: tags
     }
+    const icon = formData.icon.trim()
 
     try {
       if (editingId) {
+        // An emptied icon is stored as null (back to the issuer letters).
+        const updates = icon !== initialIcon ? { ...body, icon: icon || null } : body
         const res = await fetch('/api/admin/certificates', {
           method: 'PUT',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: editingId, updates: body })
+          body: JSON.stringify({ id: editingId, updates })
         })
         if (res.ok) {
           setEditingId(null)
-          setFormData({ title: '', issuer: '', issue_date: '', credential_url: '', description: '', tags: '' })
+          setFormData({ title: '', issuer: '', issue_date: '', credential_url: '', description: '', tags: '', icon: '' })
           fetchCertificates()
           setStatusMsg({ type: 'success', text: 'Certificate updated successfully!' })
         } else {
@@ -107,10 +118,10 @@ export default function AdminCertificatesPage() {
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
+          body: JSON.stringify(icon ? { ...body, icon } : body)
         })
         if (res.ok) {
-          setFormData({ title: '', issuer: '', issue_date: '', credential_url: '', description: '', tags: '' })
+          setFormData({ title: '', issuer: '', issue_date: '', credential_url: '', description: '', tags: '', icon: '' })
           fetchCertificates()
           setStatusMsg({ type: 'success', text: 'Certificate added successfully!' })
         } else {
@@ -153,8 +164,40 @@ export default function AdminCertificatesPage() {
       issue_date: cert.issue_date ? new Date(cert.issue_date).toISOString().split('T')[0] : '',
       credential_url: cert.credential_url || '',
       description: cert.description || '',
-      tags: cert.tags?.join(', ') || ''
+      tags: cert.tags?.join(', ') || '',
+      icon: cert.icon || ''
     })
+    setInitialIcon(cert.icon || '')
+  }
+
+  const handleIconUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    e.target.value = '' // lets the same file be picked again
+    if (!file) return
+
+    if (file.size > 5 * 1024 * 1024) {
+      setStatusMsg({ type: 'error', text: 'Icon must be smaller than 5MB.' })
+      return
+    }
+
+    setUploadingIcon(true)
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      fd.append('folder', 'certificates')
+      const res = await fetch('/api/admin/upload-image', { method: 'POST', body: fd })
+      if (!res.ok) {
+        // Show the route's reason (e.g. an unsupported file type), not a generic failure.
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error || `HTTP ${res.status}`)
+      }
+      const { url } = await res.json()
+      setFormData((prev) => ({ ...prev, icon: url }))
+    } catch (err) {
+      setStatusMsg({ type: 'error', text: `Failed to upload icon: ${err instanceof Error ? err.message : 'Please try again.'}` })
+    } finally {
+      setUploadingIcon(false)
+    }
   }
 
   return (
@@ -186,6 +229,47 @@ export default function AdminCertificatesPage() {
               className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
             />
           </div>
+        </div>
+
+        <div>
+          <label htmlFor="cert-icon" className={`block font-semibold mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>Icon (optional)</label>
+          <div className="flex flex-wrap items-center gap-3">
+            <span className={`flex items-center justify-center flex-shrink-0 w-11 h-11 rounded-lg border overflow-hidden ${isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-300'}`}>
+              {formData.icon ? (
+                <img src={formData.icon} alt="Icon preview" className="w-7 h-7 object-contain" />
+              ) : (
+                <span className={`text-xs font-semibold ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>None</span>
+              )}
+            </span>
+            <input
+              id="cert-icon"
+              type="url"
+              value={formData.icon}
+              onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+              placeholder="https://... or upload an image"
+              className={`flex-1 min-w-[12rem] px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300 text-black placeholder-gray-400'}`}
+            />
+            <button
+              type="button"
+              onClick={() => iconInputRef.current?.click()}
+              disabled={uploadingIcon}
+              className={`px-4 py-2 rounded-lg font-semibold flex items-center gap-2 disabled:opacity-50 transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-gray-700 text-gray-200 hover:bg-gray-600' : 'bg-gray-200 text-gray-900 hover:bg-gray-300'}`}
+            >
+              {uploadingIcon && <span className="inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />}
+              {uploadingIcon ? 'Uploading...' : 'Upload'}
+            </button>
+            <input ref={iconInputRef} type="file" accept="image/*" onChange={handleIconUpload} className="hidden" />
+            {formData.icon && (
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, icon: '' })}
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-transform duration-300 ease-out hover:scale-105"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+          <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Shown instead of the issuer letters on the certificate card. Square PNG or SVG works best (max 5MB).</p>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -236,7 +320,7 @@ export default function AdminCertificatesPage() {
         <div className="flex gap-3">
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || uploadingIcon}
             className={`px-6 py-2 text-white rounded-lg font-semibold disabled:opacity-50 transition-transform duration-300 ease-out hover:scale-105 flex items-center gap-2 ${isDarkMode ? 'bg-blue-700 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'}`}
           >
             {loading && <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
@@ -247,7 +331,7 @@ export default function AdminCertificatesPage() {
               type="button"
               onClick={() => {
                 setEditingId(null)
-                setFormData({ title: '', issuer: '', issue_date: '', credential_url: '', description: '', tags: '' })
+                setFormData({ title: '', issuer: '', issue_date: '', credential_url: '', description: '', tags: '', icon: '' })
               }}
               className={`px-6 py-2 text-white rounded-lg font-semibold transition-transform duration-300 ease-out hover:scale-105 ${isDarkMode ? 'bg-gray-600 hover:bg-gray-500' : 'bg-gray-400 hover:bg-gray-500'}`}
             >
@@ -279,7 +363,7 @@ export default function AdminCertificatesPage() {
                   <h3 className={`font-bold text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{cert.title}</h3>
                   <p className={`font-semibold ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>{cert.issuer}</p>
                   <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
-                    {new Date(cert.issue_date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                    {new Date(cert.issue_date).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 flex-shrink-0">

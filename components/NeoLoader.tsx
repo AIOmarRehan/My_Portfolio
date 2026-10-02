@@ -8,7 +8,7 @@ export function NeoLoaderVisual() {
   return (
     <div className="relative flex flex-col items-center gap-7">
       <div className="neo-card neo-card-alt w-20 h-20 p-2 flex items-center justify-center -rotate-2">
-        <img src="/favicon.svg?v=2" alt="" width={64} height={64} className="w-full h-full object-contain" />
+        <img src="/web-app-manifest-192x192.png" alt="" width={64} height={64} className="w-full h-full object-contain" />
       </div>
       <div className="neo-loader">
         <span style={{ background: 'var(--neo-blue)' }} />

@@ -6,6 +6,8 @@ import { FaEnvelope, FaGithub, FaLinkedin, FaMapMarkerAlt, FaPhoneAlt, FaCog, Fa
 import { SiHuggingface, SiKaggle, SiMedium } from 'react-icons/si'
 import { IoLogoTableau } from 'react-icons/io5'
 import CVDownloadButton from './CVDownloadButton'
+import SponsorButton from './SponsorButton'
+import { DEFAULT_CV_PATH } from '@/lib/cv'
 
 interface ProfileLink {
   label: string
@@ -51,7 +53,7 @@ export default function ContactCard({ initialLinks, initialCvPath }: ContactCard
 
   const [editing, setEditing] = useState(false)
   const [links, setLinks] = useState<ProfileLink[]>(initialLinks && initialLinks.length > 0 ? initialLinks : defaultLinks)
-  const [cvPath, setCvPath] = useState(initialCvPath || '/cv/Omar_Rehan_CV.pdf')
+  const [cvPath, setCvPath] = useState(initialCvPath || DEFAULT_CV_PATH)
   const [saving, setSaving] = useState(false)
 
   // Sync with server-provided data when it changes
@@ -147,7 +149,7 @@ export default function ContactCard({ initialLinks, initialCvPath }: ContactCard
 
             <div className="neo-panel p-3 space-y-2">
               <span className="text-xs font-extrabold uppercase tracking-wider">CV Download Path</span>
-              <input type="text" value={cvPath} onChange={(e) => setCvPath(e.target.value)} placeholder="/cv/Omar_Rehan_CV.pdf" className="neo-input !py-1.5 text-sm" />
+              <input type="text" value={cvPath} onChange={(e) => setCvPath(e.target.value)} placeholder={DEFAULT_CV_PATH} className="neo-input !py-1.5 text-sm" />
             </div>
 
             <button onClick={handleSave} disabled={saving} className="neo-btn neo-btn-cyan w-full py-2 text-sm">
@@ -179,8 +181,9 @@ export default function ContactCard({ initialLinks, initialCvPath }: ContactCard
                 </div>
               ))}
             </div>
-            <div className="mt-8 pt-6" style={{ borderTop: 'var(--neo-bw) solid var(--neo-border)' }}>
+            <div className="mt-8 pt-6 space-y-3" style={{ borderTop: 'var(--neo-bw) solid var(--neo-border)' }}>
               <CVDownloadButton buttonSize="lg" cvUrl={cvPath} />
+              <SponsorButton />
             </div>
 
             <div className="mt-6 pt-6" style={{ borderTop: 'var(--neo-bw) solid var(--neo-border)' }}>

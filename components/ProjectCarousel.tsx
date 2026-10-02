@@ -44,7 +44,7 @@ const Card = memo(function Card({
       <div className="neo-card neo-interactive h-full flex flex-col overflow-hidden p-0">
         {p.image || p.demo_video ? (
           <div className="h-44 overflow-hidden relative border-b-neo border-neo-border bg-[color:var(--neo-surface-2)]">
-            <img src={p.image} alt={p.title} loading="lazy" className="w-full h-full object-cover" />
+            <img src={p.image} alt={p.title} loading="lazy" decoding="async" className="w-full h-full object-cover" />
             {p.demo_video && (
               <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
                 <svg className="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 20 20">

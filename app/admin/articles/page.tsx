@@ -167,11 +167,15 @@ export default function AdminArticlesPage() {
       fd.append('file', file)
       fd.append('folder', 'articles')
       const res = await fetch('/api/admin/upload-image', { method: 'POST', body: fd })
-      if (!res.ok) throw new Error('Upload failed')
+      if (!res.ok) {
+        // Show the route's reason (e.g. an unsupported file type), not a generic failure.
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error || `HTTP ${res.status}`)
+      }
       const { url } = await res.json()
       setFormData({ ...formData, image: url })
-    } catch {
-      alert('Failed to upload image. Please try again.')
+    } catch (err) {
+      alert(`Failed to upload image: ${err instanceof Error ? err.message : 'Please try again.'}`)
     } finally {
       setUploadingImage(false)
     }
@@ -248,7 +252,7 @@ export default function AdminArticlesPage() {
                   setFormData({ ...formData, image: '' })
                 }}
               />
-              <span className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>Upload File (max 3MB)</span>
+              <span className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}>Upload File (max 5MB)</span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer">
               <input

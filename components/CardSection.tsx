@@ -1,11 +1,44 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import TagBadge from './TagBadge'
 import ItemDetailModal, { type Accent, type PortfolioItem, type TagVariant } from './ItemDetailModal'
 
 /** How many tags fit on a compact card before we collapse the rest into "+N". */
 const MAX_CARD_TAGS = 3
+
+/**
+ * Card screenshot inside the fixed-height media strip.
+ *
+ * Lazy-loaded, so only cards near the viewport download their image. The
+ * skeleton shimmer runs until the image settles; `is-loaded` then removes it
+ * (see .neo-skeleton.is-loaded in globals.css). Server HTML and the first
+ * client render both omit `is-loaded`, so hydration always matches.
+ */
+function CardImage({ src, alt }: { src: string; alt: string }) {
+  const imgRef = useRef<HTMLImageElement>(null)
+  const [loaded, setLoaded] = useState(false)
+
+  // A cached image can finish before hydration attaches onLoad, so check once on mount.
+  useEffect(() => {
+    const img = imgRef.current
+    if (img?.complete && img.naturalWidth > 0) setLoaded(true)
+  }, [])
+
+  return (
+    <div className={`neo-compact-media neo-skeleton${loaded ? ' is-loaded' : ''}`}>
+      <img
+        ref={imgRef}
+        src={src}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        onLoad={() => setLoaded(true)}
+        onError={() => setLoaded(true)}
+      />
+    </div>
+  )
+}
 
 interface CardSectionProps {
   items: PortfolioItem[]
@@ -104,15 +137,7 @@ export default function CardSection({
 
               {/* Media — same three branches as before: image, video, title fallback */}
               {item.image ? (
-                <div className="neo-compact-media neo-skeleton">
-                  <img
-                    src={item.image}
-                    alt={`Screenshot of ${item.title}`}
-                    decoding="async"
-                    loading={idx < 3 ? 'eager' : 'lazy'}
-                    fetchPriority={idx < 3 ? 'high' : 'auto'}
-                  />
-                </div>
+                <CardImage src={item.image} alt={`Screenshot of ${item.title}`} />
               ) : item.demo_video ? (
                 <div className="neo-compact-media">
                   <svg className="w-12 h-12 text-[color:var(--neo-ink)]" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">

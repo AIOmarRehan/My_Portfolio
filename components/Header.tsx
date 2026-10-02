@@ -52,7 +52,7 @@ function HeaderComponent() {
           className="mr-4 lg:mr-10 shrink-0 flex items-center gap-3 hover:-translate-y-0.5 transition-transform duration-100"
         >
           <span className="neo-card neo-card-alt w-11 h-11 p-1.5 flex items-center justify-center shrink-0 -rotate-1">
-            <img src="/favicon.svg?v=2" alt="" width={36} height={36} className="w-full h-full object-contain" />
+            <img src="/favicon-96x96.png?v=4" alt="" width={36} height={36} className="w-full h-full object-contain" />
           </span>
           <span className="text-xl sm:text-2xl font-extrabold bg-neo-yellow px-3 py-1.5 border-neo border-neo-border shadow-neo-sm -rotate-1 flex items-center gap-1.5">
             <span className="text-[color:var(--neo-pink)] leading-none">▘▝</span>

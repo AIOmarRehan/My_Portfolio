@@ -1,6 +1,7 @@
 'use client'
 
 import { memo, useCallback } from 'react'
+import { DEFAULT_CV_PATH } from '@/lib/cv'
 
 interface CVDownloadButtonProps {
   buttonSize?: 'lg' | 'sm'
@@ -9,7 +10,7 @@ interface CVDownloadButtonProps {
 
 function CVDownloadButton({ buttonSize = 'lg', cvUrl }: CVDownloadButtonProps) {
   const handleDownloadCV = useCallback(() => {
-    const url = cvUrl || '/cv/Omar_Rehan_CV.pdf'
+    const url = cvUrl || DEFAULT_CV_PATH
     window.open(url, '_blank', 'noopener,noreferrer')
     const a = document.createElement('a')
     a.href = url

@@ -12,13 +12,14 @@ const socials = [
   { href: 'tel:+971509669311', label: 'Phone', Icon: FaPhoneAlt, cls: 'neo-tag-yellow' },
 ]
 
+// '/#…' like the Header, so the links also work from detail pages.
 const quickLinks = [
-  { href: '#projects', label: 'AI Projects' },
-  { href: '#fullstack-projects', label: 'Full-Stack Projects' },
-  { href: '#data-analytics-projects', label: 'Data Analytics Projects' },
-  { href: '#experience', label: 'Experience' },
-  { href: '#certifications', label: 'Certifications' },
-  { href: '#articles', label: 'Articles' },
+  { href: '/#projects', label: 'AI Projects' },
+  { href: '/#fullstack-projects', label: 'Full-Stack Projects' },
+  { href: '/#data-analytics-projects', label: 'Data Analytics Projects' },
+  { href: '/#experience', label: 'Experience' },
+  { href: '/#certifications', label: 'Certifications' },
+  { href: '/#articles', label: 'Articles' },
 ]
 
 export default function Footer() {

@@ -40,13 +40,35 @@ export default function InteractiveBackground() {
     let ry = my
     let raf = 0
 
+    const writeRing = () => {
+      if (ringRef.current) ringRef.current.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`
+    }
     const loop = () => {
       rx += (mx - rx) * 0.18
       ry += (my - ry) * 0.18
-      if (ringRef.current) ringRef.current.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`
+      // Caught up with the pointer: snap the last sub-pixel and go idle until it moves again.
+      if (Math.abs(mx - rx) < 0.5 && Math.abs(my - ry) < 0.5) {
+        rx = mx
+        ry = my
+        writeRing()
+        raf = 0
+        return
+      }
+      writeRing()
       raf = requestAnimationFrame(loop)
     }
-    raf = requestAnimationFrame(loop)
+    const start = () => {
+      if (!raf && !document.hidden) raf = requestAnimationFrame(loop)
+    }
+    const onVisibility = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(raf)
+        raf = 0
+      } else {
+        start()
+      }
+    }
+    start() // first frame places the ring exactly where the old always-on loop did
 
     const onMove = (e: MouseEvent) => {
       mx = e.clientX
@@ -60,12 +82,15 @@ export default function InteractiveBackground() {
       } else {
         setVariant('default')
       }
+      start()
     }
 
     window.addEventListener('mousemove', onMove, { passive: true })
+    document.addEventListener('visibilitychange', onVisibility)
     return () => {
       cancelAnimationFrame(raf)
       window.removeEventListener('mousemove', onMove)
+      document.removeEventListener('visibilitychange', onVisibility)
       document.documentElement.classList.remove('neo-cursor-on')
     }
   }, [enabled])
@@ -118,9 +143,21 @@ export default function InteractiveBackground() {
     }
     raf = requestAnimationFrame(drift)
 
+    // Hidden tab: stop the loop outright; it resumes from the same t when visible again.
+    const onVisibility = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(raf)
+        raf = 0
+      } else if (!raf) {
+        raf = requestAnimationFrame(drift)
+      }
+    }
+    document.addEventListener('visibilitychange', onVisibility)
+
     return () => {
       cancelAnimationFrame(raf)
       window.removeEventListener('mousemove', onMove)
+      document.removeEventListener('visibilitychange', onVisibility)
     }
   }, [])
 

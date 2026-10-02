@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@config "../tailwind.config.js";
 
 /* ============================================================
    NEUBRUTALISM DESIGN SYSTEM
@@ -40,6 +41,11 @@
   /* Skeleton */
   --neo-skel-base: #e9dcc2;
   --neo-skel-sheen: #f6eddb;
+
+  /* Accent colours used as text; WCAG AA on light surfaces */
+  --neo-green-text: #15803d;
+  --neo-lime-text: #3d7a1a;
+  --neo-yellow-text: #8c6a00;
 }
 
 html.dark-mode {
@@ -64,6 +70,11 @@ html.dark-mode {
 
   --neo-skel-base: #2a2b38;
   --neo-skel-sheen: #383a4b;
+
+  /* Dark mode keeps today's bright values */
+  --neo-green-text: var(--color-green-400);
+  --neo-lime-text: var(--neo-lime);
+  --neo-yellow-text: var(--neo-yellow);
 }
 
 html { color-scheme: light; }
@@ -154,12 +165,13 @@ section[id] {
 
 .neo-card-alt { background: var(--neo-surface-2); }
 
-/* Interactive card lift: snaps up-left and grows shadow */
-.neo-interactive { will-change: transform; }
+/* Interactive card lift: snaps up-left and grows shadow.
+   will-change only while hovered, so idle cards don't each hold a GPU layer. */
 @media (hover: hover) and (pointer: fine) {
   .neo-interactive:hover {
     transform: translate(-3px, -3px);
     box-shadow: var(--neo-shadow-lg);
+    will-change: transform;
   }
   .neo-interactive:active {
     transform: translate(2px, 2px);
@@ -327,6 +339,8 @@ section[id] {
   background: linear-gradient(90deg, transparent, var(--neo-skel-sheen), transparent);
   animation: neoShimmer 1.1s infinite;
 }
+/* Card images add .is-loaded once loaded, which ends the infinite shimmer. */
+.neo-skeleton.is-loaded::after { content: none; animation: none; }
 @keyframes neoShimmer { 100% { transform: translateX(100%); } }
 .neo-skeleton-line {
   height: 0.85rem;
@@ -490,7 +504,7 @@ select:focus-visible {
   background: var(--neo-yellow);
   color: #111;
   border: var(--neo-bw) solid var(--neo-border);
-  box-shadow: var(--neo-shadow);
+  box-shadow: var(--neo-shadow-md);
   padding: 0.4rem 1rem;
   transform: rotate(-1deg);
   font-weight: 800;
@@ -503,7 +517,7 @@ select:focus-visible {
   background: var(--neo-surface) !important;
   border: var(--neo-bw) solid var(--neo-border) !important;
   border-radius: var(--neo-radius) !important;
-  box-shadow: var(--neo-shadow) !important;
+  box-shadow: var(--neo-shadow-md) !important;
   color: var(--neo-ink);
 }
 
@@ -577,7 +591,6 @@ html.dark-mode .neo-floaty { opacity: 0.6; }
    ============================================================ */
 .neo-tilt {
   transform-style: preserve-3d;
-  will-change: transform;
   transition: transform 0.2s cubic-bezier(0.16,1,0.3,1),
               box-shadow 0.2s cubic-bezier(0.16,1,0.3,1);
 }
@@ -630,9 +643,10 @@ html.dark-mode .neo-floaty { opacity: 0.6; }
   50.1%, 100% { opacity: 0; }
 }
 
-/* Tilt cards grow their hard shadow on hover (lift handled by JS transform) */
+/* Tilt cards grow their hard shadow on hover (lift handled by JS transform).
+   will-change only while hovered, which is the only time the tilt runs. */
 @media (hover: hover) and (pointer: fine) {
-  .neo-tilt:hover { box-shadow: var(--neo-shadow-lg); }
+  .neo-tilt:hover { box-shadow: var(--neo-shadow-lg); will-change: transform; }
 }
 
 /* ============================================================
@@ -666,6 +680,85 @@ html.dark-mode .neo-floaty { opacity: 0.6; }
 @keyframes neoLoaderBounce {
   0%, 100% { transform: translateY(0) rotate(0deg); }
   40%      { transform: translateY(-22px) rotate(45deg); }
+}
+
+/* ============================================================
+   SPONSOR BUTTON — pixel heart, heartbeat and like-style burst
+   (transform + opacity only)
+   ============================================================ */
+.neo-sponsor-icon {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+.neo-sponsor-heart { display: inline-flex; }
+.neo-sponsor-heart > svg { display: block; transform-origin: 50% 60%; }
+
+/* Waiting for Stripe: stays pressed in (a static change that also works with reduced motion) */
+.neo-btn-sponsor[aria-busy='true'] {
+  cursor: progress;
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 0 var(--neo-shadow);
+}
+
+/* Subtle heartbeat on hover / keyboard focus */
+@media (hover: hover) and (pointer: fine) {
+  .neo-btn-sponsor:not([aria-busy='true']):hover .neo-sponsor-heart > svg {
+    animation: neoHeartBeat 1s ease-in-out infinite;
+  }
+}
+.neo-btn-sponsor:not([aria-busy='true']):focus-visible .neo-sponsor-heart > svg {
+  animation: neoHeartBeat 1s ease-in-out infinite;
+}
+/* Keeps beating only if Stripe takes a while to answer */
+.neo-btn-sponsor[aria-busy='true'] .neo-sponsor-heart > svg {
+  animation: neoHeartBeat 1s ease-in-out 700ms infinite;
+}
+
+/* Activation: the main heart pops while small hearts fly outward and fade */
+.neo-sponsor-heart.is-popping { animation: neoHeartPop 520ms cubic-bezier(.2,.8,.2,1) both; }
+.neo-heart-burst {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.neo-heart-particle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 14px;
+  height: 12px;
+  opacity: 0;
+  animation: neoHeartBurst 700ms cubic-bezier(.2,.8,.2,1) both;
+}
+.neo-heart-particle > svg { display: block; width: 100%; height: 100%; }
+
+@keyframes neoHeartBeat {
+  0%, 60%, 100% { transform: scale(1); }
+  15%           { transform: scale(1.18); }
+  30%           { transform: scale(0.96); }
+  45%           { transform: scale(1.1); }
+}
+@keyframes neoHeartPop {
+  0%   { transform: scale(1); }
+  20%  { transform: scale(0.65); }
+  55%  { transform: scale(1.3); }
+  80%  { transform: scale(0.94); }
+  100% { transform: scale(1); }
+}
+@keyframes neoHeartBurst {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.3) rotate(0deg); }
+  15%  { opacity: 1; }
+  45%  { transform: translate(calc(-50% + var(--tx) * 0.75), calc(-50% + var(--ty) * 0.75)) scale(1) rotate(calc(var(--rot) * 0.5)); }
+  70%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0.5) rotate(var(--rot)); }
+}
+
+/* Reduced motion: no heartbeat, pop or burst; the pressed "Opening Stripe…" state remains */
+@media (prefers-reduced-motion: reduce) {
+  .neo-sponsor-heart,
+  .neo-sponsor-heart > svg { animation: none !important; }
+  .neo-heart-burst { display: none; }
 }
 
 /* Typewriter caret — inline so it follows the text across line wraps (mobile) */

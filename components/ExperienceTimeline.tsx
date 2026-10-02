@@ -8,8 +8,10 @@ import type { PortfolioItem } from './ItemDetailModal'
 /** Every position starts collapsed; the user expands what they want to read. */
 const OPEN_BY_DEFAULT = 0
 
+// Stored dates are date-only strings ("2023-10-01"), which parse as UTC midnight. Formatting in
+// UTC keeps the month correct for visitors west of UTC and matches the server render.
 const formatMonthYear = (value: string) =>
-  new Date(value).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+  new Date(value).toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })
 
 const dateRangeOf = (exp: PortfolioItem) =>
   `${exp.start_date ? formatMonthYear(exp.start_date) : ''}${exp.start_date ? ' - ' : ''}${
@@ -95,7 +97,7 @@ export default function ExperienceTimeline({ experiences }: { experiences: Portf
                 <span className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 min-w-0">
                   <span className="font-extrabold text-base text-white">{exp.title}</span>
                   <span className="opacity-40" aria-hidden="true">|</span>
-                  <span className="font-semibold text-sm text-green-400">{exp.organization}</span>
+                  <span className="font-semibold text-sm text-[color:var(--neo-green-text)]">{exp.organization}</span>
                   <span className="opacity-40" aria-hidden="true">|</span>
                   <span className="text-xs text-gray-400 whitespace-nowrap">{range}</span>
                 </span>
@@ -135,7 +137,7 @@ export default function ExperienceTimeline({ experiences }: { experiences: Portf
                       <ul className="space-y-2 mb-4">
                         {exp.highlights.map((highlight, hIdx) => (
                           <li key={hIdx} className="text-gray-400 text-sm flex items-start gap-3">
-                            <span className="text-green-400 font-bold mt-0.5">•</span>
+                            <span className="text-[color:var(--neo-green-text)] font-bold mt-0.5">•</span>
                             <span>{highlight}</span>
                           </li>
                         ))}

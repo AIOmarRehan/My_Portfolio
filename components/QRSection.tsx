@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react'
 import { FaCog, FaTimes, FaSave } from 'react-icons/fa'
 import WhatsAppButton from './WhatsAppButton'
 import AnimatedTechCards from './AnimatedTechCards'
+import { DEFAULT_CV_PATH } from '@/lib/cv'
 
 interface QRCard {
   label: string
@@ -22,7 +23,7 @@ const defaultCards: QRCard[] = [
     borderColor: 'cyan',
     textColor: 'cyan',
     buttonType: 'cv',
-    linkUrl: '/cv/Omar_Rehan_CV.pdf',
+    linkUrl: DEFAULT_CV_PATH,
   },
   {
     label: 'WhatsApp QR Code',
@@ -73,12 +74,16 @@ export default function QRSection({ initialCards }: QRSectionProps) {
       const formData = new FormData()
       formData.append('file', file)
       const res = await fetch('/api/admin/upload-qr', { method: 'POST', body: formData })
-      if (!res.ok) throw new Error('Upload failed')
+      if (!res.ok) {
+        // The route returns the real reason (bad type, too large, storage error).
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error || `Upload failed (${res.status})`)
+      }
       const { url } = await res.json()
       updateCard(index, 'imageSrc', url)
     } catch (err) {
       console.error('Image upload error:', err)
-      alert('Failed to upload image. Please try again.')
+      alert(`Failed to upload image: ${err instanceof Error ? err.message : 'Please try again.'}`)
     } finally {
       setUploading(null)
     }
@@ -166,7 +171,7 @@ export default function QRSection({ initialCards }: QRSectionProps) {
                 </div>
                 <div className="mt-4 pt-4" style={{ borderTop: '2px dashed var(--neo-border)' }}>
                   {card.buttonType === 'cv' ? (
-                    <a href={card.linkUrl || '/cv/Omar_Rehan_CV.pdf'} target="_blank" rel="noopener noreferrer" className="neo-btn neo-btn-yellow w-full py-2.5 text-sm uppercase tracking-wide">
+                    <a href={card.linkUrl || DEFAULT_CV_PATH} target="_blank" rel="noopener noreferrer" className="neo-btn neo-btn-yellow w-full py-2.5 text-sm uppercase tracking-wide">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>

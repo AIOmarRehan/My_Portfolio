@@ -56,7 +56,7 @@ export default function ContactForm() {
       <div>
         <label htmlFor="name" className="block text-xs font-extrabold uppercase tracking-wide mb-2">Name</label>
         <input
-          type="text" id="name" name="name" value={formData.name} onChange={handleChange} required
+          type="text" id="name" name="name" value={formData.name} onChange={handleChange} required maxLength={100}
           className="neo-input" placeholder="Your name"
         />
       </div>
@@ -64,7 +64,7 @@ export default function ContactForm() {
       <div>
         <label htmlFor="email" className="block text-xs font-extrabold uppercase tracking-wide mb-2">Email</label>
         <input
-          type="email" id="email" name="email" value={formData.email} onChange={handleChange} required
+          type="email" id="email" name="email" value={formData.email} onChange={handleChange} required maxLength={254}
           className="neo-input" placeholder="your.email@example.com"
         />
       </div>
@@ -72,7 +72,7 @@ export default function ContactForm() {
       <div>
         <label htmlFor="message" className="block text-xs font-extrabold uppercase tracking-wide mb-2">Message</label>
         <textarea
-          id="message" name="message" value={formData.message} onChange={handleChange} required rows={4}
+          id="message" name="message" value={formData.message} onChange={handleChange} required rows={4} maxLength={5000}
           className="neo-textarea resize-none" placeholder="Tell me about your project or idea..."
         />
       </div>

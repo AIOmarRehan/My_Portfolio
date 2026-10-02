@@ -134,11 +134,15 @@ export default function AdminDataAnalyticsPage() {
       fd.append('file', file)
       fd.append('folder', 'data-analytics')
       const res = await fetch('/api/admin/upload-image', { method: 'POST', body: fd })
-      if (!res.ok) throw new Error('Upload failed')
+      if (!res.ok) {
+        // Show the route's reason (e.g. an unsupported file type), not a generic failure.
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error || `HTTP ${res.status}`)
+      }
       const { url } = await res.json()
       setFormData((prev) => ({ ...prev, image: url }))
-    } catch {
-      alert('Failed to upload image.')
+    } catch (err) {
+      alert(`Failed to upload image: ${err instanceof Error ? err.message : 'Please try again.'}`)
       e.target.value = ''
     } finally {
       setUploadingImage(false)

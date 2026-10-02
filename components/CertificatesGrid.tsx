@@ -11,12 +11,17 @@ import ItemDetailModal, { type PortfolioItem } from './ItemDetailModal'
 /**
  * Best-effort issuer mark.
  *
- * The certificates table has no logo/image column, so rather than invent an
- * asset we resolve the issuer name against the existing tech icon registry
- * (AWS, Google Cloud, Microsoft, Coursera-style entries all match). When there
- * is no match we fall back to a monogram built from the issuer's initials.
+ * An icon set in the admin panel (optional `icon` column) is shown first. Without
+ * one, or if it fails to load, we resolve the issuer name against the existing
+ * tech icon registry (AWS, Google Cloud, Microsoft, Coursera-style entries all
+ * match). When there is no match we fall back to a monogram built from the
+ * issuer's initials.
  */
-function IssuerMark({ issuer }: { issuer?: string }) {
+function IssuerMark({ issuer, icon }: { issuer?: string; icon?: string }) {
+  // Remember the URL that failed (not just a flag) so a corrected URL is tried again.
+  const [failedIcon, setFailedIcon] = useState<string | null>(null)
+  const customIcon = icon && icon !== failedIcon ? icon : ''
+
   if (!issuer) return null
 
   const iconData = getTagIcon(issuer)
@@ -46,7 +51,16 @@ function IssuerMark({ issuer }: { issuer?: string }) {
       }}
       aria-hidden="true"
     >
-      {svgIconName ? (
+      {customIcon ? (
+        <img
+          src={customIcon}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="w-6 h-6 object-contain"
+          onError={() => setFailedIcon(customIcon)}
+        />
+      ) : svgIconName ? (
         <SvgIcon name={svgIconName} className="w-5 h-5" style={{ color: 'var(--neo-ink)' }} />
       ) : IconComponent ? (
         <IconComponent className="w-5 h-5" style={{ color: 'var(--neo-ink)' }} />
@@ -57,8 +71,9 @@ function IssuerMark({ issuer }: { issuer?: string }) {
   )
 }
 
+// issue_date is a date-only string (UTC midnight); format in UTC so the month never shifts.
 const formatShortDate = (value: string) =>
-  new Date(value).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })
+  new Date(value).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })
 
 /**
  * Compact 4-column credential grid.
@@ -102,7 +117,7 @@ export default function CertificatesGrid({ certificates }: { certificates: Portf
               aria-label={`View full details for ${cert.title}`}
             >
               <div className="flex items-start gap-2.5">
-                <IssuerMark issuer={cert.issuer} />
+                <IssuerMark issuer={cert.issuer} icon={cert.icon} />
                 <div className="min-w-0 flex-1">
                   <h3 className="text-sm font-extrabold leading-snug break-words neo-clamp-3">
                     {cert.title}
@@ -111,7 +126,7 @@ export default function CertificatesGrid({ certificates }: { certificates: Portf
               </div>
 
               {cert.issuer && (
-                <p className="text-xs font-extrabold text-[color:var(--neo-yellow)] neo-clamp-1">
+                <p className="text-xs font-extrabold text-[color:var(--neo-yellow-text)] neo-clamp-1">
                   {cert.issuer}
                 </p>
               )}
