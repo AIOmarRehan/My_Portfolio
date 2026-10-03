@@ -13,13 +13,14 @@ const socials = [
 ]
 
 // '/#…' like the Header, so the links also work from detail pages.
+// Each link lights up in its own section colour on hover, like the Header.
 const quickLinks = [
-  { href: '/#projects', label: 'AI Projects' },
-  { href: '/#fullstack-projects', label: 'Full-Stack Projects' },
-  { href: '/#data-analytics-projects', label: 'Data Analytics Projects' },
-  { href: '/#experience', label: 'Experience' },
-  { href: '/#certifications', label: 'Certifications' },
-  { href: '/#articles', label: 'Articles' },
+  { href: '/#projects', label: 'AI Projects', hover: 'hover:bg-neo-blue' },
+  { href: '/#fullstack-projects', label: 'Full-Stack Projects', hover: 'hover:bg-neo-cyan' },
+  { href: '/#data-analytics-projects', label: 'Data Analytics Projects', hover: 'hover:bg-neo-orange' },
+  { href: '/#experience', label: 'Experience', hover: 'hover:bg-neo-lime' },
+  { href: '/#certifications', label: 'Certifications', hover: 'hover:bg-neo-yellow' },
+  { href: '/#articles', label: 'Articles', hover: 'hover:bg-neo-pink' },
 ]
 
 export default function Footer() {
@@ -44,7 +45,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               {quickLinks.map((l) => (
                 <li key={l.href}>
-                  <a href={l.href} className="font-semibold hover:bg-neo-yellow hover:px-1 transition-all duration-100">{l.label}</a>
+                  <a href={l.href} className={`font-semibold ${l.hover} hover:text-[#111] hover:px-1 transition-all duration-100`}>{l.label}</a>
                 </li>
               ))}
             </ul>

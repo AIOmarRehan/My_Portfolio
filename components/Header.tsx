@@ -5,6 +5,18 @@ import { useSession, signIn, signOut } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
 import { useTheme } from './ThemeProvider'
 
+const navLinkBase =
+  'whitespace-nowrap font-bold text-[color:var(--neo-ink)] px-2 py-1 border-2 border-transparent hover:border-neo-border transition-all duration-100'
+
+// Section links light up in their own section colour (the palette of the section
+// headings); #111 text keeps them readable on the bright fill in dark mode too.
+const sectionNavLink = {
+  projects: `${navLinkBase} hover:bg-neo-blue hover:text-[#111]`,
+  experience: `${navLinkBase} hover:bg-neo-lime hover:text-[#111]`,
+  certifications: `${navLinkBase} hover:bg-neo-yellow hover:text-[#111]`,
+  articles: `${navLinkBase} hover:bg-neo-pink hover:text-[#111]`,
+}
+
 const navLink =
   'whitespace-nowrap font-bold text-[color:var(--neo-ink)] hover:bg-neo-yellow px-2 py-1 border-2 border-transparent hover:border-neo-border transition-all duration-100'
 
@@ -67,41 +79,41 @@ function HeaderComponent() {
             <>
               <Link href="/admin" className={navLink}>Dashboard</Link>
               <div className="relative group">
-                <span className={`${navLink} cursor-pointer select-none flex items-center gap-1`}>
+                <span className={`${sectionNavLink.projects} cursor-pointer select-none flex items-center gap-1`}>
                   Projects
                   <svg className="w-3 h-3 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
                 </span>
                 <div className="absolute left-0 top-full pt-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-150">
                   <div className="neo-panel shadow-neo py-2 min-w-[190px]">
-                    <Link href="/admin/projects" className="block px-4 py-2 font-bold hover:bg-neo-yellow transition-colors">AI Projects</Link>
-                    <Link href="/admin/fullstack-projects" className="block px-4 py-2 font-bold hover:bg-neo-cyan transition-colors">Full-Stack Projects</Link>
-                    <Link href="/admin/data-analytics-projects" className="block px-4 py-2 font-bold hover:bg-neo-orange transition-colors">Data Analytics</Link>
+                    <Link href="/admin/projects" className="block px-4 py-2 font-bold hover:bg-neo-blue hover:text-[#111] transition-colors">AI Projects</Link>
+                    <Link href="/admin/fullstack-projects" className="block px-4 py-2 font-bold hover:bg-neo-cyan hover:text-[#111] transition-colors">Full-Stack Projects</Link>
+                    <Link href="/admin/data-analytics-projects" className="block px-4 py-2 font-bold hover:bg-neo-orange hover:text-[#111] transition-colors">Data Analytics</Link>
                   </div>
                 </div>
               </div>
-              <Link href="/admin/experience" className={navLink}>Experience</Link>
-              <Link href="/admin/certificates" className={navLink}>Certifications</Link>
-              <Link href="/admin/articles" className={navLink}>Articles</Link>
+              <Link href="/admin/experience" className={sectionNavLink.experience}>Experience</Link>
+              <Link href="/admin/certificates" className={sectionNavLink.certifications}>Certifications</Link>
+              <Link href="/admin/articles" className={sectionNavLink.articles}>Articles</Link>
               <Link href="/" className={navLink}>Public View</Link>
             </>
           ) : (
             <>
               <div className="relative group">
-                <a href="/#projects" className={`${navLink} flex items-center gap-1`}>
+                <a href="/#projects" className={`${sectionNavLink.projects} flex items-center gap-1`}>
                   Projects
                   <svg className="w-3 h-3 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
                 </a>
                 <div className="absolute left-0 top-full pt-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-150">
                   <div className="neo-panel shadow-neo py-2 min-w-[190px]">
-                    <a href="/#projects" className="block px-4 py-2 font-bold hover:bg-neo-yellow transition-colors">AI Projects</a>
-                    <a href="/#fullstack-projects" className="block px-4 py-2 font-bold hover:bg-neo-cyan transition-colors">Full-Stack Projects</a>
-                    <a href="/#data-analytics-projects" className="block px-4 py-2 font-bold hover:bg-neo-orange transition-colors">Data Analytics</a>
+                    <a href="/#projects" className="block px-4 py-2 font-bold hover:bg-neo-blue hover:text-[#111] transition-colors">AI Projects</a>
+                    <a href="/#fullstack-projects" className="block px-4 py-2 font-bold hover:bg-neo-cyan hover:text-[#111] transition-colors">Full-Stack Projects</a>
+                    <a href="/#data-analytics-projects" className="block px-4 py-2 font-bold hover:bg-neo-orange hover:text-[#111] transition-colors">Data Analytics</a>
                   </div>
                 </div>
               </div>
-              <a href="/#experience" className={navLink}>Experience</a>
-              <a href="/#certifications" className={navLink}>Certifications</a>
-              <a href="/#articles" className={navLink}>Articles</a>
+              <a href="/#experience" className={sectionNavLink.experience}>Experience</a>
+              <a href="/#certifications" className={sectionNavLink.certifications}>Certifications</a>
+              <a href="/#articles" className={sectionNavLink.articles}>Articles</a>
             </>
           )}
 
@@ -151,37 +163,37 @@ function HeaderComponent() {
             <>
               <Link href="/admin" onClick={() => setMenuOpen(false)} className={navLink}>Dashboard</Link>
               <div>
-                <button onClick={() => setProjectsOpen(!projectsOpen)} className={`${navLink} flex items-center gap-1 w-full`}>
+                <button onClick={() => setProjectsOpen(!projectsOpen)} className={`${sectionNavLink.projects} flex items-center gap-1 w-full`}>
                   Projects
                   <svg className={`w-3 h-3 transition-transform duration-200 ${projectsOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
                 </button>
                 <div className={`overflow-hidden transition-all duration-200 ${projectsOpen ? 'max-h-40 opacity-100 mt-2' : 'max-h-0 opacity-0'}`}>
-                  <Link href="/admin/projects" onClick={() => setMenuOpen(false)} className="block pl-4 py-1 font-semibold">AI Projects</Link>
-                  <Link href="/admin/fullstack-projects" onClick={() => setMenuOpen(false)} className="block pl-4 py-1 font-semibold">Full-Stack Projects</Link>
-                  <Link href="/admin/data-analytics-projects" onClick={() => setMenuOpen(false)} className="block pl-4 py-1 font-semibold">Data Analytics</Link>
+                  <Link href="/admin/projects" onClick={() => setMenuOpen(false)} className="block pl-4 py-1 font-semibold hover:bg-neo-blue hover:text-[#111] transition-colors">AI Projects</Link>
+                  <Link href="/admin/fullstack-projects" onClick={() => setMenuOpen(false)} className="block pl-4 py-1 font-semibold hover:bg-neo-cyan hover:text-[#111] transition-colors">Full-Stack Projects</Link>
+                  <Link href="/admin/data-analytics-projects" onClick={() => setMenuOpen(false)} className="block pl-4 py-1 font-semibold hover:bg-neo-orange hover:text-[#111] transition-colors">Data Analytics</Link>
                 </div>
               </div>
-              <Link href="/admin/experience" onClick={() => setMenuOpen(false)} className={navLink}>Experience</Link>
-              <Link href="/admin/certificates" onClick={() => setMenuOpen(false)} className={navLink}>Certifications</Link>
-              <Link href="/admin/articles" onClick={() => setMenuOpen(false)} className={navLink}>Articles</Link>
+              <Link href="/admin/experience" onClick={() => setMenuOpen(false)} className={sectionNavLink.experience}>Experience</Link>
+              <Link href="/admin/certificates" onClick={() => setMenuOpen(false)} className={sectionNavLink.certifications}>Certifications</Link>
+              <Link href="/admin/articles" onClick={() => setMenuOpen(false)} className={sectionNavLink.articles}>Articles</Link>
               <Link href="/" onClick={() => setMenuOpen(false)} className={navLink}>Public View</Link>
             </>
           ) : (
             <>
               <div>
-                <button onClick={() => setProjectsOpen(!projectsOpen)} className={`${navLink} flex items-center gap-1 w-full`}>
+                <button onClick={() => setProjectsOpen(!projectsOpen)} className={`${sectionNavLink.projects} flex items-center gap-1 w-full`}>
                   Projects
                   <svg className={`w-3 h-3 transition-transform duration-200 ${projectsOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
                 </button>
                 <div className={`overflow-hidden transition-all duration-200 ${projectsOpen ? 'max-h-40 opacity-100 mt-2' : 'max-h-0 opacity-0'}`}>
-                  <a href="/#projects" onClick={() => setMenuOpen(false)} className="block pl-4 py-1 font-semibold">AI Projects</a>
-                  <a href="/#fullstack-projects" onClick={() => setMenuOpen(false)} className="block pl-4 py-1 font-semibold">Full-Stack Projects</a>
-                  <a href="/#data-analytics-projects" onClick={() => setMenuOpen(false)} className="block pl-4 py-1 font-semibold">Data Analytics</a>
+                  <a href="/#projects" onClick={() => setMenuOpen(false)} className="block pl-4 py-1 font-semibold hover:bg-neo-blue hover:text-[#111] transition-colors">AI Projects</a>
+                  <a href="/#fullstack-projects" onClick={() => setMenuOpen(false)} className="block pl-4 py-1 font-semibold hover:bg-neo-cyan hover:text-[#111] transition-colors">Full-Stack Projects</a>
+                  <a href="/#data-analytics-projects" onClick={() => setMenuOpen(false)} className="block pl-4 py-1 font-semibold hover:bg-neo-orange hover:text-[#111] transition-colors">Data Analytics</a>
                 </div>
               </div>
-              <a href="/#experience" onClick={() => setMenuOpen(false)} className={navLink}>Experience</a>
-              <a href="/#certifications" onClick={() => setMenuOpen(false)} className={navLink}>Certifications</a>
-              <a href="/#articles" onClick={() => setMenuOpen(false)} className={navLink}>Articles</a>
+              <a href="/#experience" onClick={() => setMenuOpen(false)} className={sectionNavLink.experience}>Experience</a>
+              <a href="/#certifications" onClick={() => setMenuOpen(false)} className={sectionNavLink.certifications}>Certifications</a>
+              <a href="/#articles" onClick={() => setMenuOpen(false)} className={sectionNavLink.articles}>Articles</a>
             </>
           )}
 
